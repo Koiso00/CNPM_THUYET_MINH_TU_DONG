@@ -1,6 +1,13 @@
 # Kiến trúc
 
 Trạng thái: **thiết kế mục tiêu**; xem README để phân biệt phần đã chạy.
+P1.1 đã bổ sung connection pool MongoDB theo lifespan và endpoint readiness.
+P1.2 có model/repository User/session và unique/TTL index thật trên Atlas.
+P1.3 có API JWT cookie/CSRF và dependency RBAC, đã kiểm thử với Atlas thật.
+P1.4 có UI auth và AuthClient cho khôi phục/gia hạn/đăng xuất, khung trang theo role.
+Trang `/explore` có UI cho 10 mô tả tiếng Việt nguồn tĩnh; vùng sơ đồ là placeholder,
+chưa tích hợp bản đồ/GPS/audio player. Xem [báo cáo giao diện](test-reports/P1_4_1_EXPLORE_UI.md).
+Ưu tiên demo hiện hành ở [DEMO_2_DAYS](DEMO_2_DAYS.md), khác thứ tự triển khai dài hạn bên dưới.
 
 ## Thành phần
 
@@ -18,19 +25,36 @@ flowchart LR
 ```
 
 Frontend và API phục vụ cùng nguồn khi triển khai. Khi phát triển, Vite proxy /api tới FastAPI.
-Đường dẫn tĩnh trong FastAPI hiện chỉ phục vụ trang mở đầu; khi thêm client-side routing
-phải bổ sung fallback cho đường dẫn giao diện, không nuốt lỗi 404 của API.
+P1.4 dùng hash routing (/#/login, /#/register, /#/explore, /#/admin, /#/creator),
+nên tải lại không cần fallback tại server. Nếu đổi sang path routing phải bổ sung fallback giao diện,
+không nuốt lỗi 404 của API. UI route guard không thay kiểm tra quyền ở backend.
 
 ## Ranh giới mã
 
 - `backend/app/api/v1/endpoints/`: router độc lập auth, content, audio, maps,
-  offline_packs, jobs, ai, admin, events. Chỉ health có endpoint thực.
-- `core/`: cấu hình và các phụ thuộc bảo mật sau này; `db/`: vòng đời Mongo client/index.
+  offline_packs, jobs, ai, admin, events. Health và auth có endpoint thực.
+- `core/`: cấu hình và chính sách thời hạn phiên; `db/`: Mongo lifecycle và index User/session.
+- `commands/`: khởi tạo index tường minh, không tự chạy khi import hoặc startup API.
 - `schemas/`, `models/`: hợp đồng HTTP và quy tắc tài liệu lưu trữ.
 - `services/`: nghiệp vụ; `repositories/`: truy xuất MongoDB/GridFS.
 - `services/providers/`: lớp bọc dịch/TTS/Gemini; `workers/`: xử lý công việc bền vững.
 - Frontend chia feature auth, tours, map, playback, offline, creator và admin.
   Vị trí, geofence và audio không được gắn chặt vào một component bản đồ.
+
+## Phiên phía giao diện P1.4
+
+AuthClient chỉ giữ User công khai và mốc hết hạn trong RAM; fetch cùng origin, credentials same-origin,
+cache no-store. Không đọc JWT/refresh cookie HttpOnly hoặc lưu token vào Web Storage/IndexedDB.
+Bootstrap gọi refresh để khôi phục phiên và lấy mốc hết hạn; 401 là chưa có phiên,
+network/503 là lỗi kết nối với nút thử lại. Form đăng ký không tự đăng nhập hoặc cấp role.
+Gia hạn trước access expiry 30 giây, chỉ một refresh đang chạy mỗi client;
+Web Locks tuần tự hóa login/refresh/logout và CSRF giữa tab trên trình duyệt hỗ trợ.
+BroadcastChannel đồng bộ trạng thái đăng nhập/đăng xuất, không truyền token.
+Nếu không có Web Locks chỉ bảo đảm chống refresh trùng trong tab; chưa nghiệm thu fallback nhiều tab.
+Khi focus/hiện lại trang, GET me kiểm tra phiên/role; GET 401 được refresh và thử lại tối đa một lần.
+Chỉ retry POST khi middleware từ chối CSRF rõ ràng; không tự gửi lại login/register vì timeout.
+Logout chờ refresh đang gửi, ngăn phản hồi cũ phục hồi trạng thái; lỗi mạng báo chưa đăng xuất thành công.
+Tải lại/đóng trang mất RAM là bình thường, cookie phiên cho phép bootstrap lại khi còn hạn.
 
 ## Luồng công bố và xử lý nền
 
@@ -46,15 +70,40 @@ Chi tiết thời gian lease/retry sẽ được chốt và kiểm thử khi tri
 ## Bảo mật và lưu trữ
 
 JWT HttpOnly cookie, Secure trên HTTPS, kiểm tra CSRF và RBAC ở backend.
+P1.3 đặt Secure khi ENVIRONMENT=production (phải phục vụ qua HTTPS),
+SameSite=Lax, host-only, path /api/v1. Không trả access/refresh token trong JSON.
+CSRF ký HMAC, cookie HttpOnly + token JSON để gửi X-CSRF-Token; gắn session ID sau login.
+Middleware kiểm tra mọi API unsafe, Origin theo allowlist và Sec-Fetch-Site.
+Argon2 chạy trong threadpool; phản hồi validation bỏ input để không phản chiếu mật khẩu.
+Mỗi request xác thực tra phiên còn hiệu lực và User còn hoạt động; role lấy từ database.
+API auth trả no-store; secret thiếu thì 503, không dùng khóa mặc định.
+RBAC là dependency dùng chung; màn hình và API quản trị nội dung chưa được xây dựng.
+Chính sách đã chốt: access token 15 phút, tự gia hạn trong phiên tối đa 7 ngày tuyệt đối.
+Session lưu digest refresh token, thay digest bằng cập nhật nguyên tử; không kéo dài expires_at.
+TTL chỉ dọn dữ liệu cũ, repository luôn kiểm tra thời hạn/thu hồi khi truy vấn phiên.
 Đăng ký không nhận quyền từ client. Xác thực, token và phản hồi quản trị không được cache
 bằng chiến lược API chung của service worker. Không đưa bí mật Gemini/TTS vào frontend.
 
 MongoDB lưu metadata; GridFS lưu file. API media kiểm tra quyền và hỗ trợ Range.
 Bản đồ phải có đủ style/font/sprite được phép đóng gói; PMTiles không tự bao gồm các phụ thuộc này.
+Offline pack được chọn theo release/ngôn ngữ; bản đồ/ảnh dùng chung qua tham chiếu asset/checksum,
+nội dung/MP3 theo ngôn ngữ. Không bắt tải mọi ngôn ngữ trên server. Xem [runtime](TOUR_RUNTIME.md).
 
 ## Triển khai
 
 Mục tiêu: Render phục vụ frontend/API và Atlas Free lưu dữ liệu. Không lưu tài nguyên cần tồn tại
 lâu dài trên filesystem tạm của Render.
 Docker Compose là bản dự phòng FastAPI + MongoDB có volume; dùng HTTPS khi thử GPS trên điện thoại.
-Hiện có cấu hình Docker nhưng chưa chạy xác minh, chưa có cấu hình cloud hoặc cơ sở dữ liệu thật.
+Hiện có cấu hình Docker nhưng chưa chạy xác minh, chưa triển khai ứng dụng lên cloud.
+Atlas đã được người dùng tạo và kiểm thử ping thật thành công; chưa triển khai ứng dụng lên Render.
+
+## Kết nối dữ liệu P1.1
+
+Mỗi lifespan có một AsyncMongoClient, được đóng khi ứng dụng dừng, không tạo client mỗi request.
+Factory ở app/application.py không đọc môi trường khi import; app/main.py là entrypoint
+khởi tạo ứng dụng từ cấu hình. Test dùng factory với Settings riêng.
+Không thực hiện I/O mạng khi import module. Chưa cấu hình URI thì không cấp pool.
+Readiness ping database với thời gian chờ hữu hạn, trả connected/not_configured/unavailable;
+liveness độc lập để không nhầm lỗi MongoDB với tiến trình đã dừng.
+Pool dùng datetime có múi giờ. URI là SecretStr, bị loại khỏi dump/repr cấu hình;
+phản hồi readiness không chứa lỗi driver/host/credential. Chưa có thao tác ghi dữ liệu ở P1.1.

@@ -1,4 +1,4 @@
-"""Assemble independent routers without implementing business endpoints."""
+"""Assemble health, authentication and future feature routers."""
 
 from fastapi import APIRouter
 

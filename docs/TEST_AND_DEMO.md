@@ -20,6 +20,19 @@ Những kiểm tra này không xác nhận chức năng nghiệp vụ, kết n�
 
 ## Ma trận nghiệm thu mục tiêu
 
+Kết quả từng phần được cập nhật riêng: [P1.1 MongoDB](test-reports/P1_1_MONGODB.md).
+P1.1 đã có 34 test cục bộ đạt và một integration test ping Atlas thật đạt.
+P1.2: [User/session và index](test-reports/P1_2_USER_SESSIONS.md), 69 test cục bộ
+và 12 test Atlas đạt; đã tạo index ứng dụng. Chưa nghiệm thu luồng đăng nhập HTTP.
+P1.3: [API xác thực](test-reports/P1_3_AUTH.md), 124 test cục bộ và 14 test Atlas đạt.
+Luồng HTTP đã kiểm thử. Demo ưu tiên mới theo [DEMO_2_DAYS](DEMO_2_DAYS.md).
+P1.4: [UI auth và trạng thái phiên](test-reports/P1_4_AUTH_UI.md), 18 test frontend
+và 4 test Edge/Atlas tạm đạt; desktop 1366×900, mobile viewport 390×844.
+Chưa thử trên điện thoại vật lý; màn hình quản trị mới là khung, chưa có nghiệp vụ.
+Chuẩn bị audio: [10 MP3 tiếng Việt giọng nam](test-reports/DEMO_AUDIO_VI_MALE.md),
+131 test cục bộ đạt; 10/10 file khớp checksum/nguồn và có thời lượng MP3 hợp lệ.
+Chưa nghe duyệt hoặc kiểm thử trình phát.
+
 | Nhóm | Tình huống cần chứng minh |
 | --- | --- |
 | Auth/RBAC | Đăng ký không tự chọn quyền; User không xem nháp; Creator không sửa nội dung ngoài quyền; CSRF, hết hạn/thu hồi phiên |
@@ -27,7 +40,7 @@ Những kiểm tra này không xác nhận chức năng nghiệp vụ, kết n�
 | GPS | Sai số, mẫu cũ, ranh giới vùng, vùng chồng nhau, từ chối quyền, ẩn/hiện trang |
 | Audio | Một nguồn phát; không phát lặp; đổi ngôn ngữ; từng tầng fallback; thiếu giọng cục bộ; autoplay bị chặn |
 | Jobs | Yêu cầu trùng, giới hạn đồng thời, provider lỗi, retry hữu hạn, restart và kết quả lỗi thời |
-| Offline | Đủ gói, tắt mạng, đóng/mở lại, thiếu dung lượng, tải dở, checksum sai, cập nhật lỗi, dữ liệu bị browser xóa |
+| Offline | Chỉ tải Việt vẫn dùng được khi tắt mạng/đóng mở lại; thêm Anh không tải lại bản đồ/ảnh hợp lệ; ngôn ngữ chưa tải báo thiếu; tải dở/checksum sai/cập nhật lỗi/browser xóa dữ liệu không báo sẵn sàng |
 | Đăng xuất | Xóa cache/quyền theo tài khoản, nhiều tab, đăng xuất offline rồi kết nối lại |
 | Dashboard | Bắt đầu tour/nghe hoàn tất đúng, sự kiện gửi lại không nhân đôi, loại mô phỏng khỏi dữ liệu thật |
 | Triển khai | Secrets không vào frontend; HTTPS; restart không mất asset; phục hồi bản chạy trên máy |
@@ -41,7 +54,8 @@ Safari iPhone kiểm tra bổ sung, báo rõ kết quả; không tuyên bố h�
 2. Admin duyệt; User chỉ thấy bản đã công bố.
 3. User bắt đầu tour, bật mô phỏng và đi qua các điểm; không cần cấp GPS trong chế độ này.
 4. Chuyển Việt/Anh, nghe lại thủ công, kiểm tra hàng đợi.
-5. Tải đủ pack; tắt mạng, đóng/mở lại rồi tiếp tục xem bản đồ/nghe.
+5. Chỉ tải gói tiếng Việt; tắt mạng, đóng/mở lại vẫn xem bản đồ/nghe Việt. Chọn Anh chưa tải phải báo thiếu.
+   Có mạng lại, tải bổ sung Anh và kiểm tra không tải lại tài nguyên chung còn hợp lệ; thử cả hai offline.
 6. Có mạng lại, đồng bộ sự kiện một lần; dashboard không trộn dữ liệu mô phỏng.
 7. Thử đăng xuất offline, kết nối lại và xác nhận phiên không tự khôi phục ngoài ý muốn.
 

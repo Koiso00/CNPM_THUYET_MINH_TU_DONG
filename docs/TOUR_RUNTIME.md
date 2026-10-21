@@ -33,12 +33,41 @@ Tạo theo yêu cầu chỉ dùng nội dung đã công bố, có khóa chống 
 
 ## Offline pack
 
-Một pack tham chiếu một release bất biến, đủ Việt–Anh, ảnh, MP3, PMTiles, style, font và sprite.
+Quyết định mới được người dùng chốt ngày 21/10/2026: tải offline theo ngôn ngữ khách chọn,
+thay yêu cầu gói bắt buộc đủ Việt–Anh của kế hoạch gốc. Offline vẫn là thiết kế mục tiêu,
+chưa triển khai và không nằm trong phạm vi demo 2 ngày.
+
+Một pack tham chiếu một release bất biến và một ngôn ngữ. Nó gồm:
+
+- Phần dùng chung: metadata tour/POI, ảnh, PMTiles, style, font và sprite cần cho release.
+- Phần ngôn ngữ: nội dung/bản dịch và toàn bộ MP3 cần thiết cho ngôn ngữ đã chọn.
+
+Khách chỉ tải tiếng Việt thì không cần MP3 tiếng Anh hoặc các ngôn ngữ khác.
+Có thể thêm ngôn ngữ sau; phần dùng chung đúng phiên bản/checksum chỉ lưu và tải một lần.
+Tài nguyên định danh theo asset ID/checksum, các pack tham chiếu chung để tránh nhân bản.
+Khi xóa một ngôn ngữ, chỉ xóa tài nguyên không còn pack được giữ nào cần đến;
+quyền và xóa dữ liệu theo tài khoản vẫn tuân thủ chính sách đăng xuất bên dưới.
+Không trộn bản đồ/nội dung/audio từ release khác nhau chỉ để tránh tải lại.
+
+Luồng giao diện mục tiêu:
+
+1. Chọn “Tải để dùng ngoại tuyến”, mặc định hiển thị ngôn ngữ đang sử dụng.
+2. Hiển thị tổng dung lượng của lựa chọn và dung lượng thực sự cần tải thêm từ manifest/file thật.
+3. Khách xác nhận tải ngôn ngữ đó; có thể chọn tải thêm ngôn ngữ khác sau.
+4. Hiển thị trạng thái riêng từng ngôn ngữ: chưa tải/đang tải/sẵn sàng/lỗi/cần cập nhật.
+
+Tải là tùy chọn; không tải vẫn dùng trực tuyến. Khi mất mạng, chỉ cam kết xem/nghe
+ngôn ngữ đã tải đủ. Đổi sang ngôn ngữ chưa tải phải thông báo thiếu gói, cho chọn lại
+ngôn ngữ đã tải hoặc xem phần văn bản thực sự còn sẵn; không tự nhận đã hỗ trợ offline,
+không tự đổi giọng/ngôn ngữ và không bắt tải toàn bộ ngôn ngữ mới dùng được dịch vụ.
+
 IndexedDB lưu dữ liệu và file bản đồ; Cache Storage lưu shell/media đã tải đầy đủ.
 Media phải hỗ trợ Range. Các mảnh đã stream không chứng minh file đã tải đủ.
 
 Trạng thái mục tiêu: chưa tải → đang tải → kiểm tra → sẵn sàng; có nhánh lỗi/hủy.
-Kiểm tra checksum và đủ tài nguyên trước khi sẵn sàng. Khi cập nhật, tải bản mới riêng;
+Kiểm tra checksum và đủ cả phần dùng chung lẫn phần ngôn ngữ trước khi báo ngôn ngữ đó sẵn sàng.
+Chỉ tải xong tiếng Việt không được đánh dấu tiếng Anh sẵn sàng. Thêm ngôn ngữ trên server
+không tự đưa ngôn ngữ đó vào danh sách tải của khách. Khi cập nhật, tải bản mới riêng;
 chỉ đổi phiên bản đang dùng sau khi kiểm tra xong, không phá bản cũ nếu tải thất bại.
 Kiểm tra dung lượng, hỗ trợ tiếp tục và phát hiện trình duyệt đã xóa dữ liệu.
 

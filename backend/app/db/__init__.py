@@ -1,1 +1,1 @@
-"""MongoDB client lifecycle and index initialization (planned)."""
+"""MongoDB lifecycle and readiness. Domain collection indexes are implemented later."""

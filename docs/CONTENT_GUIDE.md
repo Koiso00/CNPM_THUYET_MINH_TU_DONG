@@ -3,6 +3,18 @@
 Hiện chưa có danh sách 8–10 POI đã được xác minh. Không tự tạo tên tòa nhà, lịch sử
 hoặc tọa độ rồi gọi đó là dữ liệu chính thức.
 
+## Nguồn đã được người dùng chọn cho demo
+
+Ngày 21/10/2026, người dùng cung cấp nội dung tiếng Việt cho 10 địa điểm và yêu cầu dùng làm nguồn.
+Lưu nguyên văn tại [nguồn tiếng Việt](../data/sources/campus-vi-user-2026-10-21.md).
+Dùng văn bản này làm đầu vào hiển thị/thuyết minh khi xây dựng tính năng nội dung/audio.
+Chưa nhập MongoDB hoặc có tọa độ; không đánh dấu đã đối chiếu thực địa/nhà trường duyệt.
+Người dùng chọn Edge-TTS giọng nam tiếng Việt. Đã tạo 10 MP3 vi-VN-NamMinhNeural từ nguyên văn mô tả,
+không đọc tiêu đề/metadata; tổng 211.008 giây, 1,266,048 byte. File ở data/generated/audio/vi-male,
+đã kiểm tra kỹ thuật, chưa nghe duyệt phát âm. Xem [báo cáo](test-reports/DEMO_AUDIO_VI_MALE.md).
+Các chỉ dẫn trên/dưới/trái/phải tham chiếu sơ đồ chưa được gửi kèm, không tự đổi thành hướng địa lý.
+Chưa có bản dịch tiếng Anh; không tự thêm chức năng, tên đầy đủ của KLF hoặc thông tin lịch sử.
+
 ## Hồ sơ mỗi điểm
 
 - Tên địa điểm và cách gọi được kiểm tra.
