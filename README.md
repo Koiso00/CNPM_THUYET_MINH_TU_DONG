@@ -10,6 +10,8 @@ GPS, offline, AI và dịch tự động tạm hoãn trong demo.
 Thiết kế offline dài hạn đã chốt: tải tùy chọn theo ngôn ngữ, thêm ngôn ngữ sau,
 bản đồ/ảnh dùng chung; không yêu cầu khách tải tất cả ngôn ngữ.
 
+Hướng dẫn triển khai/cập nhật demo trên Render và kết nối Atlas: [DEPLOY_RENDER](docs/DEPLOY_RENDER.md).
+
 ## Phạm vi được chốt
 
 Nguồn chuẩn là [bản kế hoạch gốc](docs/PROJECT_PLAN.md), được giữ nguyên từ bản người dùng chọn:
