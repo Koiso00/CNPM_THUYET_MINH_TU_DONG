@@ -29,6 +29,10 @@ Chưa đưa hiện diện tại POI/lượt đến theo GPS vào demo.
 
 ## Những thông tin còn chờ
 
+Cập nhật 22/10: đã chốt bootstrap Admin bằng lệnh nâng tài khoản đã đăng ký; danh sách,
+khóa/mở khóa/đổi vai trò user, không xóa; dashboard đếm dữ liệu thật của hệ thống;
+Admin tải MP3 thay thế ≤10 MiB, công bố lại mới áp dụng. Các mục tương ứng không còn chờ quyết định.
+
 - Nội dung đã được cung cấp: [10 địa điểm tiếng Việt](../data/sources/campus-vi-user-2026-10-21.md),
   người dùng chọn làm nguồn. Đã chọn tạo MP3 bằng Edge-TTS giọng nam tiếng Việt,
   dùng vi-VN-NamMinhNeural; phần chuẩn bị file được thực hiện riêng trước tích hợp trình phát.
@@ -43,5 +47,8 @@ Chưa đưa hiện diện tại POI/lượt đến theo GPS vào demo.
 - P1.4 UI auth, trạng thái phiên và khung trang theo role đã hoàn tất, xem [báo cáo](test-reports/P1_4_AUTH_UI.md).
 - P1.4.1 có trang khám phá, danh sách/chọn 10 mô tả nguồn và vùng chờ ảnh sơ đồ; audio/GPS chưa hoạt động,
   xem [báo cáo](test-reports/P1_4_1_EXPLORE_UI.md).
-- Trình phát audio, chức năng quản trị và dashboard chưa triển khai; chưa có demo hoàn chỉnh.
-- Tiếp theo: dữ liệu địa điểm/nội dung và quản trị; tích hợp MP3 đã có vào trình phát sau đó.
+- Cập nhật 22/10: đã triển khai dữ liệu MongoDB, snapshot, quản trị nội dung/audio/user,
+  dashboard và nghe thủ công từ GridFS. Đã nhập 10 mô tả vào nháp và 10 MP3;
+  Admin nghe kiểm tra rồi công bố qua UI. Không tự công bố nội dung ứng dụng.
+- Kiểm thử API/Atlas và Edge desktop/mobile viewport tại [báo cáo demo](test-reports/DEMO_CONTENT_AUDIO_ADMIN.md).
+- Còn nghiệm thu phát âm/nội dung, điện thoại vật lý và triển khai cloud; Creator/GPS/offline/AI/dịch tự động vẫn hoãn.

@@ -1,4 +1,4 @@
-"""Initialize auth indexes explicitly without inserting accounts or dropping data."""
+"""Initialize application indexes without inserting accounts or dropping data."""
 
 import asyncio
 import sys
@@ -7,7 +7,11 @@ from pydantic import ValidationError
 from pymongo.errors import PyMongoError
 
 from app.core.config import Settings
-from app.db.indexes import ensure_session_indexes, ensure_user_indexes
+from app.db.indexes import (
+    ensure_session_indexes,
+    ensure_submission_indexes,
+    ensure_user_indexes,
+)
 from app.db.mongodb import MongoConnection
 
 
@@ -22,6 +26,7 @@ async def initialize_database(settings: Settings) -> None:
             raise RuntimeError("MongoDB is not configured.")
         await ensure_user_indexes(database["users"])
         await ensure_session_indexes(database["sessions"])
+        await ensure_submission_indexes(database["content_submissions"])
     finally:
         await connection.close()
 
@@ -36,7 +41,7 @@ def main() -> int:
             file=sys.stderr,
         )
         return 1
-    print("User/session indexes are ready. No user accounts were created.")
+    print("User/session/content-submission indexes are ready. No user accounts were created.")
     return 0
 
 

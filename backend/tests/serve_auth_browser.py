@@ -5,13 +5,22 @@ from contextlib import asynccontextmanager
 import uvicorn
 from fastapi import Response
 
+from app.api.content_dependencies import (
+    get_admin_service,
+    get_audio_service,
+    get_content_service,
+    get_submission_service,
+)
 from app.api.dependencies import get_auth_service
 from app.application import create_app
+from app.commands.import_demo_audio import validated_pack
+from app.commands.seed_demo_content import source_draft
 from app.core.config import Settings
-from app.db.indexes import ensure_session_indexes, ensure_user_indexes
+from app.db.indexes import ensure_session_indexes, ensure_submission_indexes, ensure_user_indexes
 from app.repositories.sessions import SessionRepository
 from app.repositories.users import UserRepository
 from app.services.auth import AuthService
+from tests.demo_database import isolated_content
 from tests.integration.conftest import temporary_collection
 
 E2E_PASSWORD = "only-for-isolated-e2e-12345"
@@ -41,12 +50,22 @@ def browser_test_app():
                 user = await service.register(f"e2e_{role}", E2E_PASSWORD)
                 await users.update_one({"_id": str(user.id)}, {"$set": {"role": role}})
             app.dependency_overrides[get_auth_service] = lambda: service
-            async with original_lifespan(app):
-                print(
-                    "Isolated browser-test server ready; no application accounts created.",
-                    flush=True,
-                )
-                yield
+            async with isolated_content(users, sessions) as features:
+                await ensure_submission_indexes(features.submissions.repository.items)
+                await features.content.repository.initialize(source_draft())
+                for asset, data in validated_pack():
+                    await features.audio.repository.store(asset, data)
+                await features.content.publish(1, "isolated-e2e-admin")
+                app.dependency_overrides[get_content_service] = lambda: features.content
+                app.dependency_overrides[get_audio_service] = lambda: features.audio
+                app.dependency_overrides[get_admin_service] = lambda: features.admin
+                app.dependency_overrides[get_submission_service] = lambda: features.submissions
+                async with original_lifespan(app):
+                    print(
+                        "Isolated browser-test server ready; no application accounts created.",
+                        flush=True,
+                    )
+                    yield
         print("Isolated browser-test collections removed and verified.", flush=True)
 
     app.router.lifespan_context = isolated_lifespan
@@ -55,6 +74,10 @@ def browser_test_app():
     async def shutdown():
         app.state.test_server.should_exit = True
         return Response(status_code=202)
+
+    # StaticFiles at '/' would otherwise consume POST /_test/shutdown when this
+    # isolated server serves a frontend build directly rather than through Vite.
+    app.router.routes.insert(0, app.router.routes.pop())
 
     return app
 

@@ -13,7 +13,15 @@ from app.db.mongodb import MongoConnection
 
 @asynccontextmanager
 async def temporary_collection(kind: str):
-    if kind not in {"users", "sessions"}:
+    if kind not in {
+        "users",
+        "sessions",
+        "tours",
+        "tour_releases",
+        "assets",
+        "audio_selections",
+        "content_submissions",
+    }:
         raise ValueError("Unsupported isolated test collection kind.")
     settings = Settings(_env_file=Path(__file__).resolve().parents[2] / ".env")
     if settings.mongodb_uri is None:

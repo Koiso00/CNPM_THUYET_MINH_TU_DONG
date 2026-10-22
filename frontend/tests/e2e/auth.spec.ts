@@ -9,7 +9,7 @@ async function login(page: Page, username: string) {
   await page.getByLabel("Mật khẩu", { exact: true }).fill(password);
   await page.getByRole("button", { name: "Đăng nhập", exact: true }).click();
   await expect(
-    page.getByRole("heading", { name: `Xin chào, ${username}.` }),
+    page.getByRole("heading", { name: `Xin chào, ${username}` }),
   ).toBeVisible();
 }
 
@@ -51,12 +51,12 @@ test("register, login, reload, parallel tabs, logout and desktop/mobile layout",
   await context.clearCookies({ name: "sgu_access" });
   await page.reload();
   await expect(
-    page.getByRole("heading", { name: `Xin chào, ${username}.` }),
+    page.getByRole("heading", { name: `Xin chào, ${username}` }),
   ).toBeVisible();
   const other = await context.newPage();
   await other.goto("/#/explore");
   await expect(
-    other.getByRole("heading", { name: `Xin chào, ${username}.` }),
+    other.getByRole("heading", { name: `Xin chào, ${username}` }),
   ).toBeVisible();
   const refreshStatuses: number[] = [];
   for (const tab of [page, other])
@@ -66,10 +66,10 @@ test("register, login, reload, parallel tabs, logout and desktop/mobile layout",
     });
   await Promise.all([page.reload(), other.reload()]);
   await expect(
-    page.getByRole("heading", { name: `Xin chào, ${username}.` }),
+    page.getByRole("heading", { name: `Xin chào, ${username}` }),
   ).toBeVisible();
   await expect(
-    other.getByRole("heading", { name: `Xin chào, ${username}.` }),
+    other.getByRole("heading", { name: `Xin chào, ${username}` }),
   ).toBeVisible();
   expect(refreshStatuses).toEqual([200, 200]);
   await page.goto("/#/admin");
@@ -99,9 +99,9 @@ test("admin and creator use real roles; network errors keep form data", async ({
   page,
 }) => {
   await login(page, "e2e_admin");
-  await page.getByRole("link", { name: "Quản trị", exact: true }).click();
+  await page.goto("/#/admin");
   await expect(
-    page.getByRole("heading", { name: "Không gian quản trị" }),
+    page.getByRole("heading", { name: "Nội dung khuôn viên" }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Đăng xuất", exact: true }).click();
   await login(page, "e2e_creator");
@@ -109,9 +109,13 @@ test("admin and creator use real roles; network errors keep form data", async ({
   await expect(
     page.getByRole("heading", { name: "Bạn không có quyền truy cập" }),
   ).toBeVisible();
-  await page.getByRole("link", { name: "Nội dung", exact: true }).click();
+  await page.goto("/#/management");
   await expect(
-    page.getByRole("heading", { name: "Nội dung của bạn" }),
+    page.getByRole("heading", { name: "Bạn không có quyền truy cập" }),
+  ).toBeVisible();
+  await page.goto("/#/creator");
+  await expect(
+    page.getByRole("heading", { name: "Đề xuất nội dung toàn tour" }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Đăng xuất", exact: true }).click();
   await page.getByLabel("Tên đăng nhập").fill("e2e_admin");

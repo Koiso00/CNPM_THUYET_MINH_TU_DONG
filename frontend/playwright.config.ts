@@ -6,7 +6,7 @@ export default defineConfig({
   expect: { timeout: 10000 },
   workers: 1,
   use: {
-    baseURL: "http://127.0.0.1:5173",
+    baseURL: process.env.E2E_BASE_URL ?? "http://127.0.0.1:5173",
     channel: "msedge",
     trace: "retain-on-failure",
   },

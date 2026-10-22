@@ -100,17 +100,27 @@ export class AuthClient {
       ? (undefined as T)
       : (response.json() as Promise<T>);
   }
-  private async post<T>(path: string, body?: unknown): Promise<T> {
+  private async post<T>(
+    path: string,
+    body?: unknown,
+    method = "POST",
+  ): Promise<T> {
     for (let attempt = 0; attempt < 2; attempt++) {
       const csrf = await this.raw<{ csrf_token: string }>("/auth/csrf");
       try {
         return await this.raw<T>(path, {
-          method: "POST",
+          method,
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type":
+              body instanceof Blob ? "audio/mpeg" : "application/json",
             "X-CSRF-Token": csrf.csrf_token,
           },
-          body: body === undefined ? undefined : JSON.stringify(body),
+          body:
+            body === undefined
+              ? undefined
+              : body instanceof Blob
+                ? body
+                : JSON.stringify(body),
         });
       } catch (error) {
         // CSRF rejection happens before the handler; retry that rejection only, never a timeout.
@@ -255,6 +265,20 @@ export class AuthClient {
       this.assertCurrent(generation);
       return this.raw<T>(path);
     }
+  }
+  async mutate<T>(
+    path: string,
+    body: unknown,
+    method: "POST" | "PUT" = "POST",
+  ): Promise<T> {
+    if (
+      !["/admin/", "/creator/"].some((prefix) => path.startsWith(prefix)) ||
+      path.includes("..")
+    )
+      throw new Error("Invalid protected action path");
+    // Refresh before sending a mutation; never repeat a write after a network timeout.
+    if (Date.now() >= this.accessExpiry - 30000) await this.refresh();
+    return this.coordinate(() => this.post<T>(path, body, method));
   }
   private recheck = () => {
     if (

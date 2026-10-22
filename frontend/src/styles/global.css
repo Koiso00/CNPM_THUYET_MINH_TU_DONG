@@ -1550,8 +1550,8 @@ fieldset {
 }
 .explore-nav button[aria-current="page"] {
   color: #214c3a;
-  background: #fff;
-  box-shadow: 0 1px 4px rgb(31 57 42 / 10%);
+  background: transparent;
+  box-shadow: none;
 }
 .explore-nav button:hover {
   color: #174a35;
@@ -2166,9 +2166,6 @@ fieldset {
     padding: 0 9px;
     font-size: 9px;
   }
-  .explore-role {
-    display: none;
-  }
   .campus-explorer {
     grid-template-columns: minmax(0, 1.5fr) minmax(270px, 0.9fr);
   }
@@ -2457,5 +2454,219 @@ fieldset {
   .explore-page * {
     scroll-behavior: auto;
     transition: none;
+  }
+}
+:root {
+  --admin-border: #dce4dd;
+}
+.admin-page {
+  width: min(1180px, 100%);
+  margin: auto;
+}
+.admin-section {
+  margin: 24px 0;
+  padding: 24px;
+  background: #fff;
+  border: 1px solid var(--admin-border);
+  border-radius: 18px;
+}
+.admin-section h2 {
+  margin-top: 0;
+}
+.admin-section p {
+  color: #536358;
+  line-height: 1.6;
+}
+.admin-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.admin-stats article {
+  padding: 18px;
+  background: #f3f7f2;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.admin-stats strong {
+  font-size: 28px;
+  color: #31533c;
+}
+.admin-section button,
+.admin-section select {
+  padding: 10px 14px;
+  border: 1px solid #bdcbbb;
+  border-radius: 8px;
+  background: #f4f8f3;
+  color: #294f35;
+  cursor: pointer;
+  font: inherit;
+}
+.admin-section button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.admin-section label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin: 14px 0;
+}
+.admin-section input:not([type="checkbox"]),
+.admin-section textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #bdcbbb;
+  border-radius: 8px;
+  font: inherit;
+}
+.admin-section textarea {
+  resize: vertical;
+}
+.admin-editor {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) minmax(0, 3fr);
+  gap: 24px;
+  margin: 16px 0;
+}
+.admin-place-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.admin-place-list button {
+  text-align: left;
+}
+.admin-place-list button[aria-pressed="true"] {
+  background: #dcebd9;
+  font-weight: 700;
+}
+.admin-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin: 18px 0;
+}
+.admin-audio-list > div,
+.admin-account {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--admin-border);
+}
+.admin-audio-list span,
+.admin-account strong {
+  flex: 1;
+  min-width: 160px;
+}
+.admin-account label {
+  flex-direction: row;
+  align-items: center;
+}
+.creator-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.creator-place-list {
+  display: grid;
+  gap: 10px;
+  margin: 18px 0;
+}
+.creator-place-list details,
+.submission-detail {
+  padding: 16px;
+  border: 1px solid var(--admin-border);
+  border-radius: 12px;
+  background: #fbfcfa;
+}
+.creator-place-list summary {
+  color: #214c3a;
+  cursor: pointer;
+  font-weight: 700;
+}
+.submission-queue {
+  display: grid;
+  gap: 8px;
+  padding: 0;
+  list-style: none;
+}
+.submission-queue button {
+  width: 100%;
+  text-align: left;
+}
+.submission-queue button[aria-pressed="true"] {
+  background: #dcebd9;
+}
+.submission-detail ol {
+  max-height: 380px;
+  overflow: auto;
+  padding-left: 24px;
+}
+.submission-detail li {
+  margin: 14px 0;
+}
+.submission-detail p {
+  white-space: pre-wrap;
+}
+.campus-audio audio {
+  display: block;
+  width: 100%;
+  margin-top: 16px;
+}
+@media (max-width: 680px) {
+  .admin-section {
+    padding: 16px;
+  }
+  .admin-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .admin-editor {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .admin-place-list {
+    max-height: 240px;
+    overflow-y: auto;
+  }
+}
+.management-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.management-heading h2 {
+  margin: 0;
+}
+.management-stat-label {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.management-account-name {
+  display: flex;
+  flex: 1;
+  min-width: 170px;
+  flex-direction: column;
+  gap: 6px;
+  overflow-wrap: anywhere;
+}
+.management-account-name span,
+.management-note {
+  color: #637562;
+  font-size: 13px;
+}
+@media (max-width: 680px) {
+  .management-heading {
+    align-items: stretch;
+    flex-direction: column;
   }
 }

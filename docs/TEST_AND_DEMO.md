@@ -20,6 +20,9 @@ Những kiểm tra này không xác nhận chức năng nghiệp vụ, kết n�
 
 ## Ma trận nghiệm thu mục tiêu
 
+Cập nhật 22/10: xem [báo cáo demo nội dung/audio/quản trị](test-reports/DEMO_CONTENT_AUDIO_ADMIN.md)
+cho kết quả hiện hành. Các số lượng và giới hạn theo từng mốc cũ bên dưới là lịch sử kiểm thử.
+
 Kết quả từng phần được cập nhật riêng: [P1.1 MongoDB](test-reports/P1_1_MONGODB.md).
 P1.1 đã có 34 test cục bộ đạt và một integration test ping Atlas thật đạt.
 P1.2: [User/session và index](test-reports/P1_2_USER_SESSIONS.md), 69 test cục bộ

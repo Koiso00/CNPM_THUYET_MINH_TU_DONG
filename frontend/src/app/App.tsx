@@ -4,15 +4,13 @@ import {
   authClient,
   authErrorMessage,
 } from "../features/auth/client";
-import { ExplorePage } from "../features/tours/ExplorePage";
+import { ExploreScreen } from "../features/tours/ExploreScreen";
+import { ContentPage } from "../features/content/ContentPage";
+import { ManagementPage } from "../features/admin/ManagementPage";
+import { CreatorPage } from "../features/creator/CreatorPage";
 import { AuthPage } from "../features/auth/AuthPage";
 import { Brand, Icon } from "../shared/Icons";
-
-const roles = {
-  user: "Người tham quan",
-  creator: "Người tạo nội dung",
-  admin: "Quản trị viên",
-};
+import { roleLabels as roles } from "../shared/WorkspaceNav";
 
 function Introduction() {
   return (
@@ -77,9 +75,13 @@ export function App({ client = authClient }: { client?: AuthClient }) {
   }, []);
   useEffect(() => {
     if (state.status !== "authenticated") return;
-    if (!["#/explore", "#/admin", "#/creator"].includes(route))
+    if (route === "#/creator" && state.user?.role === "admin") {
+      window.location.replace("#/management");
+      return;
+    }
+    if (!["#/explore", "#/admin", "#/management", "#/creator"].includes(route))
       window.location.hash = "/explore";
-  }, [state.status, route]);
+  }, [state.status, state.user?.role, route]);
 
   async function logout() {
     setBusy(true);
@@ -97,11 +99,11 @@ export function App({ client = authClient }: { client?: AuthClient }) {
   }
   const user = state.user;
   const restricted =
-    (route === "#/admin" && user?.role !== "admin") ||
+    (["#/admin", "#/management"].includes(route) && user?.role !== "admin") ||
     (route === "#/creator" &&
       user?.role !== "creator" &&
       user?.role !== "admin");
-  const management = route === "#/admin" || route === "#/creator";
+  const management = ["#/admin", "#/management", "#/creator"].includes(route);
   const explore = Boolean(user) && !management;
   return (
     <div className={`site${state.status === "anonymous" ? " site-auth" : ""}`}>
@@ -149,7 +151,16 @@ export function App({ client = authClient }: { client?: AuthClient }) {
           {user ? (
             <>
               {explore && (
-                <span className="explore-role">{roles[user.role]}</span>
+                user.role === "admin" || user.role === "creator" ? (
+                  <a
+                    className="explore-role"
+                    href={user.role === "admin" ? "#/management" : "#/creator"}
+                  >
+                    {roles[user.role]}
+                  </a>
+                ) : (
+                  <span className="explore-role">{roles[user.role]}</span>
+                )
               )}
               <span className="account-label">
                 <Icon name="user" size={17} />
@@ -172,6 +183,11 @@ export function App({ client = authClient }: { client?: AuthClient }) {
         </div>
       </header>
       <main id="main-content">
+        {user && management && (logoutError || state.notice) && (
+          <p role="alert" className="message error">
+            {logoutError || state.notice}
+          </p>
+        )}
         {state.status === "checking" ? (
           <div className="state-panel" role="status">
             <span className="spinner" />
@@ -208,126 +224,17 @@ export function App({ client = authClient }: { client?: AuthClient }) {
             </section>
           </div>
         ) : !management ? (
-          <ExplorePage
+          <ExploreScreen
+            client={client}
             username={user.username}
             notice={logoutError || state.notice}
           />
+        ) : route === "#/admin" ? (
+          <ContentPage client={client} />
+        ) : route === "#/management" || user.role === "admin" ? (
+          <ManagementPage client={client} />
         ) : (
-          <div className="workspace">
-            <nav className="workspace-nav" aria-label="Điều hướng">
-              <a
-                href="#/explore"
-                aria-current={!management ? "page" : undefined}
-              >
-                <Icon name="headphones" />
-                Khám phá
-              </a>
-              {user.role === "admin" && (
-                <a
-                  href="#/admin"
-                  aria-current={route === "#/admin" ? "page" : undefined}
-                >
-                  <Icon name="grid" />
-                  Quản trị
-                </a>
-              )}
-              {(user.role === "creator" || user.role === "admin") && (
-                <a
-                  href="#/creator"
-                  aria-current={route === "#/creator" ? "page" : undefined}
-                >
-                  <Icon name="audio" />
-                  Nội dung
-                </a>
-              )}
-              <span className="role-badge">{roles[user.role]}</span>
-            </nav>
-            {(logoutError || state.notice) && (
-              <p role="alert" className="message error">
-                {logoutError || state.notice}
-              </p>
-            )}
-            <>
-              <section className="workspace-hero">
-                <div>
-                  <p className="form-eyebrow">
-                    {management
-                      ? "KHÔNG GIAN LÀM VIỆC"
-                      : "CHÀO MỪNG ĐẾN VỚI SGU"}
-                  </p>
-                  <h1>
-                    {management
-                      ? route === "#/admin"
-                        ? "Không gian quản trị"
-                        : "Nội dung của bạn"
-                      : `Xin chào, ${user.username}.`}
-                  </h1>
-                  <p>
-                    {management
-                      ? "Bạn đã đăng nhập đúng vai trò. Các công cụ quản lý sẽ được bổ sung ở bước tiếp theo."
-                      : "Tài khoản của bạn đã sẵn sàng. Hành trình khám phá khuôn viên đang được chuẩn bị."}
-                  </p>
-                </div>
-                <span className="hero-icon">
-                  <Icon name={management ? "grid" : "headphones"} size={44} />
-                </span>
-              </section>
-              <section className="next-section" aria-labelledby="next-title">
-                <div className="section-heading">
-                  <h2 id="next-title">
-                    {management ? "Công cụ quản lý" : "Hành trình sắp mở"}
-                  </h2>
-                  <span>Đang phát triển</span>
-                </div>
-                <div className="feature-grid">
-                  {(management
-                    ? [
-                        {
-                          icon: "pin" as const,
-                          title: "Địa điểm & nội dung",
-                          text: "Quản lý thông tin và kịch bản thuyết minh.",
-                        },
-                        {
-                          icon: "audio" as const,
-                          title: "Thư viện audio",
-                          text: "Quản lý bản thu âm theo từng địa điểm.",
-                        },
-                        ...(user.role === "admin"
-                          ? [
-                              {
-                                icon: "users" as const,
-                                title: "Tài khoản & thống kê",
-                                text: "Quản lý người dùng và xem số liệu hệ thống.",
-                              },
-                            ]
-                          : []),
-                      ]
-                    : [
-                        {
-                          icon: "pin" as const,
-                          title: "Khám phá địa điểm",
-                          text: "Tìm hiểu các khu vực trong cơ sở chính.",
-                        },
-                        {
-                          icon: "headphones" as const,
-                          title: "Lắng nghe câu chuyện",
-                          text: "Chọn một địa điểm và nghe thuyết minh.",
-                        },
-                      ]
-                  ).map((item) => (
-                    <article className="feature-card" key={item.title}>
-                      <span className="feature-icon">
-                        <Icon name={item.icon} size={24} />
-                      </span>
-                      <h3>{item.title}</h3>
-                      <p>{item.text}</p>
-                      <span className="coming-label">Sắp có</span>
-                    </article>
-                  ))}
-                </div>
-              </section>
-            </>
-          </div>
+          <CreatorPage client={client} />
         )}
       </main>
       <footer className="site-footer">

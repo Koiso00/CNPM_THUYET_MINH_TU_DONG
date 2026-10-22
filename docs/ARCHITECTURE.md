@@ -1,6 +1,38 @@
 # Kiến trúc
 
 Trạng thái: **thiết kế mục tiêu**; xem README để phân biệt phần đã chạy.
+
+## Phần demo đã triển khai ngày 22/10/2026
+
+Thanh điều hướng giữa hai trang làm việc dùng chung `shared/WorkspaceNav.tsx`:
+`#/admin` hiển thị **Nội dung** (audio), `#/management` hiển thị **Quản trị** (grid).
+Hai trang chỉ cho Admin. `features/content/ContentPage.tsx` quản lý POI/văn bản/audio;
+`features/admin/ManagementPage.tsx` chỉ đọc dashboard/users và cập nhật user qua API Admin.
+`#/creator` là khu vực riêng cho Creator. Creator lưu/gửi bản đề xuất toàn tour riêng; Admin
+xem, trả chỉnh sửa hoặc duyệt rồi áp dụng vào nháp trước khi công bố riêng.
+`content_submissions` giữ owner, bản nháp, revision và trạng thái duyệt. Các thao tác dùng CAS;
+nội dung và đề xuất đọc primary để tránh dùng trạng thái cũ ngay sau khi ghi.
+Trang Nội dung dùng chung trạng thái bận cho thao tác áp dụng proposal và sửa/công bố;
+không cho áp dụng khi có thay đổi chưa lưu, không cho lưu/công bố trong lúc đang áp dụng.
+RBAC backend chặn User khỏi cả hai khu vực và Creator khỏi trang Admin.
+
+Router → service → repository vẫn là ranh giới bắt buộc. Demo có một tour `campus-main`:
+`tours` lưu bản nháp có thứ tự POI, nội dung tiếng Việt, nguồn và vị trí nullable; chưa tách
+`pois`/`localizations` thành collection riêng. `tour_releases` là snapshot insert-only;
+tour giữ con trỏ tới release đang công bố. Lưu/công bố/gỡ dùng revision CAS trên document tour.
+Nếu có thay đổi đồng thời, trả 409; release tạo trước CAS thất bại không được trỏ tới nên vẫn riêng tư.
+Chưa có tác vụ dọn release không tham chiếu; không dùng transaction nhiều document.
+
+`assets` lưu checksum/text checksum/GridFS ID. `audio_selections` chọn asset theo checksum
+văn bản cho lần công bố tiếp theo. Snapshot ghim asset ID cụ thể; sửa chữ hoặc nhập MP3 mới
+không thay snapshot cũ. API audio chỉ cho nghe qua release đang công bố; biết asset ID không
+cho quyền truy cập. Admin có API nghe thử riêng, upload ≤10 MiB và kiểm tra khung MP3.
+Trình phát duy nhất được dừng khi đổi địa điểm hoặc rời trang; không tự phát khi tải trang.
+
+Admin API dùng RBAC/CSRF hiện có. Khóa user thu hồi phiên; mở khóa không hồi sinh phiên cũ.
+Admin đang hoạt động được bảo vệ khỏi khóa/hạ quyền trên web. Dashboard dùng count database
+và snapshot hiện hành; chưa có thống kê sự kiện/lượt nghe. Dịch/TTS tự động, bản đồ,
+GPS, offline và AI vẫn chưa tích hợp. Các phần dài hạn bên dưới giữ vai trò thiết kế mục tiêu.
 P1.1 đã bổ sung connection pool MongoDB theo lifespan và endpoint readiness.
 P1.2 có model/repository User/session và unique/TTL index thật trên Atlas.
 P1.3 có API JWT cookie/CSRF và dependency RBAC, đã kiểm thử với Atlas thật.
