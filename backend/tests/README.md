@@ -1,5 +1,15 @@
 # Backend tests
 
+Sau tách trang Quản trị: 152 test cục bộ đạt (15 Atlas skipped ở lệnh mặc định).
+Test mới `unit/test_browser_server.py` kiểm tra route dừng server test khi phục vụ frontend build;
+không mở Atlas trong test này. Chi tiết ở [báo cáo tách trang](../../docs/test-reports/MANAGEMENT_PAGE.md).
+
+Cập nhật 22/10: 151 test cục bộ và 15 test Atlas đạt. Có test demo nội dung/snapshot,
+GridFS Range, quản lý user và dashboard tại `integration/test_demo_content.py`.
+Fixture GridFS kiểm tra byte lưu trữ; kiểm tra MP3 phát thật nằm trong Edge E2E.
+Các số lượng ở mốc P1.1–P1.4 bên dưới là lịch sử. Báo cáo hiện hành:
+[demo nội dung/audio/quản trị](../../docs/test-reports/DEMO_CONTENT_AUDIO_ADMIN.md).
+
 P1.1 có test cấu hình, vòng đời pool, xử lý timeout/lỗi, che thông tin nhạy cảm
 và hợp đồng liveness/readiness. P1.3 bổ sung test HTTP đăng ký/đăng nhập/refresh/logout,
 JWT/CSRF và ma trận dependency RBAC. Route probe quyền chỉ được thêm trong test app.
@@ -42,12 +52,14 @@ Tiêu chí các phần tiếp theo ở [TEST_AND_DEMO](../../docs/TEST_AND_DEMO.
 uv run --frozen pytest tests/integration -q --tb=short --run-mongodb-integration --run-mongodb-write-integration
 ```
 
-Cờ ghi riêng bật 13 test User/session/auth, không được bật bởi cờ ping.
+Cờ ghi riêng bật các test User/session/auth/content trên collection biệt lập, không được bật bởi cờ ping.
 Mỗi test tạo collection tên ngẫu nhiên `__test_p12_users_...` hoặc `__test_p12_sessions_...`,
 chỉ xóa chính collection nó vừa tạo và xác minh đã xóa trong finally.
 Không ghi vào users/sessions ứng dụng, không duyệt prefix để xóa hàng loạt.
 Chạy trên database phát triển với quyền create/index/read/write/drop collection tạm.
 Test TTL kiểm tra cấu hình index và chặn phiên hết hạn bằng truy vấn; không đợi MongoDB dọn TTL.
+Test Creator tạo collection `__test_p12_content_submissions_<uuid>` riêng để kiểm tra index,
+quyền sở hữu, CAS khi gửi duyệt và chuyển trạng thái áp dụng; collection được xóa và xác minh.
 
 Kết quả P1.2: 69 test cục bộ và 12 test Atlas đạt.
 Xem [báo cáo P1.2](../../docs/test-reports/P1_2_USER_SESSIONS.md).

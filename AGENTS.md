@@ -35,6 +35,19 @@
 
 ## Trạng thái và kiểm tra
 
+Cập nhật tách trang 22/10: Nội dung tại `#/admin` quản lý địa điểm/văn bản/audio;
+Quản trị tại `#/management` có dashboard/tài khoản, cả hai dành cho Admin. Creator ở
+`#/creator`, đề xuất toàn tour trong bản riêng và gửi Admin duyệt; Admin áp dụng vào nháp rồi
+công bố riêng. Xem docs/test-reports/CREATOR_REVIEW.md.
+
+Cập nhật 22/10/2026: đã có demo dữ liệu MongoDB/snapshot, audio GridFS/Range/trình phát,
+Admin sửa/thêm/xóa điểm, công bố/gỡ, upload MP3 ≤10 MiB, quản lý user và dashboard đếm thật.
+Đã nhập 10 mô tả thành nháp và 10 MP3 vào Atlas; công bố cần Admin kiểm tra rồi thao tác trên UI.
+User không đọc nháp/preview audio. Khóa user thu hồi phiên. Admin đang hoạt động được bảo vệ
+khỏi khóa/hạ quyền trên web. Không có mật khẩu/tài khoản mặc định; lệnh bootstrap chỉ nâng
+tài khoản có sẵn. Xem docs/test-reports/DEMO_CONTENT_AUDIO_ADMIN.md cho test/giới hạn hiện hành.
+Các ghi chú “chưa có” về nội dung/audio/quản trị ở các mốc cũ bên dưới đã được thay bởi cập nhật này.
+
 Đã có trang mở đầu React, liveness/readiness FastAPI, MongoDB lifecycle và test nền tảng dữ liệu.
 P1.2 đã có model/repository User/session và index thật trên Atlas: 69 test cục bộ,
 12 test Atlas đạt. Username không phân biệt hoa/thường; token truy cập 15 phút,
@@ -49,7 +62,7 @@ Trang khám phá sau đăng nhập đã có giao diện theo mẫu: nội dung n
 vùng bản đồ giữ chỗ để thay bằng ảnh sơ đồ sau này. 22 test frontend đạt; chưa có map/GPS/audio playback thật.
 Xem docs/test-reports/P1_4_1_EXPLORE_UI.md.
 AuthClient chỉ giữ dữ liệu công khai trong RAM; cookie HttpOnly thuộc browser. Không lưu JWT/CSRF vào storage.
-Hash routing không cần SPA fallback; chức năng quản lý trong khung trang Creator/Admin hiện mới có nhãn “Sắp có”.
+Hash routing không cần SPA fallback; Creator/Admin có workflow đề xuất, duyệt và công bố nội dung.
 Bản đồ thật, TTS trên web, offline, AI và dashboard chưa tích hợp. Không thêm route thử quyền vào ứng dụng thật.
 Người dùng đã chọn [nguồn tiếng Việt 10 địa điểm](data/sources/campus-vi-user-2026-10-21.md)
 cho demo; giữ nguyên văn, chưa có tọa độ hoặc đối chiếu sơ đồ. Không tự bổ sung sự kiện lịch sử.

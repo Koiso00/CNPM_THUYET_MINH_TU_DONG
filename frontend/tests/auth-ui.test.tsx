@@ -139,11 +139,13 @@ it.each(["user", "creator", "admin"])(
     const fetcher = vi
       .fn<typeof fetch>()
       .mockImplementation(async (url) =>
-        reply(
-          String(url).endsWith("/csrf")
-            ? { csrf_token: "csrf" }
-            : makeGrant(role),
-        ),
+        String(url).includes("/admin/")
+          ? reply({ detail: "Not initialized" }, 404)
+          : reply(
+              String(url).endsWith("/csrf")
+                ? { csrf_token: "csrf" }
+                : makeGrant(role),
+            ),
       );
     const client = new AuthClient(fetcher, coordinate);
     await client.login("Phong", password);
@@ -151,10 +153,10 @@ it.each(["user", "creator", "admin"])(
     render(<App client={client} />);
     if (role === "admin") {
       expect(
-        await screen.findByRole("heading", { name: "Không gian quản trị" }),
+        await screen.findByRole("heading", { name: "Nội dung khuôn viên" }),
       ).toBeInTheDocument();
       expect(
-        screen.getByRole("link", { name: "Quản trị", exact: true }),
+        screen.getByRole("link", { name: "Nội dung", exact: true }),
       ).toBeInTheDocument();
     } else {
       expect(
@@ -163,8 +165,48 @@ it.each(["user", "creator", "admin"])(
         }),
       ).toBeInTheDocument();
       expect(
-        screen.queryByRole("link", { name: "Quản trị", exact: true }),
+        screen.queryByRole("link", { name: "Nội dung", exact: true }),
       ).not.toBeInTheDocument();
+    }
+  },
+);
+
+it.each(["user", "creator", "admin"])(
+  "restricts system management to Admin: %s",
+  async (role) => {
+    const fetcher = vi.fn<typeof fetch>().mockImplementation(async (url) => {
+      const path = String(url);
+      if (path.endsWith("/csrf")) return reply({ csrf_token: "csrf" });
+      if (path.endsWith("/refresh") || path.endsWith("/login"))
+        return reply(makeGrant(role));
+      if (path.endsWith("/dashboard"))
+        return reply({
+          users: 0,
+          active_users: 0,
+          audio_assets: 0,
+          draft_places: 0,
+          published_places: 0,
+          published_tours: 0,
+        });
+      return reply([]);
+    });
+    const client = new AuthClient(fetcher, coordinate);
+    await client.login("Phong", password);
+    window.location.hash = "/management";
+    render(<App client={client} />);
+    if (role === "admin") {
+      expect(
+        await screen.findByRole("heading", { name: "Quản trị hệ thống" }),
+      ).toBeInTheDocument();
+    } else {
+      expect(
+        await screen.findByRole("heading", {
+          name: "Bạn không có quyền truy cập",
+        }),
+      ).toBeInTheDocument();
+      expect(
+        fetcher.mock.calls.some(([url]) => String(url).includes("/admin/")),
+      ).toBe(false);
     }
   },
 );

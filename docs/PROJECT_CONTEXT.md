@@ -38,6 +38,33 @@ thành cam kết tiến độ mới.
 
 ## Trạng thái thực tế
 
+Ngày 22/10/2026, người dùng chốt tách màn hình theo chức năng.
+**Nội dung** (`#/admin`, icon audio) quản lý địa điểm/bài/audio và hàng chờ Creator.
+**Quản trị** (`#/management`, icon grid) có dashboard và quản lý tài khoản dành cho Admin.
+Creator giữ khu vực riêng `#/creator` để đề xuất toàn tour; bản riêng được gửi duyệt.
+Admin chấp nhận đề xuất vào nháp, rồi tự kiểm tra/công bố. User không được vào trang Creator/Admin.
+RBAC backend kiểm tra riêng từng vai trò. Xem [báo cáo Creator](test-reports/CREATOR_REVIEW.md)
+và [báo cáo trang Quản trị](test-reports/MANAGEMENT_PAGE.md).
+
+**Cập nhật 22/10/2026:** đã triển khai demo dữ liệu/audio/quản trị:
+10 mô tả nguồn nhập thành bản nháp MongoDB, 10 MP3 nhập GridFS; Admin có thể sửa/thêm/xóa
+địa điểm, lưu nháp, công bố/gỡ công bố và tải MP3 thay thế. Trang khám phá chỉ đọc API bản
+công bố, phát thủ công bằng trình phát HTML audio. Snapshot giữ nguyên khi sửa nháp/thay audio.
+Có quản lý user và dashboard đếm dữ liệu thật. Nội dung ứng dụng chưa tự công bố;
+Admin nghe kiểm tra rồi công bố trong giao diện. Xem [báo cáo](test-reports/DEMO_CONTENT_AUDIO_ADMIN.md).
+
+Quyết định người dùng bổ sung ngày 22/10: cấp Admin đầu tiên bằng lệnh nâng tài khoản đã đăng ký;
+quản lý danh sách, khóa/mở khóa và đổi vai trò, không xóa tài khoản. Dashboard trước mắt đếm
+tài khoản, tài khoản hoạt động, địa điểm nháp/công bố, tour công bố và audio đã nhập.
+Cho phép Admin thay MP3 theo nội dung đang lưu, tối đa 10 MiB (10 × 1024 × 1024 byte)/file;
+công bố lại mới áp dụng cho người nghe. Admin đang hoạt động được bảo vệ khỏi khóa/hạ quyền
+trên web để tránh mất toàn bộ quyền quản trị khi hai Admin thao tác đồng thời.
+Sau khi hoàn tất demo, người dùng chọn Creator đề xuất thay đổi toàn tour; triển khai tại
+[báo cáo workflow](test-reports/CREATOR_REVIEW.md). Bản dịch, TTS tự động và GPS vẫn hoãn.
+
+Các đoạn bên dưới mô tả các mốc đã đạt trước cập nhật này; trạng thái mới ở trên thay thế
+các ghi chú “chưa tích hợp” của nội dung/audio/quản trị.
+
 Đã tạo khung backend/frontend, cấu hình môi trường mẫu, cơ sở Docker và tài liệu.
 P1.1 đã có MongoDB connection pool theo lifespan, liveness/readiness và test nền tảng.
 Atlas đã được tạo và P1.1 đã kiểm chứng ping thật thành công.
@@ -75,6 +102,5 @@ P1.3 triển khai JWT/cookie/CSRF và API gia hạn; P1.4 đã nối giao diện
 Xem [báo cáo giao diện](test-reports/P1_4_AUTH_UI.md); chưa nghiệm thu trên điện thoại vật lý.
 Chi tiết kiểm tra ở [báo cáo P1.3](test-reports/P1_3_AUTH.md).
 
-Các chi tiết chưa được kế hoạch gốc quy định (chẳng hạn cách cấp Creator,
-giới hạn dung lượng cụ thể) cần chốt ở mốc tương ứng;
+Các chi tiết chưa được kế hoạch gốc quy định cần chốt ở mốc tương ứng;
 không coi giá trị giữ chỗ trong tài liệu hay cấu hình là yêu cầu đã được duyệt.

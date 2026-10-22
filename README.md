@@ -2,7 +2,7 @@
 
 Website Việt–Anh dành cho điện thoại và máy tính, có GPS thật/mô phỏng,
 thuyết minh theo địa điểm và gói ngoại tuyến theo kế hoạch.
-**Hiện tại: hoàn tất UI đăng nhập và trang khám phá người tham quan; bản đồ/audio/quản trị vẫn đang xây dựng.**
+**Hiện tại: có đăng nhập, nội dung từ MongoDB, nghe MP3/GridFS, quản trị nội dung/audio/user và dashboard dữ liệu thật cho demo tiếng Việt.**
 
 Ưu tiên mới được chốt: [demo 2 ngày](docs/DEMO_2_DAYS.md), gồm giao diện đăng nhập,
 nghe audio, quản lý địa điểm/nội dung/audio/user và dashboard dữ liệu thật.
@@ -21,16 +21,18 @@ Không dùng phương án rút gọn 5 ngày hoặc gộp Creator/Admin.
 
 | Thành phần | Trạng thái hiện tại |
 | --- | --- |
-| React 19.2 + TypeScript + Vite 7 | Có UI auth responsive, trang khám phá với 10 mô tả nguồn và khung Creator/Admin |
+| React 19.2 + TypeScript + Vite 7 | Có UI auth/khám phá; Creator gửi đề xuất toàn tour để Admin duyệt; Admin có nội dung/audio/dashboard/user |
 | FastAPI | Có application factory, liveness/readiness và OpenAPI |
 | Auth | Có API + UI đăng ký/đăng nhập, gia hạn/khôi phục phiên/đăng xuất và điều hướng theo role |
 | MongoDB | P1.1 hoàn tất: connection pool/readiness, 34 test cục bộ và ping Atlas thật đạt |
 | User/session | Có model, repository, unique/TTL index trên Atlas; 69 test cục bộ và 12 test Atlas đạt |
-| GridFS | Chưa triển khai |
-| Audio demo | Có 10 MP3 tiếng Việt giọng nam cục bộ; chưa có API/GridFS/trình phát |
-| Bản đồ thật/GPS, offline, AI, dashboard | Chưa triển khai; trang khám phá đang để vùng giữ chỗ cho ảnh sơ đồ |
+| GridFS / audio demo | Đã nhập 10 MP3; có API GET/HEAD/Range, phát thủ công và thay MP3 ≤10 MB từ Admin |
+| Nội dung / quản trị | Nhập 10 mô tả thành nháp; sửa/thêm/xóa điểm, lưu, công bố/gỡ công bố; snapshot độc lập |
+| Creator / duyệt | Creator sửa bản riêng toàn tour, gửi Admin duyệt; duyệt chỉ áp dụng vào nháp, Admin công bố riêng |
+| User / dashboard | Danh sách, đổi vai trò, khóa/mở khóa; số tài khoản/địa điểm/tour công bố/audio từ database |
+| Bản đồ thật/GPS, offline, AI | Chưa triển khai; trang khám phá đang để vùng giữ chỗ cho ảnh sơ đồ |
 | Docker/Compose | Có cấu hình, chưa chạy xác minh trên máy hiện tại |
-| Nội dung tour và tài khoản | Chưa có dữ liệu thật hoặc tài khoản seed |
+| Nội dung tour và tài khoản | Có nháp từ nguồn người dùng; Admin được cấp tường minh cho tài khoản có sẵn; không có mật khẩu mặc định |
 
 ## Cấu trúc
 
@@ -99,9 +101,32 @@ npm run dev
 
 Mở địa chỉ Vite in trong terminal, mặc định [http://localhost:5173](http://localhost:5173).
 Giao diện đăng nhập ở /#/login, đăng ký ở /#/register. Tạo tài khoản chỉ cấp User.
-Creator/Admin chưa có tài khoản mặc định; cách khởi tạo Admin sẽ chốt khi xây quản trị.
+Creator/Admin không có tài khoản hoặc mật khẩu mặc định; cấp Admin bằng lệnh bên dưới.
 Vite proxy /api tới backend để tránh tách nguồn trong quá trình phát triển.
 Không đặt khóa API vào frontend.
+
+### Chuẩn bị demo nội dung/audio
+
+Từ backend, sau khi cấu hình Atlas và đăng ký một tài khoản:
+
+```powershell
+uv run --frozen python -m app.commands.seed_demo_content
+uv run --frozen python -m app.commands.import_demo_audio
+uv run --frozen python -m app.commands.bootstrap_admin ten_dang_nhap_da_dang_ky
+```
+
+`uv run --frozen python -m app.commands.init_database` tạo bổ sung index đề xuất Creator
+cùng index users/sessions hiện có; lệnh có thể chạy lại an toàn.
+
+Lệnh seed chỉ tạo bản nháp khi chưa có, không ghi đè. Lệnh import cần bộ MP3/manifest
+ở `data/generated/audio/vi-male` (đã có trên máy hiện tại, không commit); kiểm tra checksum
+trước khi nhập GridFS. Chạy lại không nhân đôi các file đã nhập.
+Đăng nhập Admin → **Nội dung** → kiểm tra/nghe thử → **Công bố phiên bản đã lưu**.
+Người nghe chỉ thấy bản đã công bố; sửa nháp không thay bản đang nghe.
+Admin mở **Quản trị** (`/#/management`) để xem dashboard, đổi vai trò hoặc khóa/mở khóa
+tài khoản; **Nội dung** (`/#/admin`) giữ các chức năng địa điểm và audio.
+Demo dùng tiếng Việt, công bố nội dung chưa có tọa độ được phép; chưa phải release
+Việt–Anh/offline của kế hoạch dài hạn. Xem [báo cáo demo](docs/test-reports/DEMO_CONTENT_AUDIO_ADMIN.md).
 
 ### Thử frontend đã build cùng FastAPI
 

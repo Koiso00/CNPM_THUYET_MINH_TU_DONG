@@ -1,6 +1,6 @@
 """Explicit index setup. Never drop/rebuild an existing index automatically."""
 
-from pymongo import ASCENDING, IndexModel
+from pymongo import ASCENDING, DESCENDING, IndexModel
 from pymongo.asynchronous.collection import AsyncCollection
 
 
@@ -30,5 +30,14 @@ async def ensure_session_indexes(collection: AsyncCollection) -> list[str]:
                 expireAfterSeconds=0,
             ),
             IndexModel([("user_id", ASCENDING)], name="ix_sessions_user_id"),
+        ]
+    )
+
+
+async def ensure_submission_indexes(collection: AsyncCollection) -> list[str]:
+    return await collection.create_indexes(
+        [
+            IndexModel([("creator_id", ASCENDING), ("updated_at", DESCENDING)]),
+            IndexModel([("status", ASCENDING), ("updated_at", DESCENDING)]),
         ]
     )

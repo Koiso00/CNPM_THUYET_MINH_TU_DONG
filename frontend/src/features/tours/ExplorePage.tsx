@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Icon } from "../../shared/Icons";
-import { campusPlaces } from "./campusPlaces";
+import type { Place } from "./content";
+import { AudioPlayer } from "./AudioPlayer";
 
 function scrollToSection(id: string) {
   document.getElementById(id)?.scrollIntoView?.({ behavior: "smooth" });
@@ -42,9 +43,13 @@ function CampusMapPreview({ title }: { title: string }) {
 export function ExplorePage({
   username,
   notice,
+  places: campusPlaces,
+  releaseId,
 }: {
   username: string;
   notice?: string;
+  places: Place[];
+  releaseId: string;
 }) {
   const [selectedId, setSelectedId] = useState<string>(campusPlaces[0].id);
   const selected =
@@ -82,7 +87,7 @@ export function ExplorePage({
               aria-label="Thông tin nội dung hiện có"
             >
               <span>
-                <i /> 10 mô tả địa điểm từ nguồn
+                <i /> {campusPlaces.length} mô tả địa điểm từ nguồn
               </span>
               <span>
                 <Icon name="audio" size={15} /> Tiếng Việt
@@ -153,12 +158,17 @@ export function ExplorePage({
                 Mô tả nguồn · chưa đối chiếu tọa độ thực địa
               </p>
               <p className="detail-description">{selected.description}</p>
-              <button className="audio-unavailable" type="button" disabled>
-                <Icon name="audio" size={17} /> Audio chưa được tích hợp
-              </button>
-              <p className="audio-hint">
-                Tệp thuyết minh sẽ phát tại đây sau khi được nối vào ứng dụng.
-              </p>
+              {selected.audio_id ? (
+                <AudioPlayer
+                  key={`${releaseId}/${selected.id}`}
+                  src={`/api/v1/audio/${releaseId}/${selected.id}`}
+                  title={selected.title}
+                />
+              ) : (
+                <p className="audio-hint">
+                  Địa điểm này chưa có audio được công bố.
+                </p>
+              )}
             </aside>
           </div>
         </section>
@@ -169,7 +179,9 @@ export function ExplorePage({
               <p className="section-kicker">NỘI DUNG THUYẾT MINH</p>
               <h2>Chọn một địa điểm để tìm hiểu</h2>
             </div>
-            <span className="source-state">10 mô tả · Tiếng Việt</span>
+            <span className="source-state">
+              {campusPlaces.length} mô tả · Tiếng Việt
+            </span>
           </div>
           <p className="source-disclaimer">
             Nội dung bên dưới được lấy từ tài liệu bạn cung cấp. Vị trí mô tả

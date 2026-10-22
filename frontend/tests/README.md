@@ -2,6 +2,18 @@
 
 ## Test cục bộ
 
+Cập nhật luồng Creator ngày 22/10: **38 test đạt**; có kiểm tra lưu bản đề xuất riêng,
+gửi Admin duyệt và chặn công bố khi đang áp dụng đề xuất. Xem
+[báo cáo Creator](../../docs/test-reports/CREATOR_REVIEW.md).
+
+Cập nhật tách trang ngày 22/10: **36 test đạt**, có thêm kiểm tra quyền trang Quản trị,
+tách API nội dung/tài khoản, phân trang, lỗi tải/thử lại, giữ thay đổi khi lưu thất bại và
+bảo vệ Admin. Xem [báo cáo](../../docs/test-reports/MANAGEMENT_PAGE.md).
+
+Cập nhật 22/10: 27 test đạt, gồm 5 test mới cho API nội dung, form quản trị và player.
+Audio thiếu được hiển thị đúng; trang ứng dụng không dùng fallback nội dung tĩnh.
+Kết quả cũ bên dưới giữ để đối chiếu mốc P1.4.
+
 Từ frontend: `npm test`. Vitest/jsdom và Testing Library kiểm tra client/form bằng fetch giả,
 không gọi Atlas. P1.4: 18 test đạt, gồm refresh single-flight, CSRF retry có giới hạn,
 logout đang có refresh, lỗi mạng không giả thành logout thành công, timer cleanup,
@@ -11,6 +23,26 @@ và điều hướng trong trang không làm thay đổi hash route. Tổng hi�
 `npm run build` kiểm tra TypeScript và tạo dist, không thay test hành vi.
 
 ## Test Edge với API/Atlas thật
+
+Cập nhật Creator ngày 22/10: **10/10 test đạt**, gồm 5 kịch bản trên desktop/mobile;
+luồng đề xuất kiểm tra lưu riêng, gửi duyệt, áp dụng mà chưa đổi snapshot công bố,
+công bố riêng và khôi phục dữ liệu kiểm thử. Server biệt lập đã dọn/xác minh dữ liệu.
+
+Sau khi tách trang: **8 test đạt**, gồm quản lý tài khoản tạm từ trang Quản trị riêng.
+`E2E_BASE_URL` cho phép chạy vào server biệt lập ở cổng khác để giữ app thật đang hoạt động.
+Khi dùng cổng khác, phải đặt biến này trong chính terminal chạy Playwright; nếu bỏ qua,
+Playwright dùng mặc định cổng 5173. Chờ thông báo server biệt lập sẵn sàng trước khi chạy.
+Mỗi lượt kiểm tra toàn bộ cần bộ dữ liệu biệt lập mới; kịch bản Creator khôi phục nội dung
+sau khi xác minh công bố để lượt viewport tiếp theo còn audio khớp với văn bản nguồn.
+Lượt này dùng frontend build cùng nguồn trên cổng 8001, origin cho phép chỉ 8001 ở process
+kiểm thử; không đổi cấu hình ứng dụng thật. Server test có route shutdown đặt trước static
+mount để dọn dữ liệu khi phục vụ build trực tiếp.
+
+Cập nhật 22/10: 6 test (3 kịch bản × desktop/mobile), gồm phát MP3/GridFS thật,
+upload và công bố nội dung. Server biệt lập cần bộ 10 MP3 + manifest tại
+`data/generated/audio/vi-male` và nguồn trong repo; không tự tạo TTS khi khởi động test.
+Ngoài users/sessions, nội dung/assets/audio_selections và bucket GridFS cũng biệt lập,
+được dọn/xác minh khi shutdown. Xem docs/test-reports/DEMO_CONTENT_AUDIO_ADMIN.md.
 
 Cần Edge được cài trên máy Windows hiện tại, backend/.env cấu hình Atlas/JWT_SECRET,
 cổng 8000 và 5173 chưa được tiến trình khác sử dụng. Không chạy test này vào API ứng dụng
