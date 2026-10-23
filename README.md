@@ -1,4 +1,4 @@
-> **Ưu tiên cập nhật ngày 24/10/2026:** bản đồ OpenStreetMap và 10 tọa độ do người dùng cung cấp đã có; GPS thật bật chủ động, mô phỏng và geofence cùng luồng frontend đã triển khai. Cần xác minh GPS/tọa độ thực địa và kiểm thử thiết bị; QR chỉ làm sau khi nghiệm thu các phần này.
+> **Ưu tiên cập nhật ngày 24/10/2026:** bản đồ MapLibre đang thử chuyển nền tile sang Stadia Maps do OSM không truy cập được trên điện thoại của người dùng; cần cấu hình xác thực domain trên Stadia và xác minh tải tile trên thiết bị. 10 tọa độ do người dùng cung cấp đã có; GPS thật bật chủ động, mô phỏng và geofence cùng luồng frontend đã triển khai. Cần xác minh GPS/tọa độ thực địa; QR chỉ làm sau khi nghiệm thu các phần này.
 
 > **Trạng thái demo 23/10/2026:** khách không đăng nhập; welcome, ID khách/hành trình, nội dung/audio công khai, Admin và thống kê visit/journey/audio đã triển khai. QR vẫn hoãn. Chi tiết tại [kế hoạch khách/QR](docs/DEMO_GUEST_QR_PLAN.md) và [báo cáo khách](docs/test-reports/DEMO_GUEST_PROGRESS_2026_10_23.md).
 

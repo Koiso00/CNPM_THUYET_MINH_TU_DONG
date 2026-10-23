@@ -35,7 +35,7 @@ function CampusMapPreview({
         <span className="map-stage-label">
           <Icon name="pin" size={15} /> BẢN ĐỒ KHUÔN VIÊN
         </span>
-        <span className="map-stage-status">Nền OpenStreetMap · cần Internet</span>
+        <span className="map-stage-status">Nền Stadia Maps · cần Internet</span>
       </div>
       <CampusMap
         places={places}

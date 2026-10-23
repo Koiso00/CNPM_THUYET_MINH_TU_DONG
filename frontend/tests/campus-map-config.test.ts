@@ -31,21 +31,31 @@ describe("campus map configuration", () => {
     expect(places.every(({ location }) => location?.type === "Point")).toBe(true);
   });
 
-  it("uses the requested raster source with visible OSM attribution", () => {
+  it("uses Stadia raster tiles with required provider and data attribution", () => {
     const style = createCampusMapStyle("https://tiles.example/{z}/{x}/{y}.png");
 
-    expect(style.sources.openstreetmap).toMatchObject({
+    expect(style.sources.basemap).toMatchObject({
       type: "raster",
       tiles: ["https://tiles.example/{z}/{x}/{y}.png"],
       tileSize: 256,
-      attribution: "© OpenStreetMap contributors",
+      maxzoom: 20,
     });
+    expect(style.sources.basemap.attribution).toContain("Stadia Maps");
+    expect(style.sources.basemap.attribution).toContain("OpenMapTiles");
+    expect(style.sources.basemap.attribution).toContain("OpenStreetMap");
     expect(style.layers).toEqual([
       {
-        id: "openstreetmap-raster",
+        id: "basemap-raster",
         type: "raster",
-        source: "openstreetmap",
+        source: "basemap",
       },
+    ]);
+  });
+
+  it("defaults to Stadia Maps Alidade Bright tiles", () => {
+    const style = createCampusMapStyle();
+    expect(style.sources.basemap.tiles).toEqual([
+      "https://tiles.stadiamaps.com/tiles/alidade_bright/{z}/{x}/{y}.png",
     ]);
   });
 
