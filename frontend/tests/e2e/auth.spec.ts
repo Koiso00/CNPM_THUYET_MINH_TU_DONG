@@ -1,130 +1,45 @@
 import { expect, test } from "@playwright/test";
-import type { Page } from "@playwright/test";
 
 const password = "only-for-isolated-e2e-12345";
 
-async function login(page: Page, username: string) {
-  await page.goto("/#/login");
-  await page.getByLabel("Tên đăng nhập").fill(username);
-  await page.getByLabel("Mật khẩu", { exact: true }).fill(password);
-  await page.getByRole("button", { name: "Đăng nhập", exact: true }).click();
-  await expect(
-    page.getByRole("heading", { name: `Xin chào, ${username}` }),
-  ).toBeVisible();
-}
+test("guest routes stay public and the retired signup route returns to login", async ({ page }) => {
+  await page.goto("/#/management");
+  await expect(page.getByRole("heading", { name: /mỗi góc trường/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Quản trị hệ thống" })).toHaveCount(0);
 
-test("register, login, reload, parallel tabs, logout and desktop/mobile layout", async ({
-  page,
-  context,
-}, testInfo) => {
-  const username = `demo_${testInfo.project.name}_${Date.now()}`;
   await page.goto("/#/register");
-  await page.getByLabel("Tên đăng nhập").fill(username);
-  await page.getByLabel("Mật khẩu", { exact: true }).fill(password);
-  await page.getByLabel("Nhập lại mật khẩu").fill(password);
-  await page
-    .getByRole("button", { name: "Tạo tài khoản", exact: true })
-    .click();
-  await expect(page.getByRole("status")).toContainText(
-    "Tạo tài khoản thành công",
-  );
-  await page.getByLabel("Mật khẩu", { exact: true }).fill(password);
-  await page.getByLabel("Nhập lại mật khẩu").fill(password);
-  await page
-    .getByRole("button", { name: "Tạo tài khoản", exact: true })
-    .click();
-  await expect(page.getByRole("alert")).toContainText("đã được sử dụng");
-  await login(page, username);
-  const cookies = await context.cookies();
-  expect(cookies.find((cookie) => cookie.name === "sgu_access")?.httpOnly).toBe(
-    true,
-  );
-  expect(
-    cookies.find((cookie) => cookie.name === "sgu_refresh")?.httpOnly,
-  ).toBe(true);
-  expect(
-    await page.evaluate(() => ({
-      local: Object.keys(localStorage),
-      session: Object.keys(sessionStorage),
-    })),
-  ).toEqual({ local: [], session: [] });
-  await context.clearCookies({ name: "sgu_access" });
-  await page.reload();
-  await expect(
-    page.getByRole("heading", { name: `Xin chào, ${username}` }),
-  ).toBeVisible();
-  const other = await context.newPage();
-  await other.goto("/#/explore");
-  await expect(
-    other.getByRole("heading", { name: `Xin chào, ${username}` }),
-  ).toBeVisible();
-  const refreshStatuses: number[] = [];
-  for (const tab of [page, other])
-    tab.on("response", (response) => {
-      if (response.url().endsWith("/auth/refresh"))
-        refreshStatuses.push(response.status());
-    });
-  await Promise.all([page.reload(), other.reload()]);
-  await expect(
-    page.getByRole("heading", { name: `Xin chào, ${username}` }),
-  ).toBeVisible();
-  await expect(
-    other.getByRole("heading", { name: `Xin chào, ${username}` }),
-  ).toBeVisible();
-  expect(refreshStatuses).toEqual([200, 200]);
-  await page.goto("/#/admin");
-  await expect(
-    page.getByRole("heading", { name: "Bạn không có quyền truy cập" }),
-  ).toBeVisible();
-  await page.getByRole("button", { name: "Đăng xuất", exact: true }).click();
-  await expect(
-    page.getByRole("heading", { name: "Chào mừng bạn trở lại." }),
-  ).toBeVisible();
-  await expect(
-    other.getByRole("heading", { name: "Chào mừng bạn trở lại." }),
-  ).toBeVisible();
-  await expect(other.getByRole("status")).toContainText("tab khác");
-  expect(
-    await page.evaluate(
-      () => document.documentElement.scrollWidth <= innerWidth,
-    ),
-  ).toBe(true);
-  await page.screenshot({
-    path: testInfo.outputPath("login.png"),
-    fullPage: true,
-  });
+  await expect(page).toHaveURL(/#\/login$/);
+  await expect(page.getByRole("heading", { name: "Chào mừng bạn trở lại." })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Tạo tài khoản" })).toHaveCount(0);
 });
 
-test("admin and creator use real roles; network errors keep form data", async ({
+test("Admin session refreshes from its HttpOnly cookie and logout returns to guest welcome", async ({
   page,
+  context,
 }) => {
-  await login(page, "e2e_admin");
-  await page.goto("/#/admin");
-  await expect(
-    page.getByRole("heading", { name: "Nội dung khuôn viên" }),
-  ).toBeVisible();
-  await page.getByRole("button", { name: "Đăng xuất", exact: true }).click();
-  await login(page, "e2e_creator");
-  await page.goto("/#/admin");
-  await expect(
-    page.getByRole("heading", { name: "Bạn không có quyền truy cập" }),
-  ).toBeVisible();
-  await page.goto("/#/management");
-  await expect(
-    page.getByRole("heading", { name: "Bạn không có quyền truy cập" }),
-  ).toBeVisible();
-  await page.goto("/#/creator");
-  await expect(
-    page.getByRole("heading", { name: "Đề xuất nội dung toàn tour" }),
-  ).toBeVisible();
-  await page.getByRole("button", { name: "Đăng xuất", exact: true }).click();
+  await page.goto("/#/login");
   await page.getByLabel("Tên đăng nhập").fill("e2e_admin");
-  await page.getByLabel("Mật khẩu", { exact: true }).fill("incorrect");
-  await page.getByRole("button", { name: "Đăng nhập", exact: true }).click();
-  await expect(page.getByRole("alert")).toContainText("chưa đúng");
   await page.getByLabel("Mật khẩu", { exact: true }).fill(password);
-  await page.route("**/api/v1/auth/login", (route) => route.abort());
   await page.getByRole("button", { name: "Đăng nhập", exact: true }).click();
-  await expect(page.getByRole("alert")).toContainText("Không thể kết nối");
-  await expect(page.getByLabel("Tên đăng nhập")).toHaveValue("e2e_admin");
+  await expect(page.getByRole("heading", { name: "Xin chào, e2e_admin" })).toBeVisible();
+
+  const cookies = await context.cookies();
+  expect(cookies.find((cookie) => cookie.name === "sgu_access")?.httpOnly).toBe(true);
+  expect(cookies.find((cookie) => cookie.name === "sgu_refresh")?.httpOnly).toBe(true);
+  expect(
+    await page.evaluate(() =>
+      [...Object.keys(localStorage), ...Object.keys(sessionStorage)].filter((key) =>
+        /token|csrf/i.test(key),
+      ),
+    ),
+  ).toEqual([]);
+
+  await page.getByRole("link", { name: "Admin", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Quản trị hệ thống" })).toBeVisible();
+  await context.clearCookies({ name: "sgu_access" });
+  await page.reload();
+  await expect(page.getByRole("heading", { name: "Quản trị hệ thống" })).toBeVisible();
+
+  await page.getByRole("button", { name: "Đăng xuất", exact: true }).click();
+  await expect(page.getByRole("heading", { name: /mỗi góc trường/i })).toBeVisible();
 });

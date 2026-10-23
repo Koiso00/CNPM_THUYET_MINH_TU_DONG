@@ -5,6 +5,7 @@ from fastapi import Depends, HTTPException, Request
 from app.repositories.admin import AdminRepository
 from app.repositories.audio import AudioRepository
 from app.repositories.content import ContentRepository
+from app.repositories.events import EventRepository
 from app.repositories.submissions import SubmissionRepository
 from app.services.admin import AdminService
 from app.services.audio import AudioService
@@ -17,6 +18,10 @@ def get_database(request: Request):
     if database is None:
         raise HTTPException(503, "Database is unavailable.")
     return database
+
+
+def get_event_repository(database=Depends(get_database)):
+    return EventRepository(database)
 
 
 def get_content_service(database=Depends(get_database)):

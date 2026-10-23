@@ -1,5 +1,11 @@
 # Frontend tests
 
+## Hồi quy hiện hành — 24/10/2026
+
+- Unit/UI: 39 test đạt; `npm run build` (typecheck + build) đạt.
+- E2E: 12 test đạt trên desktop/mobile với server và collection/bucket Atlas biệt lập; shutdown xác nhận dọn sạch. `auth.spec.ts` kiểm tra guest public, route signup cũ chuyển về login, Admin login/refresh/logout bằng HttpOnly cookie; `demo.spec.ts` kiểm tra journey, quản trị, nội dung/audio và route Creator đã nghỉ.
+- Không dùng credentials hoặc dữ liệu tài khoản ứng dụng thật trong E2E; fixture dùng tài khoản giả chỉ tồn tại trong collection tạm.
+
 ## Test cục bộ
 
 Cập nhật luồng Creator ngày 22/10: **38 test đạt**; có kiểm tra lưu bản đề xuất riêng,

@@ -3,7 +3,6 @@ import { ApiError, AuthClient } from "../auth/client";
 import type { CampusDraft, ManagedCampus } from "../tours/content";
 import { AudioPlayer } from "../tours/AudioPlayer";
 import { WorkspaceNav } from "../../shared/WorkspaceNav";
-import { SubmissionReviewPanel } from "./SubmissionReviewPanel";
 
 type AudioStatus = {
   place_id: string;
@@ -166,19 +165,6 @@ export function ContentPage({ client }: { client: AuthClient }) {
     <div className="workspace admin-page">
       <WorkspaceNav role="admin" route="#/admin" />
       <h1>Nội dung khuôn viên</h1>
-      <SubmissionReviewPanel
-        client={client}
-        campus={campus}
-        disabled={busy || dirty}
-        onApplyingChange={setBusy}
-        onApplied={(result) => {
-          revisionRef.current = result.revision;
-          setCampus(result);
-          setDraft(result.draft);
-          setDirty(false);
-          void refreshSummary();
-        }}
-      />
       {error && (
         <p className="message error" role="alert">
           {error}

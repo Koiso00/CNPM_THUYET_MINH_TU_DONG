@@ -9,105 +9,14 @@ from pydantic import ValidationError
 from app.api.content_dependencies import (
     get_audio_service,
     get_content_service,
-    get_submission_service,
 )
 from app.models.user import UserRecord, UserRole
 from app.schemas.content import CampusDraft, Point
 from app.services.audio import AudioService
-from app.services.submissions import SubmissionService
 from tests.auth_support import auth_harness, csrf_headers, register_and_login
 from tests.content_support import content_service
 
 pytestmark = pytest.mark.anyio
-
-
-class MemorySubmissions:
-    def __init__(self):
-        self.items = {}
-
-    async def create(self, creator_id, draft, base_revision):
-        item = {
-            "_id": str(uuid4()),
-            "creator_id": creator_id,
-            "draft": deepcopy(draft),
-            "base_revision": base_revision,
-            "revision": 1,
-            "status": "draft",
-            "created_at": "now",
-            "updated_at": "now",
-            "submitted_at": None,
-            "reviewed_at": None,
-            "reviewed_by": None,
-            "review_note": None,
-            "applied_revision": None,
-        }
-        self.items[item["_id"]] = item
-        return deepcopy(item)
-
-    async def get(self, submission_id, creator_id=None):
-        item = self.items.get(submission_id)
-        if item is None or (creator_id is not None and item["creator_id"] != creator_id):
-            return None
-        return deepcopy(item)
-
-    async def list(self, creator_id=None, status=None, offset=0, limit=50):
-        items = list(self.items.values())
-        if creator_id is not None:
-            items = [item for item in items if item["creator_id"] == creator_id]
-        if status is not None:
-            statuses = status if isinstance(status, list) else [status]
-            items = [item for item in items if item["status"] in statuses]
-        return deepcopy(items[offset : offset + limit])
-
-    async def update_draft(self, submission_id, creator_id, revision, draft, base_revision):
-        item = self.items.get(submission_id)
-        if (
-            not item
-            or item["creator_id"] != creator_id
-            or item["revision"] != revision
-            or item["status"] not in ("draft", "rejected")
-        ):
-            return None
-        item.update(
-            draft=deepcopy(draft),
-            base_revision=base_revision,
-            status="draft",
-            revision=revision + 1,
-        )
-        return deepcopy(item)
-
-    async def submit(self, submission_id, creator_id, revision):
-        item = self.items.get(submission_id)
-        if (
-            not item
-            or item["creator_id"] != creator_id
-            or item["revision"] != revision
-            or item["status"] != "draft"
-        ):
-            return None
-        item.update(status="pending", revision=revision + 1)
-        return deepcopy(item)
-
-    async def review(self, submission_id, revision, decision, reviewer_id, note):
-        item = self.items.get(submission_id)
-        if not item or item["revision"] != revision or item["status"] != "pending":
-            return None
-        item.update(
-            status=decision, review_note=note, reviewed_by=reviewer_id, revision=revision + 1
-        )
-        return deepcopy(item)
-
-    async def mark_applied(self, submission_id, revision, applied_revision):
-        item = self.items.get(submission_id)
-        if (
-            not item
-            or item["revision"] != revision
-            or item["status"] != "approved"
-            or item["applied_revision"] is not None
-        ):
-            return None
-        item.update(status="applied", applied_revision=applied_revision, revision=revision + 1)
-        return deepcopy(item)
 
 
 def attach(h):
@@ -131,7 +40,7 @@ async def test_draft_publish_edit_conflict_unpublish(settings_factory):
     h = auth_harness(settings_factory)
     service = attach(h)
     async with h.client as client:
-        assert (await client.get("/api/v1/content/campus")).status_code == 401
+        assert (await client.get("/api/v1/content/campus")).status_code == 404
         await register_and_login(client)
         assert (await client.get("/api/v1/content/campus")).status_code == 404
         assert (await client.get("/api/v1/admin/campus")).status_code == 403
@@ -181,84 +90,35 @@ async def test_draft_publish_edit_conflict_unpublish(settings_factory):
         assert len(service.repository.releases) == 1
 
 
-async def test_creator_proposal_review_and_apply_are_separate_from_publication(settings_factory):
+async def test_creator_routes_and_review_workflow_removed(settings_factory):
     h = auth_harness(settings_factory)
-    content = attach(h)
-    repository = MemorySubmissions()
-    service = SubmissionService(repository, content)
-    h.app.dependency_overrides[get_submission_service] = lambda: service
+    attach(h)
     async with h.client as client:
         await register_and_login(client)
-        role(h, UserRole.CREATOR)
-        source = (await client.get("/api/v1/creator/campus")).json()
-        draft = deepcopy(source["draft"])
-        draft["places"][0]["description"] = "Creator đề xuất nội dung mới"
-        created = await client.post(
-            "/api/v1/creator/submissions",
-            json={"base_revision": source["revision"], "draft": draft},
-            headers=await csrf_headers(client),
-        )
-        assert created.status_code == 200
-        submission = created.json()
-        submitted = await client.post(
-            f"/api/v1/creator/submissions/{submission['id']}/submit",
-            json={"revision": submission["revision"]},
-            headers=await csrf_headers(client),
-        )
-        assert submitted.status_code == 200
-        assert submitted.json()["status"] == "pending"
-        assert (await client.get("/api/v1/admin/submissions")).status_code == 403
-
         role(h, UserRole.ADMIN)
-        reviewed = await client.post(
-            f"/api/v1/admin/submissions/{submission['id']}/review",
-            json={"revision": submitted.json()["revision"], "decision": "approved", "note": "Đạt"},
-            headers=await csrf_headers(client),
-        )
-        assert reviewed.status_code == 200
-        assert reviewed.json()["status"] == "approved"
-        applied = await client.post(
-            f"/api/v1/admin/submissions/{submission['id']}/apply",
-            json={"revision": source["revision"]},
-            headers=await csrf_headers(client),
-        )
-        assert applied.status_code == 200
-        assert (
-            applied.json()["campus"]["draft"]["places"][0]["description"]
-            == "Creator đề xuất nội dung mới"
-        )
-        assert applied.json()["campus"]["revision"] == 2
-        assert (await client.get("/api/v1/content/campus")).status_code == 404
-        published = await client.post(
-            "/api/v1/admin/campus/publish",
-            json={"revision": 2},
-            headers=await csrf_headers(client),
-        )
-        assert published.status_code == 200
-        assert (await client.get("/api/v1/content/campus")).json()["places"][0][
-            "description"
-        ] == "Creator đề xuất nội dung mới"
+        for path in ("/creator/campus", "/creator/submissions", "/admin/submissions"):
+            assert (await client.get("/api/v1" + path)).status_code == 404
+        for action in ("review", "apply"):
+            response = await client.post(
+                f"/api/v1/admin/submissions/{uuid4()}/{action}",
+                json={},
+                headers=await csrf_headers(client),
+            )
+            assert response.status_code == 404
 
 
 @pytest.mark.parametrize("value", [UserRole.USER, UserRole.CREATOR])
 async def test_nonadmin_cannot_read_or_write_admin_features(settings_factory, value):
     h = auth_harness(settings_factory)
-    content = attach(h)
-    h.app.dependency_overrides[get_submission_service] = lambda: SubmissionService(
-        MemorySubmissions(), content
-    )
+    attach(h)
     async with h.client as client:
         await register_and_login(client)
         role(h, value)
         for path in ("campus", "users", "dashboard", "audio", "audio/private"):
             assert (await client.get("/api/v1/admin/" + path)).status_code == 403
         creator_response = await client.get("/api/v1/creator/campus")
-        assert creator_response.status_code == (
-            200 if value == UserRole.CREATOR else 403
-        )
-        assert (await client.get("/api/v1/creator/submissions")).status_code == (
-            200 if value == UserRole.CREATOR else 403
-        )
+        assert creator_response.status_code == 404
+        assert (await client.get("/api/v1/creator/submissions")).status_code == 404
         for method, path, body in (
             ("PUT", "campus", {"revision": 1, "draft": {}}),
             ("POST", "campus/publish", {"revision": 1}),

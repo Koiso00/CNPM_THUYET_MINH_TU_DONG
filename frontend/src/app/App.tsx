@@ -7,10 +7,13 @@ import {
 import { ExploreScreen } from "../features/tours/ExploreScreen";
 import { ContentPage } from "../features/content/ContentPage";
 import { ManagementPage } from "../features/admin/ManagementPage";
-import { CreatorPage } from "../features/creator/CreatorPage";
 import { AuthPage } from "../features/auth/AuthPage";
 import { Brand, Icon } from "../shared/Icons";
 import { roleLabels as roles } from "../shared/WorkspaceNav";
+import { GuestWelcome } from "../features/guest/GuestWelcome";
+import { GuestSession } from "../features/guest/session";
+
+const guestSession = new GuestSession();
 
 function Introduction() {
   return (
@@ -64,9 +67,10 @@ function Introduction() {
 
 export function App({ client = authClient }: { client?: AuthClient }) {
   const state = useSyncExternalStore(client.subscribe, client.getSnapshot);
-  const [route, setRoute] = useState(window.location.hash);
+  const [route, setRoute] = useState(window.location.hash || "#/welcome");
   const [logoutError, setLogoutError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [languageOpen, setLanguageOpen] = useState(false);
   useEffect(() => client.start(), [client]);
   useEffect(() => {
     const changed = () => setRoute(window.location.hash);
@@ -74,12 +78,16 @@ export function App({ client = authClient }: { client?: AuthClient }) {
     return () => window.removeEventListener("hashchange", changed);
   }, []);
   useEffect(() => {
-    if (state.status !== "authenticated") return;
-    if (route === "#/creator" && state.user?.role === "admin") {
-      window.location.replace("#/management");
+    if (route === "#/register") {
+      window.location.hash = "/login";
       return;
     }
-    if (!["#/explore", "#/admin", "#/management", "#/creator"].includes(route))
+    if (state.status !== "authenticated") return;
+    if (route === "#/creator") {
+      window.location.replace(state.user?.role === "admin" ? "#/admin" : "#/explore");
+      return;
+    }
+    if (!["#/welcome", "#/explore", "#/login", "#/admin", "#/management", "#/creator"].includes(route))
       window.location.hash = "/explore";
   }, [state.status, state.user?.role, route]);
 
@@ -88,7 +96,9 @@ export function App({ client = authClient }: { client?: AuthClient }) {
     setLogoutError("");
     try {
       await client.logout();
-      window.location.hash = "/login";
+      // Người nghe là khách; sau khi Admin đăng xuất, đưa về trang chào
+      // thay vì buộc mọi người quay lại màn hình đăng nhập.
+      window.location.hash = "/welcome";
     } catch (error) {
       setLogoutError(
         authErrorMessage(error, "logout") + " Bạn chưa đăng xuất thành công.",
@@ -98,15 +108,16 @@ export function App({ client = authClient }: { client?: AuthClient }) {
     }
   }
   const user = state.user;
+  const guestJourney = !user && Boolean(guestSession.journeyId);
   const restricted =
     (["#/admin", "#/management"].includes(route) && user?.role !== "admin") ||
-    (route === "#/creator" &&
-      user?.role !== "creator" &&
-      user?.role !== "admin");
+    (route === "#/creator" && user?.role !== "admin");
   const management = ["#/admin", "#/management", "#/creator"].includes(route);
-  const explore = Boolean(user) && !management;
+  const authRoute = route === "#/login" || route === "#/register";
+  const explore = (Boolean(user) || guestJourney) && !management && !authRoute && route !== "#/welcome";
+  const guest = !user && !["#/login", "#/register"].includes(route);
   return (
-    <div className={`site${state.status === "anonymous" ? " site-auth" : ""}`}>
+    <div className={`site${state.status === "anonymous" && (route === "#/welcome" || !guestJourney || authRoute) ? " site-auth" : ""}`}>
       <a className="skip-link" href="#main-content">
         Đến nội dung chính
       </a>
@@ -150,17 +161,12 @@ export function App({ client = authClient }: { client?: AuthClient }) {
         <div className="header-right">
           {user ? (
             <>
-              {explore && (
-                user.role === "admin" || user.role === "creator" ? (
-                  <a
-                    className="explore-role"
-                    href={user.role === "admin" ? "#/management" : "#/creator"}
-                  >
-                    {roles[user.role]}
-                  </a>
-                ) : (
-                  <span className="explore-role">{roles[user.role]}</span>
-                )
+              {user.role === "admin" ? (
+                <a className="explore-role" href="#/management">
+                  {roles[user.role]}
+                </a>
+              ) : explore && (
+                <span className="explore-role">{roles[user.role]}</span>
               )}
               <span className="account-label">
                 <Icon name="user" size={17} />
@@ -176,9 +182,38 @@ export function App({ client = authClient }: { client?: AuthClient }) {
               </button>
             </>
           ) : (
-            <span className="language-label">
-              Tiếng Việt <span>VI</span>
-            </span>
+            !explore && <>
+              <div className="language-picker">
+                <button
+                  type="button"
+                  className="language-label"
+                  aria-expanded={languageOpen}
+                  aria-haspopup="listbox"
+                  onClick={() => setLanguageOpen((open) => !open)}
+                >
+                  <Icon name="globe" size={16} />
+                  <span>Languages:</span>
+                  <strong>Tiếng Việt (VI)</strong>
+                  <span aria-hidden="true">⌄</span>
+                </button>
+                {languageOpen && (
+                  <div className="language-menu" role="listbox" aria-label="Chọn ngôn ngữ">
+                    <button type="button" role="option" aria-selected="true" onClick={() => setLanguageOpen(false)}>
+                      <span>Tiếng Việt</span><small>Đang dùng</small>
+                    </button>
+                    <button type="button" role="option" aria-selected="false" disabled>
+                      <span>English</span><small>Sắp có</small>
+                    </button>
+                    <button type="button" role="option" aria-selected="false" disabled>
+                      <span>한국어</span><small>Sắp có</small>
+                    </button>
+                  </div>
+                )}
+              </div>
+              <a className="guest-account-link" href="#/login" aria-label="Đăng nhập quản trị">
+                <Icon name="user" size={17} />
+              </a>
+            </>
           )}
         </div>
       </header>
@@ -202,7 +237,7 @@ export function App({ client = authClient }: { client?: AuthClient }) {
               Thử kết nối lại <Icon name="arrow" />
             </button>
           </div>
-        ) : !user ? (
+        ) : !user && !guest ? (
           <div className="auth-layout">
             <Introduction />
             <AuthPage
@@ -212,6 +247,22 @@ export function App({ client = authClient }: { client?: AuthClient }) {
               notice={state.notice}
             />
           </div>
+        ) : !user ? (
+          route === "#/explore" && guestSession.journeyId ? (
+            <ExploreScreen
+              client={client}
+              username=""
+              guest={guestSession}
+              notice={state.notice}
+            />
+          ) : (
+            <GuestWelcome
+              session={guestSession}
+              onStarted={() => {
+                window.location.hash = "/explore";
+              }}
+            />
+          )
         ) : restricted ? (
           <div className="workspace">
             <section className="state-panel">
@@ -231,10 +282,8 @@ export function App({ client = authClient }: { client?: AuthClient }) {
           />
         ) : route === "#/admin" ? (
           <ContentPage client={client} />
-        ) : route === "#/management" || user.role === "admin" ? (
-          <ManagementPage client={client} />
         ) : (
-          <CreatorPage client={client} />
+          <ManagementPage client={client} />
         )}
       </main>
       <footer className="site-footer">

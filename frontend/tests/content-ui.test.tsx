@@ -50,6 +50,15 @@ function adminClient() {
   return client;
 }
 
+it("authors directly as Admin without loading a Creator review queue", async () => {
+  const client = adminClient();
+  render(<ContentPage client={client} />);
+  await screen.findByLabelText("Nội dung thuyết minh");
+  expect(screen.getByRole("button", { name: "Thêm địa điểm" })).toBeEnabled();
+  expect(screen.queryByRole("button", { name: "Duyệt đề xuất" })).not.toBeInTheDocument();
+  expect(client.get).not.toHaveBeenCalledWith("/admin/submissions");
+});
+
 it("loads only published API content and shows no static fallback on errors", async () => {
   const client = new AuthClient();
   const get = vi
@@ -132,47 +141,25 @@ it("saves before publishing and keeps account management separate", async () => 
   );
 });
 
-it("blocks publishing while a proposal is applying and then uses its new revision", async () => {
-  const client = new AuthClient();
-  const proposal = { id: "proposal-1", draft: campus.draft, revision: 3, base_revision: 1, status: "approved" };
-  vi.spyOn(client, "get").mockImplementation(async (path) =>
-    path === "/admin/campus" ? structuredClone(campus) : path === "/admin/submissions" ? [proposal] : [],
-  );
-  let complete!: (value: unknown) => void;
-  const mutate = vi.spyOn(client, "mutate").mockImplementation((path) =>
-    path.endsWith("/apply") ? new Promise((resolve) => { complete = resolve; }) : Promise.resolve({ ...campus, revision: 3 }),
-  );
-  render(<ContentPage client={client} />);
-  await userEvent.click(await screen.findByRole("button", { name: "Tour khuôn viên · 1 địa điểm" }));
-  await userEvent.click(screen.getByRole("button", { name: "Đưa vào nháp Nội dung" }));
-  const publish = screen.getByRole("button", { name: "Công bố phiên bản đã lưu" });
-  expect(publish).toBeDisabled();
-  expect(screen.getByRole("button", { name: "Lưu bản nháp" })).toBeDisabled();
-  expect(screen.getByLabelText("Nội dung thuyết minh")).toBeDisabled();
-  complete({ submission: { ...proposal, status: "applied", applied_revision: 2 }, campus: { ...campus, revision: 2 } });
-  await waitFor(() => expect(publish).toBeEnabled());
-  await userEvent.click(publish);
-  expect(mutate).toHaveBeenLastCalledWith("/admin/campus/publish", { revision: 2 }, "POST");
-});
 
 it("sends selected user role and lock state without password fields", async () => {
   const client = adminClient();
   const mutate = vi.spyOn(client, "mutate").mockResolvedValue({
     id: "user-1",
     username: "visitor",
-    role: "creator",
+    role: "admin",
     is_active: false,
   });
   render(<ManagementPage client={client} />);
   await screen.findByLabelText("Vai trò visitor");
   fireEvent.change(screen.getByLabelText("Vai trò visitor"), {
-    target: { value: "creator" },
+    target: { value: "admin" },
   });
   await userEvent.click(screen.getByLabelText("Hoạt động visitor"));
   await userEvent.click(screen.getByRole("button", { name: "Lưu visitor" }));
   expect(mutate).toHaveBeenCalledWith(
     "/admin/users/user-1",
-    { role: "creator", is_active: false },
+    { role: "admin", is_active: false },
     "PUT",
   );
 });
@@ -188,6 +175,7 @@ it("unmounts the previous audio source when the selected place changes", async (
   render(
     <ExplorePage username="phong" places={places} releaseId="release-1" />,
   );
+  await userEvent.click(screen.getAllByRole("button", { name: "Xem nội dung" })[0]);
   expect(screen.getByLabelText("Nghe Khu A")).toHaveAttribute(
     "src",
     "/api/v1/audio/release-1/place-1",
@@ -222,12 +210,12 @@ it("keeps account edits after a failed save and prevents leaving a dirty page", 
   vi.spyOn(client, "mutate").mockRejectedValue(new TypeError("offline"));
   render(<ManagementPage client={client} />);
   const role = await screen.findByLabelText("Vai trò visitor");
-  fireEvent.change(role, { target: { value: "creator" } });
+  fireEvent.change(role, { target: { value: "admin" } });
   await userEvent.click(screen.getByRole("button", { name: "Lưu visitor" }));
   expect(await screen.findByRole("alert")).toHaveTextContent(
     "thay đổi đang nhập vẫn được giữ",
   );
-  expect(role).toHaveValue("creator");
+  expect(role).toHaveValue("admin");
   expect(screen.getByRole("button", { name: "Trang sau" })).toBeDisabled();
   expect(screen.getByRole("button", { name: "Lưu visitor" })).toBeEnabled();
 });
@@ -251,7 +239,7 @@ it("shows a dashboard failure and retries without inventing counts", async () =>
     screen.getByRole("button", { name: "Làm mới số liệu" }),
   );
   await waitFor(() =>
-    expect(document.querySelectorAll(".admin-stats article")).toHaveLength(6),
+    expect(document.querySelectorAll(".admin-stats article")).toHaveLength(9),
   );
 });
 

@@ -1,6 +1,12 @@
+> **Ưu tiên 24/10/2026:** OSM và tọa độ do người dùng cung cấp đã có; GPS opt-in, mô phỏng và geofence cùng luồng frontend đã triển khai. Nghiệm thu thực địa/thiết bị trước khi làm QR.
+
 # Kiến trúc
 
-Trạng thái: **thiết kế mục tiêu**; xem README để phân biệt phần đã chạy.
+## Trạng thái demo hiện hành — 23/10/2026
+
+Khách dùng `#/welcome` không cần tài khoản; bắt đầu hành trình mới mới mở `#/explore`. Browser giữ ID khách và hành trình trong localStorage. Nội dung và audio công khai lấy từ release đã công bố; audio phát thủ công. Visit/journey/audio được ghi qua API sự kiện công khai có schema giới hạn và đếm theo ngày ICT. Admin biên soạn trực tiếp tại `#/admin`, xem dashboard/quản lý tài khoản tại `#/management`; Creator workflow/API đã gỡ khỏi demo. Bản đồ OSM, tọa độ người dùng cung cấp và GPS opt-in/mô phỏng cùng geofence đã tích hợp phía frontend; chưa nghiệm thu GPS thiết bị/thực địa. QR chỉ làm sau bước này. Offline, AI và ngôn ngữ khác vẫn hoãn. Đây là mô tả demo đang chạy; phần thiết kế dài hạn bên dưới vẫn tham khảo kế hoạch gốc.
+
+Trạng thái: phần đầu mô tả demo đang chạy; các mục dài hạn bên dưới là thiết kế mục tiêu.
 
 ## Phần demo đã triển khai ngày 22/10/2026
 
@@ -8,13 +14,8 @@ Thanh điều hướng giữa hai trang làm việc dùng chung `shared/Workspac
 `#/admin` hiển thị **Nội dung** (audio), `#/management` hiển thị **Quản trị** (grid).
 Hai trang chỉ cho Admin. `features/content/ContentPage.tsx` quản lý POI/văn bản/audio;
 `features/admin/ManagementPage.tsx` chỉ đọc dashboard/users và cập nhật user qua API Admin.
-`#/creator` là khu vực riêng cho Creator. Creator lưu/gửi bản đề xuất toàn tour riêng; Admin
-xem, trả chỉnh sửa hoặc duyệt rồi áp dụng vào nháp trước khi công bố riêng.
-`content_submissions` giữ owner, bản nháp, revision và trạng thái duyệt. Các thao tác dùng CAS;
-nội dung và đề xuất đọc primary để tránh dùng trạng thái cũ ngay sau khi ghi.
-Trang Nội dung dùng chung trạng thái bận cho thao tác áp dụng proposal và sửa/công bố;
-không cho áp dụng khi có thay đổi chưa lưu, không cho lưu/công bố trong lúc đang áp dụng.
-RBAC backend chặn User khỏi cả hai khu vực và Creator khỏi trang Admin.
+Creator UI/API và workflow gửi/duyệt đã gỡ khỏi demo; Admin biên soạn trực tiếp, lưu nháp rồi công bố. Các mô tả Creator bên dưới là lịch sử hoặc kế hoạch dài hạn.
+RBAC backend chặn User khỏi cả hai khu vực quản trị.
 
 Router → service → repository vẫn là ranh giới bắt buộc. Demo có một tour `campus-main`:
 `tours` lưu bản nháp có thứ tự POI, nội dung tiếng Việt, nguồn và vị trí nullable; chưa tách
@@ -27,19 +28,19 @@ Chưa có tác vụ dọn release không tham chiếu; không dùng transaction 
 văn bản cho lần công bố tiếp theo. Snapshot ghim asset ID cụ thể; sửa chữ hoặc nhập MP3 mới
 không thay snapshot cũ. API audio chỉ cho nghe qua release đang công bố; biết asset ID không
 cho quyền truy cập. Admin có API nghe thử riêng, upload ≤10 MiB và kiểm tra khung MP3.
-Trình phát duy nhất được dừng khi đổi địa điểm hoặc rời trang; không tự phát khi tải trang.
+Trình phát duy nhất được dừng khi đổi địa điểm hoặc rời trang; không tự phát khi tải trang. Khi geofence xác nhận một điểm, ứng dụng thử tự phát audio; nếu trình duyệt chặn thì khách có thể phát thủ công.
 
 Admin API dùng RBAC/CSRF hiện có. Khóa user thu hồi phiên; mở khóa không hồi sinh phiên cũ.
-Admin đang hoạt động được bảo vệ khỏi khóa/hạ quyền trên web. Dashboard dùng count database
-và snapshot hiện hành; chưa có thống kê sự kiện/lượt nghe. Dịch/TTS tự động, bản đồ,
-GPS, offline và AI vẫn chưa tích hợp. Các phần dài hạn bên dưới giữ vai trò thiết kế mục tiêu.
+Admin đang hoạt động được bảo vệ khỏi khóa/hạ quyền trên web. Dashboard dùng count database,
+snapshot hiện hành và event visit/journey/audio theo ngày. QR, Dịch/TTS tự động, bản đồ,
+GPS/geofence frontend đang thử nghiệm; GPS thực địa, QR, offline và AI chưa nghiệm thu. Các phần dài hạn bên dưới giữ vai trò thiết kế mục tiêu.
 P1.1 đã bổ sung connection pool MongoDB theo lifespan và endpoint readiness.
 P1.2 có model/repository User/session và unique/TTL index thật trên Atlas.
 P1.3 có API JWT cookie/CSRF và dependency RBAC, đã kiểm thử với Atlas thật.
-P1.4 có UI auth và AuthClient cho khôi phục/gia hạn/đăng xuất, khung trang theo role.
-Trang `/explore` có UI cho 10 mô tả tiếng Việt nguồn tĩnh; vùng sơ đồ là placeholder,
-chưa tích hợp bản đồ/GPS/audio player. Xem [báo cáo giao diện](test-reports/P1_4_1_EXPLORE_UI.md).
-Ưu tiên demo hiện hành ở [DEMO_2_DAYS](DEMO_2_DAYS.md), khác thứ tự triển khai dài hạn bên dưới.
+P1.4 có UI auth nội bộ và AuthClient cho khôi phục/gia hạn/đăng xuất.
+Explore hiện đọc nội dung công khai đã công bố và phát audio thủ công; vùng sơ đồ là placeholder,
+đã tích hợp bản đồ/GPS/geofence trong frontend. Chi tiết giao diện lịch sử tại [báo cáo](test-reports/P1_4_1_EXPLORE_UI.md).
+Ưu tiên demo hiện hành ở [DEMO_GUEST_QR_PLAN](DEMO_GUEST_QR_PLAN.md); kế hoạch gốc dài hạn ở bên dưới.
 
 ## Thành phần
 
@@ -57,7 +58,7 @@ flowchart LR
 ```
 
 Frontend và API phục vụ cùng nguồn khi triển khai. Khi phát triển, Vite proxy /api tới FastAPI.
-P1.4 dùng hash routing (/#/login, /#/register, /#/explore, /#/admin, /#/creator),
+Ứng dụng dùng hash routing (/#/welcome, /#/login, /#/explore, /#/admin, /#/management),
 nên tải lại không cần fallback tại server. Nếu đổi sang path routing phải bổ sung fallback giao diện,
 không nuốt lỗi 404 của API. UI route guard không thay kiểm tra quyền ở backend.
 
@@ -70,7 +71,7 @@ không nuốt lỗi 404 của API. UI route guard không thay kiểm tra quyền
 - `schemas/`, `models/`: hợp đồng HTTP và quy tắc tài liệu lưu trữ.
 - `services/`: nghiệp vụ; `repositories/`: truy xuất MongoDB/GridFS.
 - `services/providers/`: lớp bọc dịch/TTS/Gemini; `workers/`: xử lý công việc bền vững.
-- Frontend chia feature auth, tours, map, playback, offline, creator và admin.
+- Frontend chia feature auth, guest, tours, map, playback, offline và admin.
   Vị trí, geofence và audio không được gắn chặt vào một component bản đồ.
 
 ## Phiên phía giao diện P1.4

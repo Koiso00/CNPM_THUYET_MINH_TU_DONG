@@ -1,5 +1,13 @@
 # Demo nội dung, audio và quản trị — 22/10/2026
 
+## Cập nhật kiểm tra Admin và giao diện nội bộ — 23/10/2026
+
+- Trạng thái Atlas của tài khoản mục tiêu `phong`: database kết nối được, tài khoản tồn tại, đang active và có role Admin. Chạy lệnh status không reset mật khẩu.
+- Không xóa User/Creator cũ trong lượt này; role counts được ghi nhận để xử lý sau khi xác định đúng tài khoản và phiên liên quan.
+- Giao diện Admin vẫn vào được từ liên kết `Admin` sau đăng nhập, kể cả khi route hiện tại là `#/login`. Đăng ký đã bỏ khỏi giao diện Admin; route cũ `#/register` chuyển về login.
+- Header ở trang explore không còn hiển thị ngôn ngữ hoặc đăng nhập quản trị; quyền vào `#/management` của Admin vẫn được giữ riêng.
+- Frontend đã sửa responsive header và kiểm tra trực tiếp ở viewport 803px; không còn che hero hoặc làm lệch chữ.
+
 ## Phạm vi và kết quả
 
 Triển khai phần tiếp theo của demo 2 ngày theo yêu cầu người dùng:
@@ -26,7 +34,7 @@ Triển khai phần tiếp theo của demo 2 ngày theo yêu cầu người dùn
 Lệnh `seed_demo_content` chỉ tạo nháp khi chưa có; không thay công việc cũ. Lệnh
 `import_demo_audio` kiểm tra toàn bộ manifest/nguồn/file trước ghi, dùng ID theo checksum,
 chạy lại không nhân đôi hoặc thay lựa chọn MP3 người quản trị đã upload. Lệnh
-`bootstrap_admin` chỉ nâng tài khoản đã đăng ký và đang hoạt động; không tạo mật khẩu mặc định.
+`setup_admin` tạo mới khi cần mật khẩu được cung cấp riêng, hoặc nâng tài khoản active; không đặt lại mật khẩu và không tự mở khóa tài khoản inactive.
 
 Đã chạy trên Atlas ứng dụng: tạo nháp 10 mô tả, nhập 10 asset MP3 và nâng tài khoản
 người dùng chỉ định. Không ghi thông tin tài khoản vào báo cáo. Không tự công bố nội dung;
@@ -99,3 +107,27 @@ Không dùng `--showlocals` với cấu hình có secrets. Test Edge dùng serve
 `python -m tests.serve_auth_browser`, cần bộ MP3/manifest đã chuẩn bị, không gọi dịch vụ TTS.
 Server test override mọi service dữ liệu sang collection riêng và phải dừng bằng route
 `/_test/shutdown` để dọn/xác minh dữ liệu tạm; không dùng route này trong app thật.
+
+## E2E hồi quy bổ sung — 23/10/2026
+
+- E2E Admin/nội dung/audio đạt đủ desktop và viewport mobile: tài khoản thử, dashboard, playback GridFS, chuyển điểm, sửa/lưu nháp không đổi release, tải MP3 thay thế rồi công bố, route Creator cũ.
+- Luồng khách E2E đạt desktop và viewport mobile: welcome, visit, bắt đầu, tải lại, tab mới dùng lại visitor ID và journey mới.
+- Server E2E dùng Atlas nhưng toàn bộ user/session/content/release/assets/usage events/GridFS nằm trong collection/bucket tạm; shutdown xác nhận đã dọn. Không ghi nội dung vào database ứng dụng.
+- Frontend 39 test; build/typecheck đạt. Backend test sự kiện khách và setup Admin: 20 đạt.
+- Chưa nghe duyệt bằng người thật 10 file MP3; E2E playback chỉ chứng minh luồng phát kỹ thuật.
+
+## Trạng thái Atlas ứng dụng — chỉ đọc, 23/10/2026
+
+`phong` tồn tại và là Admin đang hoạt động. Tour có 10 địa điểm nháp và đã có release công bố; có 10 asset trạng thái ready, 10 file GridFS và 10 audio selection. Không reset mật khẩu và không ghi/xóa dữ liệu tài khoản trong lần kiểm tra. Cần Admin nghe từng audio trên trang Nội dung và quyết định bản nào được công bố; kiểm thử E2E đã công bố dữ liệu chỉ trong Atlas collection/bucket tạm.
+
+## Kiểm kê bổ sung — 24/10/2026
+
+- Trước khi dọn tài khoản legacy: `phong` là Admin active; role counts là 2 User, 1 Creator, 1 Admin.
+- Release đang công khai tồn tại và có audio ID ở cả 10/10 địa điểm; nháp có 10 địa điểm nhưng chưa ghim audio ID. Điều này phù hợp với việc audio được gắn vào snapshot khi công bố.
+- Hai User `123` và `AGT` từng có một phiên active mỗi tài khoản; đã thu hồi đúng hai phiên. Creator `phong11` không có phiên active, nhưng có một đề xuất đang `pending`.
+- Người dùng đã nghe 10 MP3 demo và xác nhận audio đúng, không cần thay. Release Atlas đã gắn audio cho 10/10 địa điểm; không sửa hoặc công bố lại trong bước xác nhận này.
+- Theo xác nhận rõ ràng của người dùng, đã xóa đúng tài khoản Creator `phong11` và đề xuất `pending` liên kết trong một giao dịch Atlas; 0 phiên bổ sung cần thu hồi. Xác minh sau giao dịch: tài khoản/đề xuất không còn, Admin `phong` vẫn active.
+- Lệnh kiểm tra trạng thái chỉ đọc sau khi xóa Creator (trước khi xóa hai User) xác nhận role counts trung gian: 2 User, 0 Creator, 1 Admin; `phong` tồn tại, active, role Admin.
+- Không xóa/sửa tour nháp, release hoặc audio. Hai phiên User legacy đã bị thu hồi trước khi xóa tài khoản.
+- Theo phạm vi đã chốt trước đó, đã xóa hai User legacy `123`, `AGT`; xác minh sau giao dịch role counts là 0 User, 0 Creator, 1 Admin, `phong` vẫn active.
+- Hồi quy mã trong lượt cleanup: backend unit **173 passed**, frontend **39 passed**, `npm run build` đạt, E2E **12/12 passed** desktop/mobile. E2E chạy sau khi dọn Creator nhưng trước khi xóa hai User; toàn bộ test dùng collection/bucket biệt lập và shutdown xác nhận dọn sạch. Bộ `auth.spec.ts` cũ từng timeout vì kiểm tra signup/Creator đã gỡ; cập nhật theo luồng guest/Admin hiện tại và toàn bộ E2E chạy lại đạt. Lần pytest đầu bị chặn bởi quyền truy cập thư mục temp hệ thống; chạy lại với basetemp trong workspace đạt đủ.

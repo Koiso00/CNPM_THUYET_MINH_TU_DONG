@@ -1,4 +1,14 @@
+> **Ưu tiên cập nhật ngày 24/10/2026:** OSM, 10 tọa độ do người dùng cung cấp, GPS thật bật chủ động, mô phỏng/geofence và thử tự phát audio khi vào vùng đã triển khai ở frontend; cần nghiệm thu autoplay/GPS và độ chính xác thực địa trước QR.
+
+> **Trạng thái demo 23/10/2026:** khách không đăng nhập; welcome, ID khách/hành trình, nội dung/audio công khai, Admin và thống kê visit/journey/audio đã triển khai. QR vẫn hoãn. Chi tiết tại [kế hoạch khách/QR](DEMO_GUEST_QR_PLAN.md) và [báo cáo khách](test-reports/DEMO_GUEST_PROGRESS_2026_10_23.md).
+
 # Bối cảnh dự án
+
+## Trạng thái demo hiện hành — 24/10/2026
+
+Đối với demo, người nghe dùng welcome và không đăng nhập; ID khách được giữ trong trình duyệt, mỗi lần bấm bắt đầu tạo hành trình mới. Creator/Admin gộp thành một vai trò vận hành Admin; Creator UI/API đã được gỡ khỏi demo. Trang Nội dung (`#/admin`) và Quản trị (`#/management`) dành cho Admin. Nội dung/audio công khai chỉ đọc release đã công bố; dashboard có visit, journey và audio theo ngày ICT. Bản đồ OSM, 10 tọa độ người dùng cung cấp, GPS thật opt-in, mô phỏng/geofence và thử tự phát audio đã triển khai ở frontend. Tọa độ/ngưỡng chưa khảo sát thực địa, autoplay/GPS trên thiết bị chưa nghiệm thu; QR chỉ làm sau bước này. Ngày 24/10, người dùng xác nhận 10 MP3 demo đúng; các tài khoản legacy `123`, `AGT`, `phong11` và đề xuất `pending` gắn với Creator đã được xóa theo phạm vi người dùng chốt; hiện Atlas có 1 Admin active (`phong`), không còn User/Creator legacy. Xem [kế hoạch khách/QR](DEMO_GUEST_QR_PLAN.md), [báo cáo khách](test-reports/DEMO_GUEST_PROGRESS_2026_10_23.md) và [báo cáo Admin/audio](test-reports/DEMO_CONTENT_AUDIO_ADMIN.md).
+
+Các phần mô tả ba vai trò và Creator ở dưới là quyết định của kế hoạch gốc dài hạn hoặc lịch sử trước khi cập nhật demo; không mô tả luồng demo hiện hành.
 
 ## Nguồn và quyết định đã chốt
 
@@ -19,7 +29,7 @@ Giọng xác nhận từ dịch vụ: vi-VN-NamMinhNeural, dùng tốc độ/âm
 | Sản phẩm | Website trên điện thoại và máy tính, không bắt buộc cài ứng dụng |
 | Khu vực | Cơ sở chính Đại học Sài Gòn; 8–10 điểm ngoài trời |
 | Nội dung | Một tour mẫu; tiếng Việt và tiếng Anh |
-| Vai trò | User, Creator, Admin; Creator gửi duyệt, Admin công bố |
+| Vai trò dài hạn | User, Creator, Admin; demo hiện tại gộp Creator vào Admin theo yêu cầu cập nhật |
 | Tham quan | Tự do; tự nhận điểm khi trang đang mở hoặc chọn nghe thủ công |
 | Demo | GPS mô phỏng cùng luồng xử lý với GPS thật |
 | Ngoại tuyến | Khách tự chọn ngôn ngữ tải, có thể tải bổ sung; nội dung/MP3 theo ngôn ngữ, bản đồ/ảnh dùng chung |
@@ -31,20 +41,14 @@ Giọng xác nhận từ dịch vụ: vi-VN-NamMinhNeural, dùng tốc độ/âm
 
 ## Các phương án không còn là phạm vi hiện hành
 
-Người dùng đã chọn kế hoạch gốc thay cho: demo 5 ngày, gộp Creator/Admin,
+Kế hoạch gốc được giữ cho phát triển dài hạn. Phạm vi demo đã cập nhật ngày 23/10: gộp Creator/Admin,
 chỉ OSM trực tuyến ở bản đầu, thống kê người đang ở từng điểm và xuất CSV.
 Không tự khôi phục các phương án này. Không suy diễn số giờ làm hoặc năng lực nhóm
 thành cam kết tiến độ mới.
 
 ## Trạng thái thực tế
 
-Ngày 22/10/2026, người dùng chốt tách màn hình theo chức năng.
-**Nội dung** (`#/admin`, icon audio) quản lý địa điểm/bài/audio và hàng chờ Creator.
-**Quản trị** (`#/management`, icon grid) có dashboard và quản lý tài khoản dành cho Admin.
-Creator giữ khu vực riêng `#/creator` để đề xuất toàn tour; bản riêng được gửi duyệt.
-Admin chấp nhận đề xuất vào nháp, rồi tự kiểm tra/công bố. User không được vào trang Creator/Admin.
-RBAC backend kiểm tra riêng từng vai trò. Xem [báo cáo Creator](test-reports/CREATOR_REVIEW.md)
-và [báo cáo trang Quản trị](test-reports/MANAGEMENT_PAGE.md).
+Admin dùng **Nội dung** (`#/admin`) để quản lý địa điểm/bài/audio và **Quản trị** (`#/management`) để xem dashboard/tài khoản. Creator UI, API và quy trình duyệt đã gỡ khỏi demo; User không được vào các API Admin. Các mô tả Creator bên dưới là lịch sử hoặc thiết kế dài hạn.
 
 **Cập nhật 22/10/2026:** đã triển khai demo dữ liệu/audio/quản trị:
 10 mô tả nguồn nhập thành bản nháp MongoDB, 10 MP3 nhập GridFS; Admin có thể sửa/thêm/xóa
@@ -60,7 +64,7 @@ Cho phép Admin thay MP3 theo nội dung đang lưu, tối đa 10 MiB (10 × 102
 công bố lại mới áp dụng cho người nghe. Admin đang hoạt động được bảo vệ khỏi khóa/hạ quyền
 trên web để tránh mất toàn bộ quyền quản trị khi hai Admin thao tác đồng thời.
 Sau khi hoàn tất demo, người dùng chọn Creator đề xuất thay đổi toàn tour; triển khai tại
-[báo cáo workflow](test-reports/CREATOR_REVIEW.md). Bản dịch, TTS tự động và GPS vẫn hoãn.
+[báo cáo workflow](test-reports/CREATOR_REVIEW.md). Bản dịch và TTS tự động vẫn hoãn; GPS/geofence được ưu tiên theo cập nhật 24/10 ở phần đầu tài liệu.
 
 Các đoạn bên dưới mô tả các mốc đã đạt trước cập nhật này; trạng thái mới ở trên thay thế
 các ghi chú “chưa tích hợp” của nội dung/audio/quản trị.
@@ -72,13 +76,9 @@ P1.2 đã có model/repository User/session và index thật trên Atlas; chưa 
 P1.3 đã có API xác thực và dependency RBAC, kiểm thử HTTP với Atlas thật trên collection tạm.
 P1.4 có UI đăng ký/đăng nhập, gia hạn phiên, đăng xuất và khung trang theo role;
 18 test frontend và 4 test Edge desktop/mobile viewport với Atlas tạm đạt.
-Trang khám phá sau đăng nhập đã được thiết kế lại theo ảnh mẫu; hiển thị tĩnh 10 mô tả từ nguồn
-người dùng. Vùng bản đồ là chỗ giữ sẵn để thay ảnh sơ đồ, chưa có tọa độ/GPS; nút phát audio
-đang khóa vì MP3 chưa được tích hợp vào trình duyệt. Quản trị/dashboard chưa có chức năng thực tế.
-Đã lưu văn bản nguồn 10 địa điểm; chưa nhập thành dữ liệu tour trong database.
-Đã chuẩn bị 10 MP3 tiếng Việt giọng nam NamMinhNeural cục bộ, có manifest/checksum;
-chưa tích hợp GridFS/API/trình phát hoặc nghe duyệt từng file.
-Chưa có tài khoản thật, triển khai cloud hoặc chức năng offline.
+Ở mốc P1.4 ban đầu, explore còn tĩnh và audio chưa tích hợp. Trạng thái đã thay đổi trong demo hiện hành:
+10 địa điểm và 10 MP3 có trong Atlas/GridFS; khách chỉ đọc release công bố và phát audio thủ công.
+Vẫn cần người quản trị nghe duyệt từng file; vùng bản đồ chưa có dữ liệu tọa độ/GPS.
 
 ## Cập nhật cách thực hiện
 

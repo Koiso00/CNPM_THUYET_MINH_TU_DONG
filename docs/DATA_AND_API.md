@@ -1,3 +1,5 @@
+> **Cập nhật kế hoạch demo 23/10/2026:** khách không đăng nhập, giữ ID khách khi quay lại cùng trình duyệt; mỗi lần tham quan có ID hành trình riêng. Creator/Admin gộp thành một vai trò, tạo một Admin ban đầu lúc thiết lập và xóa User/Creator cũ khi chuyển đổi. Có hai luồng QR; dashboard đếm ID khách truy cập theo ngày, hành trình và QR/audio theo điểm. Xem [kế hoạch demo mới](DEMO_GUEST_QR_PLAN.md). Đây là kế hoạch, chưa triển khai; các phần bên dưới mô tả ứng dụng đang chạy hoặc lịch sử.
+
 # Dữ liệu và hợp đồng API
 
 ## Hợp đồng đã có
@@ -20,18 +22,19 @@ OpenAPI có health, auth và các API demo nội dung/audio/admin bên dưới.
 
 | Method /api/v1 | Hợp đồng |
 | --- | --- |
-| GET /content/campus | Cần đăng nhập; chỉ trả release_id/title/language/places của snapshot đang công bố; 404 khi chưa công bố |
+| GET /content/campus | Công khai; chỉ trả release_id/title/language/places của snapshot đang công bố; 404 khi chưa công bố |
 | GET /admin/campus | Admin; trả revision, draft, published_release_id |
 | PUT /admin/campus | Admin + CSRF; `{revision, draft}`; lưu toàn bộ danh sách có thứ tự, revision tăng; stale trả 409 |
 | POST /admin/campus/publish | Admin + CSRF; `{revision}`; tạo snapshot mới và ghim audio đúng checksum văn bản |
 | POST /admin/campus/unpublish | Admin + CSRF; `{revision}`; bỏ con trỏ công bố, giữ nguyên snapshot |
 | GET /admin/audio | Admin; audio khớp nội dung đã lưu theo từng place_id |
 | PUT /admin/campus/places/{place_id}/audio?revision=N | Admin + CSRF; body MP3 thô, Content-Type audio/mpeg, tối đa 10 MiB; 413 quá cỡ, 415 sai loại, 422 không có MP3 frames; không tự công bố |
-| GET/HEAD /audio/{release_id}/{place_id} | Cần đăng nhập; kiểm tra release hiện hành và asset ghim; hỗ trợ single Range (206), suffix/open-ended; 416 range sai |
+| GET/HEAD /audio/{release_id}/{place_id} | Công khai; kiểm tra release hiện hành và asset ghim; hỗ trợ single Range (206), suffix/open-ended; 416 range sai |
 | GET/HEAD /admin/audio/{asset_id} | Admin; preview asset đã nhập |
 | GET /admin/users?offset=0&limit=50 | Admin; tối đa 100/trang; id, username, role, is_active, updated_at, is_protected; không trả password_hash/token |
 | PUT /admin/users/{user_id} | Admin + CSRF; `{role,is_active}`; chặn tự sửa và sửa Admin đang hoạt động (409); khóa thu hồi các phiên |
-| GET /admin/dashboard | Admin; users, active_users, audio_assets, draft_places, published_places, published_tours |
+| GET /admin/dashboard?day=YYYY-MM-DD | Admin; thêm guest_visitors, guest_journeys, guest_audio_plays theo ngày ICT |
+| POST /events/guest | Công khai; ghi visit, journey_started hoặc audio_played với event_id chống gửi trùng |
 | GET /creator/campus | Creator; revision and current working draft as a starting point for a private proposal |
 | GET /creator/submissions?offset=0&limit=50 | Creator; own proposals and review state only |
 | GET /creator/submissions/{id} | Creator; own proposal only; other creators' IDs return 404 |

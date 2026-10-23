@@ -38,6 +38,20 @@ class AdminRepository:
             "audio_assets": await self.database["assets"].count_documents({"status": "ready"}),
         }
 
+    async def guest_counts(self, day):
+        events = self.database["usage_events"]
+        return {
+            "guest_visitors": len(
+                await events.distinct("visitor_id", {"day": day, "event_type": "visit"})
+            ),
+            "guest_journeys": await events.count_documents(
+                {"day": day, "event_type": "journey_started"}
+            ),
+            "guest_audio_plays": await events.count_documents(
+                {"day": day, "event_type": "audio_played"}
+            ),
+        }
+
     async def revoke_sessions(self, user_id):
         now = utc_now()
         await self.database["sessions"].update_many(

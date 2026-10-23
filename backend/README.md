@@ -2,7 +2,7 @@
 
 Python 3.12, FastAPI và PyMongo Async. Phần P1.1 đã có vòng đời kết nối MongoDB,
 liveness/readiness. P1.2 bổ sung model/repository User/session và index thật trên Atlas.
-P1.3 đã có API auth, JWT cookie/CSRF và dependency RBAC. Chưa có GridFS hoặc giao diện auth.
+P1.3 đã có API auth, JWT cookie/CSRF và dependency RBAC. Nội dung công bố/audio GridFS và sự kiện khách demo đã có; Admin vẫn dùng auth.
 
 ## Chạy
 
@@ -36,8 +36,8 @@ Production phải ENVIRONMENT=production, dùng HTTPS và đặt allowlist origi
 Xem hợp đồng và thứ tự CSRF/register/login/refresh/logout tại [DATA_AND_API](../docs/DATA_AND_API.md).
 POST cần X-CSRF-Token và cookie tương ứng từ GET /api/v1/auth/csrf.
 Swagger không tự thêm header này; chưa có giao diện đăng nhập ở P1.3.
-Register chỉ nhận username/password và tạo User; mật khẩu 15–128 ký tự.
-Chưa có tài khoản admin seed hoặc API cấp quyền; không tự tạo tài khoản đặc quyền mặc định.
+Register chỉ nhận username/password và tạo User; mật khẩu 15–128 ký tự. Người nghe demo không dùng register/login.
+Tài khoản Admin đầu tiên dùng `python -m app.commands.setup_admin phong`; lệnh không reset mật khẩu.
 
 ## Trạng thái dịch vụ
 
@@ -47,7 +47,7 @@ Chưa có tài khoản admin seed hoặc API cấp quyền; không tự tạo t�
 - Chưa điền URI vẫn chạy được liveness/OpenAPI. MongoDB không tự được tạo khi import.
 - app/application.py chứa factory để test độc lập; app/main.py khởi tạo ứng dụng chạy thật.
 
-P1.2 đã kiểm chứng quyền ghi và index bằng collection tạm; GridFS chưa được kiểm thử.
+P1.2 đã kiểm chứng quyền ghi và index bằng collection tạm; GridFS và usage events có test demo riêng.
 
 ## Khởi tạo index User/session
 

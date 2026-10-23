@@ -9,6 +9,7 @@ from app.api.content_dependencies import (
     get_admin_service,
     get_audio_service,
     get_content_service,
+    get_event_repository,
     get_submission_service,
 )
 from app.api.dependencies import get_auth_service
@@ -18,6 +19,7 @@ from app.commands.seed_demo_content import source_draft
 from app.core.config import Settings
 from app.db.indexes import ensure_session_indexes, ensure_submission_indexes, ensure_user_indexes
 from app.repositories.sessions import SessionRepository
+from app.repositories.events import EventRepository
 from app.repositories.users import UserRepository
 from app.services.auth import AuthService
 from tests.demo_database import isolated_content
@@ -59,6 +61,8 @@ def browser_test_app():
                 app.dependency_overrides[get_content_service] = lambda: features.content
                 app.dependency_overrides[get_audio_service] = lambda: features.audio
                 app.dependency_overrides[get_admin_service] = lambda: features.admin
+                events = EventRepository({"usage_events": features.usage_events})
+                app.dependency_overrides[get_event_repository] = lambda: events
                 app.dependency_overrides[get_submission_service] = lambda: features.submissions
                 async with original_lifespan(app):
                     print(

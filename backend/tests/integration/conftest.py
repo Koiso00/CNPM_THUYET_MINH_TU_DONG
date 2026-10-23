@@ -21,6 +21,7 @@ async def temporary_collection(kind: str):
         "assets",
         "audio_selections",
         "content_submissions",
+        "usage_events",
     }:
         raise ValueError("Unsupported isolated test collection kind.")
     settings = Settings(_env_file=Path(__file__).resolve().parents[2] / ".env")

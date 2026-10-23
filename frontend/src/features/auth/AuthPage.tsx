@@ -80,14 +80,6 @@ export function AuthPage({
           ? "Một tài khoản để bắt đầu khám phá khuôn viên theo cách của bạn."
           : "Đăng nhập để tiếp tục hành trình khám phá Đại học Sài Gòn."}
       </p>
-      <div className="auth-tabs" aria-label="Tài khoản">
-        <a href="#/login" aria-current={!register ? "page" : undefined}>
-          Đăng nhập
-        </a>
-        <a href="#/register" aria-current={register ? "page" : undefined}>
-          Đăng ký
-        </a>
-      </div>
       {notice && !error && (
         <p className="notice" role="status">
           {notice}
@@ -180,12 +172,6 @@ export function AuthPage({
           </button>
         </fieldset>
       </form>
-      <p className="form-switch">
-        {register ? "Đã có tài khoản?" : "Bạn chưa có tài khoản?"}{" "}
-        <a href={register ? "#/login" : "#/register"}>
-          {register ? "Đăng nhập" : "Đăng ký ngay"}
-        </a>
-      </p>
       <div className="privacy-note">
         <Icon name="lock" size={15} />
         <span>

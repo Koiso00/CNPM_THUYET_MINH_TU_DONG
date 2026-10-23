@@ -2,7 +2,7 @@
 
 Nguồn chuẩn: [kế hoạch gốc](PROJECT_PLAN.md). Các tuần là mốc tương đối, không tự đổi thành
 deadline lịch hoặc cam kết tiến độ. Không áp dụng phương án rút gọn 5 ngày.
-Ưu tiên mới: [demo 2 ngày](DEMO_2_DAYS.md) do người dùng chốt, tạm hoãn GPS/offline/AI/dịch.
+Ưu tiên cập nhật 24/10 theo yêu cầu người dùng: OSM và 10 tọa độ người dùng cung cấp đã tích hợp; GPS thật opt-in/mô phỏng và geofence cùng luồng frontend đã triển khai; tiếp theo nghiệm thu HTTPS/thiết bị và khảo sát bán kính, rồi mới bắt đầu QR. Offline/AI/dịch tiếp tục hoãn.
 
 ## Đã thực hiện: khung dự án
 

@@ -1,40 +1,53 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Icon } from "../../shared/Icons";
 import type { Place } from "./content";
 import { AudioPlayer } from "./AudioPlayer";
+import type { GuestSession } from "../guest/session";
+import { CampusMap } from "../map/CampusMap";
+import { campusPoiMarkerSymbol, withCampusPoiLocations } from "../map/campusPoiLocations";
+import { LocationControls } from "../map/LocationControls";
+import { useCampusLocation } from "../map/useCampusLocation";
+import type { LocationFix } from "../map/geofence";
 
 function scrollToSection(id: string) {
   document.getElementById(id)?.scrollIntoView?.({ behavior: "smooth" });
 }
 
-function CampusMapPreview({ title }: { title: string }) {
+function CampusMapPreview({
+  title,
+  places,
+  selectedPlaceId,
+  onSelectPlace,
+  currentFix,
+}: {
+  title?: string;
+  places: Place[];
+  selectedPlaceId: string | null;
+  onSelectPlace: (placeId: string) => void;
+  currentFix: LocationFix | null;
+}) {
   return (
     <section
       className="campus-map-stage"
-      aria-label="Vùng dành cho sơ đồ khuôn viên"
+      aria-label="Bản đồ khuôn viên"
     >
       <div className="map-stage-topline">
         <span className="map-stage-label">
-          <Icon name="pin" size={15} /> SƠ ĐỒ KHUÔN VIÊN
+          <Icon name="pin" size={15} /> BẢN ĐỒ KHUÔN VIÊN
         </span>
-        <span className="map-stage-status">Đang chờ ảnh sơ đồ chính thức</span>
+        <span className="map-stage-status">Nền OpenStreetMap · cần Internet</span>
       </div>
-      <div className="map-placeholder">
-        <span className="map-placeholder-icon">
-          <Icon name="pin" size={32} />
-        </span>
-        <p className="map-placeholder-eyebrow">KHU VỰC BẢN ĐỒ</p>
-        <h3>Sơ đồ tương tác sẽ hiển thị tại đây</h3>
-        <p>
-          Vùng này được để sẵn để thay bằng ảnh sơ đồ khuôn viên khi bạn cung
-          cấp. Chưa có tọa độ khảo sát để đặt điểm lên bản đồ.
-        </p>
-      </div>
+      <CampusMap
+        places={places}
+        selectedPlaceId={selectedPlaceId}
+        onSelectPlace={onSelectPlace}
+        currentFix={currentFix}
+      />
       <div className="map-stage-footer">
         <span>
-          <i /> Chưa bật định vị GPS
+          <i /> Tọa độ do người dùng cung cấp · chưa xác minh thực địa
         </span>
-        <span>Đang chọn: {title}</span>
+        <span>{title ? `Đang chọn: ${title}` : "Chọn biểu tượng trên bản đồ để xem mô tả"}</span>
       </div>
     </section>
   );
@@ -45,20 +58,30 @@ export function ExplorePage({
   notice,
   places: campusPlaces,
   releaseId,
+  guest,
 }: {
   username: string;
   notice?: string;
   places: Place[];
   releaseId: string;
+  guest?: GuestSession;
 }) {
-  const [selectedId, setSelectedId] = useState<string>(campusPlaces[0].id);
+  const mappedPlaces = withCampusPoiLocations(campusPlaces);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [autoPlayRequest, setAutoPlayRequest] = useState<{ placeId: string; id: number } | null>(null);
   const selected =
-    campusPlaces.find((place) => place.id === selectedId) ?? campusPlaces[0];
+    mappedPlaces.find((place) => place.id === selectedId) ?? null;
 
-  function selectPlace(id: string, shouldScroll = false) {
+  const selectPlace = useCallback((id: string, shouldScroll = false) => {
     setSelectedId(id);
+    setAutoPlayRequest(null);
     if (shouldScroll) scrollToSection("campus-map");
-  }
+  }, []);
+  const handlePlaceDetected = useCallback((id: string) => {
+    setSelectedId(id);
+    setAutoPlayRequest((request) => ({ placeId: id, id: (request?.id ?? 0) + 1 }));
+  }, []);
+  const location = useCampusLocation(mappedPlaces, handlePlaceDetected);
 
   return (
     <div className="explore-page" id="explore-top">
@@ -75,12 +98,11 @@ export function ExplorePage({
               <span /> KHÁM PHÁ CƠ SỞ CHÍNH · ĐẠI HỌC SÀI GÒN
             </p>
             <h1 id="explore-title">
-              Xin chào, <em>{username}</em>
+              {username ? <>Xin chào, <em>{username}</em></> : "Xin chào"}
             </h1>
             <p className="explore-lead">
-              Xem nội dung giới thiệu các địa điểm trong khuôn viên và chọn nơi
-              bạn muốn tìm hiểu. Sơ đồ sẽ được cập nhật khi có ảnh bản đồ và vị
-              trí khảo sát.
+              Xem nội dung giới thiệu các địa điểm trong khuôn viên, chọn nơi
+              bạn muốn tìm hiểu và mở vị trí trên bản đồ.
             </p>
             <div
               className="explore-facts"
@@ -93,7 +115,7 @@ export function ExplorePage({
                 <Icon name="audio" size={15} /> Tiếng Việt
               </span>
               <span>
-                <Icon name="pin" size={15} /> Bản đồ đang cập nhật
+                <Icon name="pin" size={15} /> 10 vị trí trên bản đồ
               </span>
             </div>
             <div className="explore-actions">
@@ -134,13 +156,30 @@ export function ExplorePage({
               <p className="section-kicker">
                 <Icon name="pin" size={15} /> BẢN ĐỒ KHUÔN VIÊN
               </p>
-              <h2>Sơ đồ tương tác & các điểm thuyết minh</h2>
+              <h2>Bản đồ khuôn viên & các điểm thuyết minh</h2>
             </div>
-            <span className="source-state">Sơ đồ đang chờ bổ sung</span>
+            <span className="source-state">10 vị trí do người dùng cung cấp</span>
           </div>
           <div className="campus-explorer">
-            <CampusMapPreview title={selected.title} />
-            <aside className="place-detail" aria-live="polite">
+            <CampusMapPreview
+              title={selected?.title}
+              places={mappedPlaces}
+              selectedPlaceId={selectedId}
+              onSelectPlace={selectPlace}
+              currentFix={location.fix}
+            />
+            <LocationControls
+              places={mappedPlaces}
+              mode={location.mode}
+              message={location.message}
+              simulationPlaceId={location.simulationPlaceId}
+              fix={location.fix}
+              onSimulationPlaceChange={location.setSimulationPlaceId}
+              onStartGps={location.startGps}
+              onStartSimulation={location.startSimulation}
+              onStop={() => location.stop()}
+            />
+            {selected && <aside className="place-detail" aria-live="polite">
               <div className="detail-cover">
                 <img
                   src="/images/sgu-campus-wide.jpg"
@@ -150,6 +189,16 @@ export function ExplorePage({
                 <strong>Khuôn viên SGU</strong>
               </div>
               <h3 className="detail-place-title">{selected.title}</h3>
+                <button
+                  className="detail-dismiss"
+                  type="button"
+                  onClick={() => {
+                    setSelectedId(null);
+                    setAutoPlayRequest(null);
+                  }}
+                >
+                Đóng mô tả
+              </button>
               <div className="detail-meta">
                 <span>Nội dung</span>
                 <strong>Tiếng Việt</strong>
@@ -163,13 +212,19 @@ export function ExplorePage({
                   key={`${releaseId}/${selected.id}`}
                   src={`/api/v1/audio/${releaseId}/${selected.id}`}
                   title={selected.title}
+                  autoPlayRequestId={autoPlayRequest?.placeId === selected.id ? autoPlayRequest.id : null}
+                  onPlay={(trigger) => {
+                    if (trigger === "manual" || location.fix?.source === "gps") {
+                      void guest?.recordAudio(selected.id, releaseId);
+                    }
+                  }}
                 />
               ) : (
                 <p className="audio-hint">
                   Địa điểm này chưa có audio được công bố.
                 </p>
               )}
-            </aside>
+            </aside>}
           </div>
         </section>
 
@@ -177,31 +232,34 @@ export function ExplorePage({
           <div className="explore-section-heading poi-section-heading">
             <div>
               <p className="section-kicker">NỘI DUNG THUYẾT MINH</p>
-              <h2>Chọn một địa điểm để tìm hiểu</h2>
+              <h2>Các khu và nội dung thuyết minh</h2>
             </div>
             <span className="source-state">
               {campusPlaces.length} mô tả · Tiếng Việt
             </span>
           </div>
           <p className="source-disclaimer">
-            Nội dung bên dưới được lấy từ tài liệu bạn cung cấp. Vị trí mô tả
-            chưa được xác minh trên sơ đồ hoặc tại thực địa.
+            Nội dung lấy từ tài liệu bạn cung cấp; tọa độ marker chưa được xác minh
+            tại thực địa.
           </p>
           <div className="poi-grid">
-            {campusPlaces.map((place, index) => (
+            {campusPlaces.map((place) => (
               <article
                 className={`poi-card${selectedId === place.id ? " is-selected" : ""}`}
                 key={place.id}
                 aria-labelledby={`poi-title-${place.id}`}
               >
                 <div className="poi-card-heading">
-                  <span className="poi-number">
-                    {String(index + 1).padStart(2, "0")}
+                  <span
+                    className={`poi-number${/^Khu [A-E]$/.test(place.title) ? " poi-number-letter" : ""}`}
+                    aria-hidden="true"
+                  >
+                    {campusPoiMarkerSymbol(place.title)}
                   </span>
                   <span className="poi-language">VI · Nội dung</span>
                 </div>
                 <h3 id={`poi-title-${place.id}`}>{place.title}</h3>
-                <p>{place.description}</p>
+                <p className="poi-card-description">{place.description}</p>
                 <button
                   className="poi-select-button"
                   type="button"
@@ -223,10 +281,9 @@ export function ExplorePage({
             <Icon name="check" size={19} />
           </span>
           <span>
-            <strong>Thông tin vị trí sẽ được bổ sung sau khi khảo sát</strong>
+            <strong>GPS và mô phỏng đều dùng cùng geofence</strong>
             <small>
-              Hiện tại bạn có thể xem các mô tả nguồn; ứng dụng chưa dùng GPS để
-              xác định hoặc tự phát điểm nghe.
+              GPS chỉ bắt đầu khi bạn nhấn bật; vị trí không gửi lên máy chủ. Mô phỏng được gắn nhãn và không ghi thống kê thật. Geofence thử tự phát audio; nếu trình duyệt chặn, bạn có thể phát thủ công.
             </small>
           </span>
         </aside>

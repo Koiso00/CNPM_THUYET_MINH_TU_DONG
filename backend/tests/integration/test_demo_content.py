@@ -85,9 +85,13 @@ async def test_demo_http_atlas(settings_factory, user_test_collection, session_t
             ).status_code == 409
             counts = (await client.get("/api/v1/admin/dashboard")).json()
             assert counts == {
+                "day": counts["day"],
                 "users": 1,
                 "active_users": 1,
                 "audio_assets": 1,
+                "guest_visitors": 0,
+                "guest_journeys": 0,
+                "guest_audio_plays": 0,
                 "draft_places": 10,
                 "published_places": 10,
                 "published_tours": 1,
@@ -98,7 +102,7 @@ async def test_demo_http_atlas(settings_factory, user_test_collection, session_t
             target_grant = await auth.login("visitor", "another long password 1234")
             update = await client.put(
                 f"/api/v1/admin/users/{target.id}",
-                json={"role": "creator", "is_active": False},
+                json={"role": "user", "is_active": False},
                 headers=await csrf_headers(client),
             )
             assert update.status_code == 200 and not update.json()["is_active"]

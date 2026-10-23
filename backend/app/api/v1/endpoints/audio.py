@@ -1,19 +1,16 @@
-"""Authenticated MP3 delivery with single byte-range and HEAD support."""
+"""Published MP3 delivery with single byte-range and HEAD support."""
 
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, Request, Response
 
 from app.api.content_dependencies import get_audio_service
-from app.api.dependencies import current_principal
 
 router = APIRouter()
 
 
-@router.get("/{release_id}/{place_id}", dependencies=[Depends(current_principal)])
-@router.head(
-    "/{release_id}/{place_id}", dependencies=[Depends(current_principal)], include_in_schema=False
-)
+@router.get("/{release_id}/{place_id}")
+@router.head("/{release_id}/{place_id}", include_in_schema=False)
 async def audio(
     release_id: UUID, place_id: UUID, request: Request, service=Depends(get_audio_service)
 ):
