@@ -41,3 +41,11 @@ async def ensure_submission_indexes(collection: AsyncCollection) -> list[str]:
             IndexModel([("status", ASCENDING), ("updated_at", DESCENDING)]),
         ]
     )
+
+
+async def ensure_usage_event_indexes(collection: AsyncCollection) -> list[str]:
+    return await collection.create_indexes(
+        [
+            IndexModel([("event_type", ASCENDING), ("day", ASCENDING)]),
+        ]
+    )

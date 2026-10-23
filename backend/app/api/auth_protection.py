@@ -12,6 +12,7 @@ from app.models.common import utc_now
 async def protect_api(request: Request, call_next) -> Response:
     if not request.url.path.startswith("/api/"):
         return await call_next(request)
+    anonymous_event = request.url.path.startswith("/api/v1/events/guest")
     if request.method not in {"GET", "HEAD", "OPTIONS"}:
         settings = request.app.state.settings
         if settings.jwt_secret is None:
@@ -35,6 +36,10 @@ async def protect_api(request: Request, call_next) -> Response:
                 403,
                 headers={"Cache-Control": "no-store"},
             )
+        if anonymous_event:
+            response = await call_next(request)
+            response.headers["Cache-Control"] = "no-store"
+            return response
         cookie = request.cookies.get(CSRF_COOKIE, "")
         header = request.headers.get("x-csrf-token", "")
         sid = refresh_session_id(request.cookies.get(REFRESH_COOKIE)) or ""

@@ -11,12 +11,16 @@ type Account = {
   is_protected?: boolean;
 };
 type Dashboard = {
+  day: string;
   users: number;
   active_users: number;
   audio_assets: number;
   draft_places: number;
   published_places: number;
   published_tours: number;
+  guest_visitors: number;
+  guest_journeys: number;
+  guest_audio_plays: number;
 };
 const metrics: {
   key: keyof Dashboard;
@@ -29,6 +33,9 @@ const metrics: {
   { key: "published_places", label: "Địa điểm đã công bố", icon: "check" },
   { key: "audio_assets", label: "Audio đã nhập", icon: "audio" },
   { key: "published_tours", label: "Tour đã công bố", icon: "grid" },
+  { key: "guest_visitors", label: "Khách trong ngày", icon: "users" },
+  { key: "guest_journeys", label: "Hành trình trong ngày", icon: "pin" },
+  { key: "guest_audio_plays", label: "Lượt phát audio trong ngày", icon: "audio" },
 ];
 const PAGE_SIZE = 20;
 function accountMessage(cause: unknown) {
@@ -192,8 +199,8 @@ export function ManagementPage({ client }: { client: AuthClient }) {
           </button>
         </div>
         <p>
-          Số liệu từ cơ sở dữ liệu. Chưa thống kê lượt nghe hoặc lượt đến theo
-          GPS.
+          Số liệu từ cơ sở dữ liệu. Khách được đếm theo ID trình duyệt trong ngày
+          ICT ({stats?.day ?? "đang tải"}); chưa có GPS.
         </p>
         {statsLoading && <p role="status">Đang tải số liệu…</p>}
         {statsError && (
@@ -210,7 +217,7 @@ export function ManagementPage({ client }: { client: AuthClient }) {
                   <Icon name={metric.icon} size={18} />
                   {metric.label}
                 </span>
-                <strong>{stats[metric.key]}</strong>
+                <strong>{stats[metric.key] ?? 0}</strong>
               </article>
             ))}
           </div>
@@ -293,7 +300,7 @@ export function ManagementPage({ client }: { client: AuthClient }) {
                       }
                     >
                       <option value="user">Người tham quan</option>
-                      <option value="creator">Người tạo nội dung</option>
+                      {account.role === "creator" && <option value="creator" disabled>Creator cũ — chờ chuyển đổi</option>}
                       <option value="admin">Quản trị viên</option>
                     </select>
                     <label>

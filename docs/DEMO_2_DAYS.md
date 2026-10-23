@@ -1,3 +1,7 @@
+> **Ưu tiên mới ngày 23/10/2026:** tạm hoãn toàn bộ QR (tạo/tải/in mã, mở từ QR, quét trong web và thống kê QR) đến khi hoàn thành Admin và thiết lập địa điểm/audio phát. Các thiết kế QR bên dưới được giữ cho giai đoạn sau. “Địa điểm phát” trước mắt là địa điểm gắn nội dung/MP3 và chọn nghe thủ công; nếu cần tự kích hoạt theo tọa độ/GPS thì phải chốt thêm.
+
+> **Cập nhật kế hoạch demo 23/10/2026:** khách không đăng nhập, giữ ID khách khi quay lại cùng trình duyệt; mỗi lần tham quan có ID hành trình riêng. Creator/Admin gộp thành một vai trò, tạo một Admin ban đầu lúc thiết lập và xóa User/Creator cũ khi chuyển đổi. Có hai luồng QR; dashboard đếm ID khách truy cập theo ngày, hành trình và QR/audio theo điểm. Xem [kế hoạch demo mới](DEMO_GUEST_QR_PLAN.md). Đây là kế hoạch, chưa triển khai; các phần bên dưới mô tả ứng dụng đang chạy hoặc lịch sử.
+
 # Phạm vi demo ưu tiên trong 2 ngày
 
 Người dùng xác nhận ngày 21/10/2026. Đây là mục tiêu triển khai ngắn hạn, không phải cam kết
@@ -5,14 +9,15 @@ hoàn thành toàn bộ [kế hoạch gốc](PROJECT_PLAN.md). Chia nhỏ, test 
 
 ## Phạm vi đã chọn
 
+Cập nhật 23/10: áp dụng [kế hoạch khách, QR và vai trò nội bộ gộp](DEMO_GUEST_QR_PLAN.md). Người nghe không đăng nhập; Creator/Admin gộp thành vai trò quản trị demo.
+
 - Giao diện đăng ký/đăng nhập và phân quyền truy cập.
 - Người nghe xem/chọn địa điểm và phát audio thủ công.
 - Admin quản lý địa điểm, nội dung/audio và user.
 - Dashboard lấy số liệu từ dữ liệu thật trong hệ thống; không gán số người/lượt nghe giả.
 - Tạm hoãn GPS, geofence, offline, AI và dịch tự động trong demo.
 
-Giữ mô hình ba vai trò hiện có. Không mặc nhiên gộp Creator/Admin; luồng Creator duyệt nội dung
-đầy đủ vẫn nằm trong kế hoạch dài hạn, không phải đầu việc ưu tiên demo vừa chốt.
+Phần mô tả và thứ tự theo ngày dưới đây phản ánh kế hoạch cũ đã triển khai. Kế hoạch demo mới ưu tiên một vai trò quản trị và các luồng khách/QR trong tài liệu liên kết ở trên.
 Chưa đưa hiện diện tại POI/lượt đến theo GPS vào demo.
 
 ## Thứ tự thực hiện dự kiến

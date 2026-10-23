@@ -2,15 +2,18 @@ import { useEffect, useState } from "react";
 import { ApiError, AuthClient } from "../auth/client";
 import { ExplorePage } from "./ExplorePage";
 import type { PublishedCampus } from "./content";
+import type { GuestSession } from "../guest/session";
 
 export function ExploreScreen({
   client,
   username,
   notice,
+  guest,
 }: {
   client: AuthClient;
   username: string;
   notice?: string;
+  guest?: GuestSession;
 }) {
   const [content, setContent] = useState<PublishedCampus | null>(null);
   const [error, setError] = useState("");
@@ -58,6 +61,7 @@ export function ExploreScreen({
       notice={notice}
       places={content.places}
       releaseId={content.release_id}
+      guest={guest}
     />
   );
 }

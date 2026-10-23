@@ -1,3 +1,9 @@
+> **Ưu tiên cập nhật ngày 24/10/2026:** OSM, 10 tọa độ người dùng cung cấp và luồng GPS thật opt-in/mô phỏng/geofence frontend đã triển khai. Cần kiểm thử trên HTTPS/điện thoại và khảo sát ngưỡng trước nghiệm thu; QR chỉ bắt đầu sau đó.
+
+> **Trạng thái demo 23/10/2026:** khách không đăng nhập; welcome, ID khách/hành trình, nội dung/audio công khai, Admin và thống kê visit/journey/audio đã triển khai. QR vẫn hoãn. Chi tiết tại [kế hoạch khách/QR](docs/DEMO_GUEST_QR_PLAN.md) và [báo cáo tiến độ](docs/test-reports/DEMO_GUEST_PROGRESS_2026_10_23.md).
+
+> **Cập nhật 24/10/2026:** người dùng đã nghe và duyệt 10 MP3 demo; Atlas đã dọn các tài khoản User/Creator legacy và đề xuất Creator được chỉ định. Còn `phong` là Admin active; giữ nguyên tour/release/audio. Hồi quy mới nhất: backend 173, frontend 39, build đạt, E2E 12/12; chi tiết và giới hạn ở các báo cáo liên kết phía trên.
+
 # Hướng dẫn dành cho AI và người đóng góp
 
 ## Đọc trước khi làm việc
@@ -9,8 +15,8 @@
 
 ## Nguồn quyết định
 
-- Bản được người dùng chọn là kế hoạch đầy đủ dự kiến 10 tuần, ba vai trò
-  **User / Creator / Admin**. Không tự áp dụng phương án demo 5 ngày hoặc gộp vai trò.
+- Kế hoạch gốc dài hạn dự kiến 10 tuần, ba vai trò **User / Creator / Admin** vẫn được giữ.
+  Demo hiện tại gộp Creator vào Admin theo yêu cầu mới; xem kế hoạch demo 23/10.
 - Chưa đưa thống kê hiện diện tại POI, báo cáo CSV hoặc phương án chỉ dùng OSM trực tuyến
   vào phạm vi mặc định. Các thay đổi đó đã được thay thế khi người dùng chọn giữ nguyên kế hoạch gốc.
 - Yêu cầu mới trực tiếp từ người dùng có thể thay đổi phạm vi. Khi có thay đổi, cập nhật bối cảnh và tài liệu liên quan.
@@ -35,10 +41,9 @@
 
 ## Trạng thái và kiểm tra
 
-Cập nhật tách trang 22/10: Nội dung tại `#/admin` quản lý địa điểm/văn bản/audio;
-Quản trị tại `#/management` có dashboard/tài khoản, cả hai dành cho Admin. Creator ở
-`#/creator`, đề xuất toàn tour trong bản riêng và gửi Admin duyệt; Admin áp dụng vào nháp rồi
-công bố riêng. Xem docs/test-reports/CREATOR_REVIEW.md.
+Trạng thái demo 23/10: Nội dung tại `#/admin` quản lý địa điểm/văn bản/audio;
+Quản trị tại `#/management` có dashboard/tài khoản, cả hai dành cho Admin. Creator UI/API
+và quy trình gửi/duyệt đã gỡ khỏi demo. Admin biên soạn trực tiếp rồi lưu nháp/công bố.
 
 Cập nhật 22/10/2026: đã có demo dữ liệu MongoDB/snapshot, audio GridFS/Range/trình phát,
 Admin sửa/thêm/xóa điểm, công bố/gỡ, upload MP3 ≤10 MiB, quản lý user và dashboard đếm thật.

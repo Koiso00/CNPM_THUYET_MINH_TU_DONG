@@ -4,6 +4,48 @@ import { resolve } from "node:path";
 
 const password = "only-for-isolated-e2e-12345";
 
+test("guest returns to welcome, starts a journey, reloads and reuses visitor id across tabs", async ({
+  page,
+  context,
+}) => {
+  const visitRequest = page.waitForResponse((response) =>
+    response.url().includes("/api/v1/events/guest") && response.request().method() === "POST",
+  );
+  await page.goto("/#/welcome");
+  await expect(page.getByRole("heading", { name: /mỗi góc trường/i })).toBeVisible();
+  await visitRequest;
+  const visitorId = await page.evaluate(() => localStorage.getItem("sgu.guest.visitor_id"));
+  expect(visitorId).toBeTruthy();
+
+  const firstJourneyRequest = page.waitForResponse((response) =>
+    response.url().includes("/api/v1/events/guest") && response.request().method() === "POST",
+  );
+  await page.getByRole("button", { name: "Bắt đầu tham quan" }).click();
+  const firstEvent = await firstJourneyRequest;
+  expect((await firstEvent.json()).accepted).toBe(true);
+  await expect(page).toHaveURL(/#\/explore$/);
+  const firstJourneyId = await page.evaluate(() => localStorage.getItem("sgu.guest.journey_id"));
+  expect(firstJourneyId).toBeTruthy();
+
+  await page.reload();
+  await expect(page.getByRole("heading", { name: "Xin chào" })).toBeVisible();
+  const secondTab = await context.newPage();
+  await secondTab.goto("/#/welcome");
+  await expect(secondTab.getByRole("heading", { name: /mỗi góc trường/i })).toBeVisible();
+  expect(await secondTab.evaluate(() => localStorage.getItem("sgu.guest.visitor_id"))).toBe(visitorId);
+  expect(await secondTab.evaluate(() => localStorage.getItem("sgu.guest.journey_id"))).toBe(firstJourneyId);
+
+  const secondJourneyRequest = secondTab.waitForResponse((response) =>
+    response.url().includes("/api/v1/events/guest") && response.request().method() === "POST",
+  );
+  await secondTab.getByRole("button", { name: "Bắt đầu tham quan" }).click();
+  const secondEvent = await secondJourneyRequest;
+  expect((await secondEvent.json()).accepted).toBe(true);
+  const secondJourneyId = await secondTab.evaluate(() => localStorage.getItem("sgu.guest.journey_id"));
+  expect(secondJourneyId).toBeTruthy();
+  expect(secondJourneyId).not.toBe(firstJourneyId);
+});
+
 test("manages a disposable account from the separate system page", async ({
   page,
 }, info) => {
@@ -20,7 +62,7 @@ test("manages a disposable account from the separate system page", async ({
     page.getByRole("heading", { name: "Quản trị hệ thống" }),
   ).toBeVisible();
   await expect(page.getByLabel("Vai trò e2e_admin")).toBeDisabled();
-  await page.getByLabel(`Vai trò ${username}`).selectOption("creator");
+  await page.getByLabel(`Vai trò ${username}`).selectOption("admin");
   await page.getByLabel(`Hoạt động ${username}`).uncheck();
   await page
     .getByRole("button", { name: `Lưu ${username}`, exact: true })
@@ -36,7 +78,7 @@ test("manages a disposable account from the separate system page", async ({
   const stored = (await users.json()).find(
     (item: { username: string }) => item.username === username,
   );
-  expect(stored.role).toBe("creator");
+  expect(stored.role).toBe("admin");
   expect(stored.is_active).toBe(false);
   await expect(page.getByRole("button", { name: "Làm mới số liệu" })).toBeEnabled();
   expect(
@@ -160,57 +202,13 @@ test("plays actual GridFS audio, switches place, edits draft and publishes from 
   });
 });
 
-test("Creator submits a full-tour proposal for Admin review before publication", async ({ page }) => {
-  await page.goto("/#/login");
-  await page.getByLabel("Tên đăng nhập").fill("e2e_creator");
-  await page.getByLabel("Mật khẩu", { exact: true }).fill(password);
-  await page.getByRole("button", { name: "Đăng nhập", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "Xin chào, e2e_creator" })).toBeVisible();
-  const publishedBefore = await page.request.get("/api/v1/content/campus");
-  const publicDescription = (await publishedBefore.json()).places[0].description;
+test("retired Creator route opens Admin authoring without a review queue", async ({ page }) => {
+  await login(page);
   await page.goto("/#/creator");
-  await page.getByRole("button", { name: "Tạo từ bản nháp hiện tại" }).click();
-  const proposalTitle = `Đề xuất-${Date.now()}`;
-  const proposalMarker = `Nội dung Creator ${Date.now()}`;
-  const originalTitle = await page.getByLabel("Tên tour").inputValue();
-  await page.getByLabel("Tên tour").fill(proposalTitle);
-  const description = page.getByLabel("Nội dung thuyết minh").first();
-  const original = await description.inputValue();
-  await description.fill(original + `\n${proposalMarker}`);
-  await page.getByRole("button", { name: "Lưu đề xuất" }).click();
-  await expect(page.getByRole("status")).toContainText("Đã lưu đề xuất riêng");
-  await page.getByRole("button", { name: "Gửi Admin duyệt" }).click();
-  await expect(page.getByRole("status")).toContainText("Đã gửi toàn bộ đề xuất");
-  await page.getByRole("button", { name: "Đăng xuất" }).click();
-
-  await page.getByLabel("Tên đăng nhập").fill("e2e_admin");
-  await page.getByLabel("Mật khẩu", { exact: true }).fill(password);
-  await page.getByRole("button", { name: "Đăng nhập", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "Xin chào, e2e_admin" })).toBeVisible();
-  await page.goto("/#/explore");
-  await page.getByRole("link", { name: "Admin", exact: true }).click();
-  await page.getByRole("link", { name: "Nội dung", exact: true }).click();
-  await page.getByRole("button", { name: `${proposalTitle} · 10 địa điểm` }).click();
-  await page.getByRole("button", { name: "Duyệt đề xuất" }).click();
-  await page.getByRole("button", { name: "Đưa vào nháp Nội dung" }).click();
-  await expect(page.getByText("Đã đưa đề xuất vào nháp Nội dung. Công bố vẫn cần thao tác riêng.")).toBeVisible();
-  const publicBeforePublish = await page.request.get("/api/v1/content/campus");
-  expect((await publicBeforePublish.json()).places[0].description).toBe(publicDescription);
-  const publishResponse = page.waitForResponse((response) =>
-    response.url().endsWith("/api/v1/admin/campus/publish"),
-  );
-  await page.getByRole("button", { name: "Công bố phiên bản đã lưu" }).click();
-  const publishedResult = await publishResponse;
-  expect(publishedResult.status(), await publishedResult.text()).toBe(200);
-  await expect(page.getByText("Đã công bố phiên bản mới cho người tham quan.")).toBeVisible();
-  const publicAfterPublish = await page.request.get("/api/v1/content/campus");
-  expect((await publicAfterPublish.json()).places[0].description).toBe(original + `\n${proposalMarker}`);
-  // Restore this isolated fixture so the next viewport can exercise its matching audio.
-  await page.getByLabel("Tên tour").fill(originalTitle);
-  await page.getByLabel("Nội dung thuyết minh").fill(original);
-  await page.getByRole("button", { name: "Lưu bản nháp" }).click();
-  await expect(page.getByRole("status").filter({ hasText: "Đã lưu bản nháp" })).toBeVisible();
-  await page.getByRole("button", { name: "Công bố phiên bản đã lưu" }).click();
-  await expect(page.getByRole("status").filter({ hasText: "Đã công bố" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Nội dung khuôn viên" })).toBeVisible();
+  await expect(page).toHaveURL(/#\/admin$/);
+  await expect(page.getByRole("button", { name: "Lưu bản nháp" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Duyệt đề xuất" })).toHaveCount(0);
+  expect((await page.request.get("/api/v1/creator/campus")).status()).toBe(404);
+  expect((await page.request.get("/api/v1/admin/submissions")).status()).toBe(404);
 });
-

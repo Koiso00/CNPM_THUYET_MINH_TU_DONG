@@ -1,12 +1,15 @@
+> **Ưu tiên cập nhật ngày 24/10/2026:** bản đồ OpenStreetMap và 10 tọa độ do người dùng cung cấp đã có; GPS thật bật chủ động, mô phỏng và geofence cùng luồng frontend đã triển khai. Cần xác minh GPS/tọa độ thực địa và kiểm thử thiết bị; QR chỉ làm sau khi nghiệm thu các phần này.
+
+> **Trạng thái demo 23/10/2026:** khách không đăng nhập; welcome, ID khách/hành trình, nội dung/audio công khai, Admin và thống kê visit/journey/audio đã triển khai. QR vẫn hoãn. Chi tiết tại [kế hoạch khách/QR](docs/DEMO_GUEST_QR_PLAN.md) và [báo cáo khách](docs/test-reports/DEMO_GUEST_PROGRESS_2026_10_23.md).
+
+> **Cập nhật 24/10/2026:** người dùng xác nhận 10 MP3 demo đúng; tài khoản User/Creator legacy và đề xuất Creator được chỉ định đã dọn theo kế hoạch. Atlas hiện còn Admin `phong`; tour, release và audio được giữ nguyên. GPS/geofence/autoplay frontend có 54 test đạt, build/typecheck đạt; autoplay/GPS trên điện thoại và khảo sát ngưỡng chưa nghiệm thu. QR vẫn hoãn.
+
 # Website thuyết minh cơ sở chính Đại học Sài Gòn
 
-Website Việt–Anh dành cho điện thoại và máy tính, có GPS thật/mô phỏng,
-thuyết minh theo địa điểm và gói ngoại tuyến theo kế hoạch.
-**Hiện tại: có đăng nhập, nội dung từ MongoDB, nghe MP3/GridFS, quản trị nội dung/audio/user và dashboard dữ liệu thật cho demo tiếng Việt.**
+Website dành cho điện thoại và máy tính; demo hiện tại dùng tiếng Việt.
+**Hiện tại: khách có thể xem nội dung công bố và nghe MP3/GridFS không cần đăng nhập; Admin quản trị nội dung/audio/user và dashboard có thống kê khách cơ bản cho demo tiếng Việt.**
 
-Ưu tiên mới được chốt: [demo 2 ngày](docs/DEMO_2_DAYS.md), gồm giao diện đăng nhập,
-nghe audio, quản lý địa điểm/nội dung/audio/user và dashboard dữ liệu thật.
-GPS, offline, AI và dịch tự động tạm hoãn trong demo.
+Kế hoạch gốc 10 tuần vẫn là hướng dài hạn. Demo hiện hành theo [kế hoạch khách/QR](docs/DEMO_GUEST_QR_PLAN.md): Admin, địa điểm/audio và khách không đăng nhập; QR, offline, AI và dịch tự động tạm hoãn. GPS/geofence đang ở giai đoạn thử nghiệm trên trình duyệt.
 Thiết kế offline dài hạn đã chốt: tải tùy chọn theo ngôn ngữ, thêm ngôn ngữ sau,
 bản đồ/ảnh dùng chung; không yêu cầu khách tải tất cả ngôn ngữ.
 
@@ -17,20 +20,22 @@ Hướng dẫn triển khai/cập nhật demo trên Render và kết nối Atlas
 Nguồn chuẩn là [bản kế hoạch gốc](docs/PROJECT_PLAN.md), được giữ nguyên từ bản người dùng chọn:
 lộ trình dự kiến 10 tuần, ba vai trò **User / Creator / Admin**, 8–10 điểm ngoài trời,
 MapLibre/PMTiles, dịch/TTS, offline pack, Gemini và dashboard.
-Không dùng phương án rút gọn 5 ngày hoặc gộp Creator/Admin.
+Demo hiện tại gộp Creator vào Admin theo cập nhật 23/10; kế hoạch gốc ba vai trò vẫn là hướng dài hạn.
 
 | Thành phần | Trạng thái hiện tại |
 | --- | --- |
-| React 19.2 + TypeScript + Vite 7 | Có UI auth/khám phá; Creator gửi đề xuất toàn tour để Admin duyệt; Admin có nội dung/audio/dashboard/user |
+| React 19.2 + TypeScript + Vite 7 | Welcome khách, explore, đăng nhập Admin; Admin có nội dung/audio/dashboard/user |
 | FastAPI | Có application factory, liveness/readiness và OpenAPI |
-| Auth | Có API + UI đăng ký/đăng nhập, gia hạn/khôi phục phiên/đăng xuất và điều hướng theo role |
+| Auth | Đăng nhập/gia hạn/khôi phục phiên/đăng xuất dành cho Admin; người nghe không cần tài khoản |
 | MongoDB | P1.1 hoàn tất: connection pool/readiness, 34 test cục bộ và ping Atlas thật đạt |
 | User/session | Có model, repository, unique/TTL index trên Atlas; 69 test cục bộ và 12 test Atlas đạt |
 | GridFS / audio demo | Đã nhập 10 MP3; có API GET/HEAD/Range, phát thủ công và thay MP3 ≤10 MB từ Admin |
 | Nội dung / quản trị | Nhập 10 mô tả thành nháp; sửa/thêm/xóa điểm, lưu, công bố/gỡ công bố; snapshot độc lập |
-| Creator / duyệt | Creator sửa bản riêng toàn tour, gửi Admin duyệt; duyệt chỉ áp dụng vào nháp, Admin công bố riêng |
+| Creator / duyệt | Workflow Creator đã gỡ khỏi demo; vai trò vẫn thuộc kế hoạch dài hạn |
+| Guest / dashboard | ID khách và hành trình lưu trong browser; lượt truy cập/hành trình/audio theo ngày ICT |
 | User / dashboard | Danh sách, đổi vai trò, khóa/mở khóa; số tài khoản/địa điểm/tour công bố/audio từ database |
-| Bản đồ thật/GPS, offline, AI | Chưa triển khai; trang khám phá đang để vùng giữ chỗ cho ảnh sơ đồ |
+| Bản đồ/GPS/geofence | OSM + 10 tọa độ người dùng cung cấp; GPS thật bật chủ động và mô phỏng cùng geofence phía frontend; chưa nghiệm thu thực địa/thiết bị |
+| Offline, AI | Chưa triển khai; tiếp tục hoãn |
 | Docker/Compose | Có cấu hình, chưa chạy xác minh trên máy hiện tại |
 | Nội dung tour và tài khoản | Có nháp từ nguồn người dùng; Admin được cấp tường minh cho tài khoản có sẵn; không có mật khẩu mặc định |
 
@@ -100,30 +105,31 @@ npm run dev
 ```
 
 Mở địa chỉ Vite in trong terminal, mặc định [http://localhost:5173](http://localhost:5173).
-Giao diện đăng nhập ở /#/login, đăng ký ở /#/register. Tạo tài khoản chỉ cấp User.
-Creator/Admin không có tài khoản hoặc mật khẩu mặc định; cấp Admin bằng lệnh bên dưới.
+Khách bắt đầu tại `/#/welcome`; đăng nhập nội bộ ở `/#/login`. Đăng ký đã bỏ khỏi UI demo.
+Không có mật khẩu Admin mặc định; xem lệnh thiết lập bên dưới.
 Vite proxy /api tới backend để tránh tách nguồn trong quá trình phát triển.
 Không đặt khóa API vào frontend.
 
 ### Chuẩn bị demo nội dung/audio
 
-Từ backend, sau khi cấu hình Atlas và đăng ký một tài khoản:
+Từ backend, sau khi cấu hình Atlas; lệnh thiết lập Admin dùng tài khoản `phong`:
 
 ```powershell
 uv run --frozen python -m app.commands.seed_demo_content
 uv run --frozen python -m app.commands.import_demo_audio
-uv run --frozen python -m app.commands.bootstrap_admin ten_dang_nhap_da_dang_ky
+uv run --frozen python -m app.commands.setup_admin phong
 ```
 
-`uv run --frozen python -m app.commands.init_database` tạo bổ sung index đề xuất Creator
-cùng index users/sessions hiện có; lệnh có thể chạy lại an toàn.
+Nếu `phong` chưa tồn tại, lệnh hỏi mật khẩu khởi tạo khi chạy tương tác; có thể truyền qua `INITIAL_ADMIN_PASSWORD` trong phiên lệnh. Nếu tài khoản đã tồn tại và đang active, lệnh giữ nguyên mật khẩu; tài khoản inactive không tự được mở khóa.
+
+`uv run --frozen python -m app.commands.init_database` tạo/cập nhật index ứng dụng.
 
 Lệnh seed chỉ tạo bản nháp khi chưa có, không ghi đè. Lệnh import cần bộ MP3/manifest
 ở `data/generated/audio/vi-male` (đã có trên máy hiện tại, không commit); kiểm tra checksum
 trước khi nhập GridFS. Chạy lại không nhân đôi các file đã nhập.
 Đăng nhập Admin → **Nội dung** → kiểm tra/nghe thử → **Công bố phiên bản đã lưu**.
 Người nghe chỉ thấy bản đã công bố; sửa nháp không thay bản đang nghe.
-Admin mở **Quản trị** (`/#/management`) để xem dashboard, đổi vai trò hoặc khóa/mở khóa
+Khách mở trang mặc định để bắt đầu hành trình; Admin mở **Quản trị** (`/#/management`) để xem dashboard, đổi vai trò hoặc khóa/mở khóa
 tài khoản; **Nội dung** (`/#/admin`) giữ các chức năng địa điểm và audio.
 Demo dùng tiếng Việt, công bố nội dung chưa có tọa độ được phép; chưa phải release
 Việt–Anh/offline của kế hoạch dài hạn. Xem [báo cáo demo](docs/test-reports/DEMO_CONTENT_AUDIO_ADMIN.md).

@@ -16,7 +16,8 @@ export function Icon({
     | "grid"
     | "pin"
     | "audio"
-    | "users";
+    | "users"
+    | "globe";
   size?: number;
   style?: CSSProperties;
 }) {
@@ -84,6 +85,12 @@ export function Icon({
         <path d="M2 21v-2a7 7 0 0 1 14 0v2M17 5a3 3 0 0 1 0 6M21 21v-2a7 7 0 0 0-4-6" />
       </>
     ),
+    globe: (
+      <>
+        <circle cx="12" cy="12" r="9" />
+        <path d="M3 12h18M12 3c2.4 2.5 3.6 5.5 3.6 9S14.4 18.5 12 21c-2.4-2.5-3.6-5.5-3.6-9S9.6 5.5 12 3Z" />
+      </>
+    ),
   };
   return (
     <svg
@@ -107,7 +114,7 @@ export function Brand() {
   return (
     <a
       className="brand"
-      href="#/login"
+      href="#/welcome"
       aria-label="SGU Campus Guide — Trang đầu"
     >
       <span className="brand-symbol">

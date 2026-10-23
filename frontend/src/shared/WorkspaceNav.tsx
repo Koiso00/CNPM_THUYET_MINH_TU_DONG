@@ -32,14 +32,6 @@ export function WorkspaceNav({ role, route }: { role: Role; route: string }) {
           <Icon name="grid" /> Quản trị
         </a>
       )}
-      {role === "creator" && (
-        <a
-          href="#/creator"
-          aria-current={route === "#/creator" ? "page" : undefined}
-        >
-          <Icon name="audio" /> Nội dung
-        </a>
-      )}
       <span className="role-badge">{roleLabels[role]}</span>
     </nav>
   );

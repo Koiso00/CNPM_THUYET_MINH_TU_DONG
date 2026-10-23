@@ -1,5 +1,6 @@
 """Admin-only campus authoring; all mutations also pass global CSRF checks."""
 
+from datetime import date
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
@@ -8,45 +9,14 @@ from app.api.content_dependencies import (
     get_admin_service,
     get_audio_service,
     get_content_service,
-    get_submission_service,
 )
 from app.api.dependencies import require_roles
 from app.models.user import UserRole
 from app.schemas.admin import UpdateUser
 from app.schemas.content import Revision, SaveCampus
-from app.schemas.submissions import ReviewSubmission
 
 router = APIRouter()
 admin = require_roles(UserRole.ADMIN)
-
-
-@router.get("/submissions", dependencies=[Depends(admin)])
-async def submissions(
-    offset: int = Query(0, ge=0),
-    limit: int = Query(50, ge=1, le=100),
-    service=Depends(get_submission_service),
-):
-    return await service.review_queue(offset, limit)
-
-
-@router.post("/submissions/{submission_id}/review")
-async def review_submission(
-    submission_id: UUID,
-    payload: ReviewSubmission,
-    principal=Depends(admin),
-    service=Depends(get_submission_service),
-):
-    return await service.review(str(submission_id), payload, str(principal.user.id))
-
-
-@router.post("/submissions/{submission_id}/apply")
-async def apply_submission(
-    submission_id: UUID,
-    payload: Revision,
-    principal=Depends(admin),
-    service=Depends(get_submission_service),
-):
-    return await service.apply(str(submission_id), payload.revision, str(principal.user.id))
 
 
 @router.get("/campus", dependencies=[Depends(admin)])
@@ -90,8 +60,8 @@ async def update_user(
 
 
 @router.get("/dashboard", dependencies=[Depends(admin)])
-async def dashboard(service=Depends(get_admin_service)):
-    return await service.dashboard()
+async def dashboard(day: date | None = Query(None), service=Depends(get_admin_service)):
+    return await service.dashboard(day.isoformat() if day else None)
 
 
 @router.get("/audio", dependencies=[Depends(admin)])

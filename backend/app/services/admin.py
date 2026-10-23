@@ -1,5 +1,7 @@
 """Account administration and dashboard rules for the two-day demo."""
 
+from datetime import UTC, datetime, timedelta, timezone
+
 from fastapi import HTTPException
 
 
@@ -37,7 +39,9 @@ class AdminService:
             await self.repository.revoke_sessions(user_id)
         return self.user_view(user)
 
-    async def dashboard(self):
+    async def dashboard(self, day=None):
+        if day is None:
+            day = datetime.now(UTC).astimezone(timezone(timedelta(hours=7))).date().isoformat()
         counts = await self.repository.counts()
         tour = await self.content.repository.get()
         published = None
@@ -45,6 +49,8 @@ class AdminService:
             published = await self.content.repository.release(tour["published_release_id"])
         return {
             **counts,
+            "day": day,
+            **await self.repository.guest_counts(day),
             "draft_places": len(tour["draft"]["places"]) if tour else 0,
             "published_places": len(published["draft"]["places"]) if published else 0,
             "published_tours": int(published is not None),

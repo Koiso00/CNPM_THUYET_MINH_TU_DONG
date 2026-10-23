@@ -1,0 +1,53 @@
+# Tiến độ bản đồ khuôn viên — 24/10/2026
+
+## Phạm vi và quyết định
+
+- Người dùng chọn OpenStreetMap trực tuyến làm nguồn nền bản đồ.
+- Thứ tự công việc đã xác nhận: hiển thị bản đồ khuôn viên → GPS thật/mô phỏng và geofence → QR.
+- Người dùng đã cung cấp đủ 10 cặp vĩ độ/kinh độ theo tên địa điểm ngày 24/10; đã nhập vào dữ liệu giao diện và chuyển đúng thứ tự GeoJSON `[kinh độ, vĩ độ]`.
+- Tâm nhìn ban đầu đặt tại khuôn viên cơ sở chính theo đối tượng khuôn viên trên bản đồ, chỉ dùng để mở bản đồ; không đại diện tọa độ của bất kỳ POI nào.
+
+## Đã triển khai
+
+- Thêm MapLibre GL JS và bản đồ raster tương tác vào trang Explore.
+- Có điều khiển phóng to/thu nhỏ, attribution OpenStreetMap, trạng thái tải/lỗi và nút thử lại.
+- Giới hạn góc nghiêng để bản đồ giữ dạng phẳng; hỗ trợ cấu hình URL tile qua `VITE_OSM_TILE_URL`.
+- Trang thể hiện rõ cần Internet và tọa độ địa điểm đang chờ khảo sát; chưa xin quyền GPS hoặc triển khai QR.
+- Đã gắn marker có nhãn cho 10 địa điểm; chọn marker đồng bộ địa điểm đang xem trong panel nội dung.
+- Tọa độ là dữ liệu người dùng cung cấp, chưa được kiểm chứng thực địa. Không suy diễn bán kính geofence.
+- Sửa lỗi người dùng phản ánh 24/10: dữ liệu release dùng UUID, trong khi lần đầu ghép tọa độ theo ID mẫu cố định nên không có marker. Hiện ghép theo tên địa điểm trong release; marker là nút DOM, không phụ thuộc glyph/layer nhãn của style raster.
+- Theo góp ý giao diện tiếp theo: tăng chiều cao bản đồ (mobile tối thiểu 480px, desktop 540px), mở bản đồ toàn chiều ngang trước; thay số trên marker bằng biểu tượng theo loại địa điểm; panel mô tả/audio chỉ hiện sau khi chọn marker hoặc nút địa điểm. Danh sách bên dưới có tên/biểu tượng, nội dung thuyết minh đầy đủ và nút chọn; phần văn bản không bị cắt ngắn.
+- Cập nhật nhãn marker theo góp ý: Khu A–E dùng chữ cái A, B, C, D, E; các điểm còn lại giữ biểu tượng theo loại.
+- Cập nhật hướng dẫn ưu tiên trong README, AGENTS, kiến trúc, bối cảnh, kế hoạch và bảng công việc.
+
+## Kiểm tra
+
+- Frontend test: **45/45 đạt** (bao gồm đối chiếu đủ tọa độ, ký hiệu A–E và các biểu tượng loại điểm, chọn địa điểm từ marker, ẩn mô tả trước khi chọn và hiện mô tả sau khi chọn).
+- Typecheck và production build: **đạt**.
+- Lượt kiểm tra đầu trên trình duyệt: tile bị lỗi tải. Sau đó khi mở lại `#/explore`, nền OSM đã tải và hiện attribution; trạng thái báo “Bản đồ trực tuyến”.
+- Sau sửa ghép tên/UUID: trình duyệt hiển thị đủ marker đánh số **1–10**; bấm marker **8** cập nhật panel sang “Căng tin”.
+- Sau thiết kế lại: trình duyệt desktop hiển thị bản đồ mở rộng và đủ biểu tượng (tòa nhà, căng tin, sách, gửi xe, thể thao); panel mô tả không hiện lúc đầu, chỉ xuất hiện sau khi bấm marker. Bấm marker Căng tin mở nội dung/audio tương ứng.
+- Kiểm tra kết nối tile trực tiếp từ tiến trình PowerShell bị môi trường chặn socket; tuy nhiên trình duyệt sau đó tải tile thành công. Việc kiểm tra mạng trực tiếp không đại diện đường mạng của trình duyệt.
+- Build cảnh báo chunk MapLibre lớn hơn 500 kB sau minify; build vẫn thành công.
+- Backend unit, Atlas integration và E2E không chạy lại trong thay đổi này vì chỉ sửa frontend bản đồ/tài liệu. Các kết quả hồi quy trước đó được tham chiếu trong `docs/TEST_AND_DEMO.md`, không coi là test bản đồ.
+
+## GPS thật, mô phỏng và geofence — cập nhật 24/10/2026
+
+- GPS browser `watchPosition` chỉ khởi động sau khi khách bấm “Bật GPS & tự phát”; có nút dừng, thông báo quyền bị từ chối/lỗi/timeout và không gửi tọa độ lên API.
+- Mô phỏng cho chọn một POI, phát fix tổng hợp (accuracy ±5 m) mỗi 5 giây, gắn nhãn rõ; không gọi API event nên không làm tăng thống kê thật. Đây chỉ là dữ liệu thử nghiệm.
+- GPS và mô phỏng dùng chung `GeofenceTracker`; giới hạn xử lý 1 fix/5 giây, loại accuracy >25 m, fix cũ >15 giây hoặc tọa độ sai; vào 30 m, ra 45 m; xác nhận bằng hai fix hợp lệ; điểm gần nhất thắng, hòa theo thứ tự tour.
+- Bản đồ hiển thị chấm vị trí khác màu theo GPS/mô phỏng và dịch tâm nhìn đến fix mới. Khi geofence xác nhận, panel điểm tương ứng mở và player gọi `play()`; nếu trình duyệt từ chối, giao diện báo để khách nhấn phát thủ công. Không gọi play trên mỗi fix; một lần xác nhận điểm mới mới tạo yêu cầu tự phát.
+- Ngưỡng 30/45/25 m là mặc định thử nghiệm từ runtime plan, chưa được hiệu chỉnh hoặc nghiệm thu tại khuôn viên. GPS trên điện thoại cần HTTPS; chưa yêu cầu/nhận quyền location trong lần kiểm tra này.
+- Thêm 6 bài unit geofence, 1 bài tích hợp Explore và 2 bài AudioPlayer: khoảng cách, xác nhận hai fix, mẫu lỗi/cũ/sai số, hysteresis 45 m, chọn điểm gần nhất/thứ tự hòa, GPS/mô phỏng/throttle, yêu cầu tự phát, fallback khi bị chặn và loại autoplay mô phỏng khỏi thống kê. Tổng frontend hiện 54 test đạt; TypeScript và build đạt. Build còn cảnh báo bundle MapLibre >500 kB như trước.
+- Smoke DOM trên trang Explore đang mở xác nhận các nút GPS thật/mô phỏng, chọn điểm và thông báo rõ ngưỡng/không ghi mô phỏng vào thống kê. Thao tác bấm thử trình duyệt không hoàn thành do phiên điều khiển đầu vào bị timeout; không cấp quyền vị trí và không khẳng định đã kiểm thử browser permission thật.
+- Theo yêu cầu giao diện mới nhất, các thẻ danh sách hiển thị đầy đủ tên khu và nội dung thuyết minh; panel chi tiết trên bản đồ/audio vẫn ẩn đến khi chọn địa điểm. Ký hiệu thẻ Khu A–E dùng chữ cái xanh/trắng đồng nhất với marker bản đồ; các địa điểm khác giữ biểu tượng. Frontend test: **55/55 đạt**; typecheck và build đạt. Build vẫn có cảnh báo chunk MapLibre lớn hơn 500 kB.
+
+## Còn lại / điều kiện chuyển bước
+
+1. Xác minh đủ 10 tọa độ/marker trên thực địa; sửa dữ liệu chỉ theo xác nhận của người dùng.
+2. Dùng điện thoại thật qua HTTPS, kiểm tra cho phép/từ chối quyền, sai số thực tế, tab nền và tiết kiệm pin.
+3. Khảo sát/hiệu chỉnh bán kính vào-ra cho khuôn viên; xác nhận cách xử lý các geofence gần/chồng lấn.
+4. E2E GPS (mock provider ở test) và mô phỏng qua 2 mẫu/đóng-dừng, đảm bảo sự kiện mô phỏng không vào dashboard thật.
+5. Chỉ chuyển sang QR sau khi bản đồ và luồng GPS/geofence được người dùng nghiệm thu.
+
+Không có thao tác ghi/xóa dữ liệu Atlas trong phần việc này.

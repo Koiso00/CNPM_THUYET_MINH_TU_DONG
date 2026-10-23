@@ -8,7 +8,6 @@ from app.api.v1.endpoints import (
     audio,
     auth,
     content,
-    creator,
     events,
     health,
     jobs,
@@ -26,5 +25,4 @@ api_router.include_router(offline_packs.router, prefix="/offline-packs", tags=["
 api_router.include_router(jobs.router, prefix="/jobs", tags=["jobs"])
 api_router.include_router(ai.router, prefix="/ai", tags=["ai"])
 api_router.include_router(admin.router, prefix="/admin", tags=["admin"])
-api_router.include_router(creator.router, prefix="/creator", tags=["creator"])
 api_router.include_router(events.router, prefix="/events", tags=["events"])
