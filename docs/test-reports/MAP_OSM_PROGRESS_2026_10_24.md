@@ -42,6 +42,15 @@
 - Smoke DOM trên trang Explore đang mở xác nhận các nút GPS thật/mô phỏng, chọn điểm và thông báo rõ ngưỡng/không ghi mô phỏng vào thống kê. Thao tác bấm thử trình duyệt không hoàn thành do phiên điều khiển đầu vào bị timeout; không cấp quyền vị trí và không khẳng định đã kiểm thử browser permission thật.
 - Theo yêu cầu giao diện mới nhất, các thẻ danh sách hiển thị đầy đủ tên khu và nội dung thuyết minh; panel chi tiết trên bản đồ/audio vẫn ẩn đến khi chọn địa điểm. Ký hiệu thẻ Khu A–E dùng chữ cái xanh/trắng đồng nhất với marker bản đồ; các địa điểm khác giữ biểu tượng. Frontend test: **55/55 đạt**; typecheck và build đạt. Build vẫn có cảnh báo chunk MapLibre lớn hơn 500 kB.
 
+## Thử nguồn tile Stadia Maps — cập nhật 24/10/2026
+
+- Sau khi người dùng báo điện thoại không truy cập được OSM, đổi nguồn mặc định của MapLibre sang raster Alidade Bright tại `tiles.stadiamaps.com`; giữ nguyên 10 tọa độ, marker, lựa chọn địa điểm và luồng GPS/geofence.
+- Attribution đã đổi sang Stadia Maps, OpenMapTiles và OpenStreetMap. Có thể thay URL tile bằng `VITE_MAP_TILE_URL`; không cấu hình API key trong bundle frontend.
+- Web production phải thêm chính xác domain deploy trong Stadia Dashboard (domain-based authentication). Localhost được thử theo chính sách phát triển nhưng có rate limit.
+- Frontend test: **56/56 đạt**; TypeScript và production build đạt. Build còn cảnh báo chunk MapLibre >500 kB.
+- Chưa xác minh tile tải thành công từ trình duyệt điện thoại: domain production chưa được cấu hình tại Stadia và không có quyền truy cập tài khoản Stadia của người dùng. Đây mới là thay đổi nguồn và kiểm tra cấu hình cục bộ; cần người dùng cấu hình domain, deploy, rồi xác nhận trên điện thoại.
+- Stadia vẫn cần Internet; đây không phải thay đổi sang bản đồ offline. Nếu tile từ Stadia cũng không truy cập được trên mạng điện thoại thì cần đánh giá mạng hoặc quay lại phương án offline.
+
 ## Còn lại / điều kiện chuyển bước
 
 1. Xác minh đủ 10 tọa độ/marker trên thực địa; sửa dữ liệu chỉ theo xác nhận của người dùng.

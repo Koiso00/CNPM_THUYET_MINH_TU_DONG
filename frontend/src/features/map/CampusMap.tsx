@@ -164,7 +164,7 @@ export function CampusMap({
         className="campus-map-canvas"
         ref={containerRef}
         role="application"
-        aria-label="Bản đồ nền OpenStreetMap khu vực cơ sở chính Đại học Sài Gòn"
+        aria-label="Bản đồ nền Stadia Maps khu vực cơ sở chính Đại học Sài Gòn"
       />
       <div className="campus-map-status" aria-live="polite">
         {status === "loading" && <span>Đang tải bản đồ khu vực cơ sở chính…</span>}
