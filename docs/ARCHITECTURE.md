@@ -1,4 +1,4 @@
-> **Ưu tiên 24/10/2026:** OSM và tọa độ do người dùng cung cấp đã có; GPS opt-in, mô phỏng và geofence cùng luồng frontend đã triển khai. Nghiệm thu thực địa/thiết bị trước khi làm QR.
+> **Ưu tiên 24/10/2026:** OSM và tọa độ do người dùng cung cấp đã có; GPS opt-in, mô phỏng và geofence cùng luồng frontend đã triển khai. Hoàn thiện dashboard thống kê Admin trước khi làm QR; nghiệm thu thực địa/thiết bị có thể để sau.
 
 # Kiến trúc
 

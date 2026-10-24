@@ -2,7 +2,7 @@
 
 Nguồn chuẩn: [kế hoạch gốc](PROJECT_PLAN.md). Các tuần là mốc tương đối, không tự đổi thành
 deadline lịch hoặc cam kết tiến độ. Không áp dụng phương án rút gọn 5 ngày.
-Ưu tiên cập nhật 24/10 theo yêu cầu người dùng: Stadia đã được cấu hình và kiểm tra trên điện thoại; GPS hoạt động, 10 tọa độ đã được kiểm chứng thực địa. iPhone/Safari chặn tự phát audio; đã điều chỉnh trình phát và cần thử lại trên thiết bị, đồng thời xác nhận ngưỡng geofence. Sau khi nghiệm thu các mục này mới bắt đầu QR. Offline/AI/dịch tiếp tục hoãn.
+Ưu tiên cập nhật 24/10 theo yêu cầu người dùng: Stadia/GPS và phát audio khi chạm điểm đã hoạt động trên điện thoại; 10 tọa độ đã kiểm chứng thực địa. Nghiệm thu GPS/geofence thực tế có thể để sau. Dashboard Admin đã được bổ sung bộ lọc ngày ICT và lượt phát audio theo từng địa điểm từ sự kiện thật; QR là phần tiếp theo. GPS tự nhận diện, autoplay theo geofence và ngưỡng cần nghiệm thu trước demo chính thức. Offline/AI/dịch tiếp tục hoãn.
 
 ## Đã thực hiện: khung dự án
 

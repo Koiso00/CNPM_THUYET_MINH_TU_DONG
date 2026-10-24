@@ -92,6 +92,7 @@ async def test_demo_http_atlas(settings_factory, user_test_collection, session_t
                 "guest_visitors": 0,
                 "guest_journeys": 0,
                 "guest_audio_plays": 0,
+                "guest_audio_by_place": [],
                 "draft_places": 10,
                 "published_places": 10,
                 "published_tours": 1,

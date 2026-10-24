@@ -21,9 +21,10 @@ type Dashboard = {
   guest_visitors: number;
   guest_journeys: number;
   guest_audio_plays: number;
+  guest_audio_by_place: { place_id: string; title: string; plays: number }[];
 };
 const metrics: {
-  key: keyof Dashboard;
+  key: Exclude<keyof Dashboard, "guest_audio_by_place">;
   label: string;
   icon: "users" | "user" | "audio" | "pin" | "check" | "grid";
 }[] = [
@@ -55,6 +56,9 @@ export function ManagementPage({ client }: { client: AuthClient }) {
   const [statsError, setStatsError] = useState("");
   const [statsLoading, setStatsLoading] = useState(true);
   const [statsVersion, setStatsVersion] = useState(0);
+  const [statsDay, setStatsDay] = useState(
+    new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Ho_Chi_Minh" }).format(new Date()),
+  );
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [savedAccounts, setSavedAccounts] = useState<Account[]>([]);
   const [offset, setOffset] = useState(0);
@@ -70,7 +74,7 @@ export function ManagementPage({ client }: { client: AuthClient }) {
     setStatsLoading(true);
     setStatsError("");
     void client
-      .get<Dashboard>("/admin/dashboard")
+      .get<Dashboard>(`/admin/dashboard?day=${statsDay}`)
       .then((data) => {
         if (active) setStats(data);
       })
@@ -86,7 +90,7 @@ export function ManagementPage({ client }: { client: AuthClient }) {
     return () => {
       active = false;
     };
-  }, [client, statsVersion]);
+  }, [client, statsVersion, statsDay]);
 
   useEffect(() => {
     let active = true;
@@ -191,12 +195,23 @@ export function ManagementPage({ client }: { client: AuthClient }) {
       >
         <div className="management-heading">
           <h2>Tổng quan hệ thống</h2>
-          <button
-            disabled={statsLoading}
-            onClick={() => setStatsVersion((value) => value + 1)}
-          >
-            Làm mới số liệu
-          </button>
+          <div className="management-dashboard-controls">
+            <label>
+              Ngày thống kê
+              <input
+                aria-label="Ngày thống kê"
+                type="date"
+                value={statsDay}
+                onChange={(event) => setStatsDay(event.target.value)}
+              />
+            </label>
+            <button
+              disabled={statsLoading}
+              onClick={() => setStatsVersion((value) => value + 1)}
+            >
+              Làm mới số liệu
+            </button>
+          </div>
         </div>
         <p>
           Số liệu từ cơ sở dữ liệu. Khách được đếm theo ID trình duyệt trong ngày
@@ -220,6 +235,23 @@ export function ManagementPage({ client }: { client: AuthClient }) {
                 <strong>{stats[metric.key] ?? 0}</strong>
               </article>
             ))}
+          </div>
+        )}
+        {stats && (
+          <div className="management-audio-breakdown">
+            <h3>Lượt phát audio theo địa điểm</h3>
+            {stats.guest_audio_by_place?.length ? (
+              <div className="management-audio-breakdown-list">
+                {stats.guest_audio_by_place.map((place) => (
+                  <div key={place.place_id}>
+                    <span>{place.title}</span>
+                    <strong>{place.plays}</strong>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p>Chưa có lượt phát audio trong ngày này.</p>
+            )}
           </div>
         )}
         <p className="management-note">

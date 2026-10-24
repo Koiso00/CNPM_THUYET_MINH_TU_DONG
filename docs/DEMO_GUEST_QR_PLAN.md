@@ -1,8 +1,8 @@
-> **Ưu tiên cập nhật ngày 24/10/2026:** OSM và 10 tọa độ do người dùng cung cấp đã tích hợp; GPS thật bật chủ động, mô phỏng và geofence cùng luồng frontend đã triển khai. Nghiệm thu thiết bị/thực địa trước khi làm QR.
+> **Cập nhật ưu tiên ngày 24/10/2026:** Stadia/GPS hoạt động trên điện thoại, 10 tọa độ đã kiểm chứng thực địa và chạm điểm phát audio được. Nghiệm thu GPS/geofence thực tế có thể để sau. Theo yêu cầu mới nhất, hoàn thiện dashboard thống kê Admin trước; chỉ triển khai QR sau dashboard. GPS tự nhận diện và ngưỡng geofence vẫn cần nghiệm thu trước demo chính thức.
 
 # Điều chỉnh demo: khách không đăng nhập và QR — cập nhật 23/10/2026
 
-Trạng thái: Admin, nội dung/audio công bố và luồng khách cơ bản đã triển khai. OSM/10 tọa độ và GPS/geofence frontend đã có; GPS thật ngoài thiết bị và ngưỡng thực địa chưa nghiệm thu. Các yêu cầu QR bên dưới giữ làm thiết kế giai đoạn sau.
+Trạng thái: Admin, nội dung/audio công bố và luồng khách cơ bản đã triển khai. Bản đồ Stadia, GPS và geofence frontend đã có; chạm địa điểm phát audio được trên điện thoại. Theo cập nhật 24/10, hoàn thiện dashboard thống kê Admin trước QR; nghiệm thu GPS tự nhận diện và ngưỡng thực tế để sau, trước demo chính thức.
 Tài liệu này cập nhật phạm vi demo trong DEMO_2_DAYS.md, không ghi đè kế hoạch gốc dài hạn.
 
 ### Đối chiếu triển khai hiện tại — cập nhật 24/10/2026
@@ -11,7 +11,7 @@ Tài liệu này cập nhật phạm vi demo trong DEMO_2_DAYS.md, không ghi đ
   public content/audio và usage events visit/journey/audio.
 - `#/welcome` và `#/explore` đã tách rõ; UI Admin không còn đăng ký. Admin active vẫn
   vào được `#/management`; English/한국어 mới chỉ là menu giao diện “Sắp có”.
-- GPS opt-in/mô phỏng/geofence frontend đã có; QR/camera/offline/AI/dịch/TTS tự động chưa triển khai. Các luồng QR bên dưới tiếp tục là thiết kế giai đoạn sau.
+- GPS opt-in/mô phỏng/geofence frontend đã có; QR/camera/offline/AI/dịch/TTS tự động chưa triển khai. Hoàn thiện dashboard Admin trước QR; nghiệm thu GPS/geofence thực tế được dời sang sau.
 
 ### Kiểm kê tài khoản và release — 24/10/2026
 
@@ -49,7 +49,7 @@ Dùng camera điện thoại quét QR địa điểm → mở trang chào, giữ
 
 Bấm Quét QR trên trang chính → quét mã địa điểm → giữ hành trình/ID khách và ngôn ngữ hiện tại → chuyển điểm, dừng audio cũ và phát audio của điểm vừa quét.
 Không quay lại trang chào, không yêu cầu bấm bắt đầu lại, không tạo khách/hành trình mới chỉ vì quét điểm khác.
-Ghi chú lịch sử: trước cập nhật ưu tiên ngày 24/10, GPS chưa được đưa trở lại phạm vi demo. Quyết định mới nhất ngày 24/10 yêu cầu triển khai GPS/mô phỏng/geofence trước QR.
+Ghi chú lịch sử: quyết định ngày 24/10 ban đầu xếp GPS/geofence trước QR. Sau đó người dùng ưu tiên dashboard thống kê Admin trước QR; nghiệm thu thực địa vẫn để sau.
 
 ## Những điểm cần chốt trước phần triển khai phụ thuộc
 

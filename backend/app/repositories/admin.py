@@ -40,6 +40,14 @@ class AdminRepository:
 
     async def guest_counts(self, day):
         events = self.database["usage_events"]
+        audio_by_place = events.aggregate(
+            [
+                {"$match": {"day": day, "event_type": "audio_played", "place_id": {"$ne": None}}},
+                {"$group": {"_id": "$place_id", "plays": {"$sum": 1}}},
+                {"$sort": {"plays": -1, "_id": 1}},
+            ]
+        )
+        place_rows = [row async for row in audio_by_place]
         return {
             "guest_visitors": len(
                 await events.distinct("visitor_id", {"day": day, "event_type": "visit"})
@@ -50,6 +58,10 @@ class AdminRepository:
             "guest_audio_plays": await events.count_documents(
                 {"day": day, "event_type": "audio_played"}
             ),
+            "guest_audio_by_place": [
+                {"place_id": row["_id"], "plays": row["plays"]}
+                for row in place_rows
+            ],
         }
 
     async def revoke_sessions(self, user_id):

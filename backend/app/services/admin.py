@@ -47,10 +47,22 @@ class AdminService:
         published = None
         if tour and tour.get("published_release_id"):
             published = await self.content.repository.release(tour["published_release_id"])
+        guest_counts = await self.repository.guest_counts(day)
+        place_titles = {
+            place["id"]: place["title"]
+            for place in (published["draft"]["places"] if published else [])
+        }
+        guest_counts["guest_audio_by_place"] = [
+            {
+                **item,
+                "title": place_titles.get(item["place_id"], "Địa điểm đã gỡ"),
+            }
+            for item in guest_counts["guest_audio_by_place"]
+        ]
         return {
             **counts,
             "day": day,
-            **await self.repository.guest_counts(day),
+            **guest_counts,
             "draft_places": len(tour["draft"]["places"]) if tour else 0,
             "published_places": len(published["draft"]["places"]) if published else 0,
             "published_tours": int(published is not None),
