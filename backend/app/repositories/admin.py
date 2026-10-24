@@ -40,7 +40,7 @@ class AdminRepository:
 
     async def guest_counts(self, day):
         events = self.database["usage_events"]
-        audio_by_place = events.aggregate(
+        audio_by_place = await events.aggregate(
             [
                 {"$match": {"day": day, "event_type": "audio_played", "place_id": {"$ne": None}}},
                 {"$group": {"_id": "$place_id", "plays": {"$sum": 1}}},
