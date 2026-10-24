@@ -1,9 +1,11 @@
 # Tách Nội dung và hoàn thiện Quản trị — 22/10/2026
 
+> **Trạng thái hiện hành:** trang `#/management` dành cho Admin, gồm dashboard và tài khoản. Creator UI/API đã được gỡ khỏi demo; phần mô tả Creator trong báo cáo này là quyết định/lịch sử tại ngày 22/10.
+
 ## Phạm vi người dùng đã chốt
 
 Nội dung giữ địa điểm, bài thuyết minh và audio. Quản trị có dashboard và quản lý
-tài khoản dành cho Admin. Luồng Creator vẫn riêng theo kế hoạch, chưa triển khai soạn/gửi duyệt.
+tài khoản dành cho Admin. Tại thời điểm 22/10, luồng Creator vẫn nằm trong kế hoạch và chưa triển khai soạn/gửi duyệt.
 
 ## Thay đổi
 

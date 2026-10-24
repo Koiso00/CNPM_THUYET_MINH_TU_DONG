@@ -1,5 +1,7 @@
 # Creator gửi đề xuất và Admin duyệt
 
+> **Lịch sử:** workflow này thuộc giai đoạn trước khi người dùng gộp Creator vào Admin cho demo ngày 23/10/2026. Creator UI/API và gửi/duyệt đã được gỡ; Admin hiện biên soạn trực tiếp và công bố riêng. Không dùng báo cáo này để suy ra workflow Creator còn chạy.
+
 ## Phạm vi
 
 Theo quyết định ngày 22/10/2026, Creator được đề xuất thay đổi toàn tour khuôn viên. Creator

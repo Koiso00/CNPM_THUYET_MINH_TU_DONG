@@ -1,4 +1,4 @@
-> **Cập nhật kế hoạch demo 23/10/2026:** khách không đăng nhập, giữ ID khách khi quay lại cùng trình duyệt; mỗi lần tham quan có ID hành trình riêng. Creator/Admin gộp thành một vai trò, tạo một Admin ban đầu lúc thiết lập và xóa User/Creator cũ khi chuyển đổi. Có hai luồng QR; dashboard đếm ID khách truy cập theo ngày, hành trình và QR/audio theo điểm. Xem [kế hoạch demo mới](DEMO_GUEST_QR_PLAN.md). Đây là kế hoạch, chưa triển khai; các phần bên dưới mô tả ứng dụng đang chạy hoặc lịch sử.
+> **Trạng thái hiện hành — 24/10/2026:** khách không đăng nhập; Admin biên tập nội dung/audio và quản lý dashboard/tài khoản. API content/audio/Admin/events đã triển khai; audio GridFS hỗ trợ Range. Nội dung/API đa ngôn ngữ hỗ trợ `vi`, `en`, `ko`; release hiện có POI/audio tiếng Việt và English. Workflow Creator/API Creator bên dưới là lịch sử và đã gỡ khỏi demo. QR chưa triển khai. Kế hoạch phạm vi tại [DEMO_GUEST_QR_PLAN](DEMO_GUEST_QR_PLAN.md).
 
 # Dữ liệu và hợp đồng API
 
@@ -15,8 +15,7 @@
 | 503 | {"status":"not_ready","database":"unavailable"} |
 
 Cả hai endpoint trả Cache-Control: no-store. Readiness không trả URI hoặc thông báo lỗi driver.
-P1.2 đã có collection/index User/session và kiểm thử ghi Atlas thật. GridFS chưa tích hợp.
-OpenAPI có health, auth và các API demo nội dung/audio/admin bên dưới.
+P1.2 ban đầu chỉ có collection/index User/session; GridFS được tích hợp ở mốc demo nội dung/audio ngày 22/10. OpenAPI có health, auth và các API demo nội dung/audio/Admin/events bên dưới.
 
 ## API demo đã triển khai ngày 22/10/2026
 
@@ -27,40 +26,30 @@ OpenAPI có health, auth và các API demo nội dung/audio/admin bên dưới.
 | PUT /admin/campus | Admin + CSRF; `{revision, draft}`; lưu toàn bộ danh sách có thứ tự, revision tăng; stale trả 409 |
 | POST /admin/campus/publish | Admin + CSRF; `{revision}`; tạo snapshot mới và ghim audio đúng checksum văn bản |
 | POST /admin/campus/unpublish | Admin + CSRF; `{revision}`; bỏ con trỏ công bố, giữ nguyên snapshot |
-| GET /admin/audio | Admin; audio khớp nội dung đã lưu theo từng place_id |
-| PUT /admin/campus/places/{place_id}/audio?revision=N | Admin + CSRF; body MP3 thô, Content-Type audio/mpeg, tối đa 10 MiB; 413 quá cỡ, 415 sai loại, 422 không có MP3 frames; không tự công bố |
+| GET /admin/audio?language=vi\|en\|ko | Admin; audio khớp nội dung đã lưu theo từng place_id và ngôn ngữ |
+| PUT /admin/campus/places/{place_id}/audio?revision=N&language=vi\|en\|ko | Admin + CSRF; body MP3 thô, Content-Type audio/mpeg, tối đa 10 MiB; 413 quá cỡ, 415 sai loại, 422 không có MP3 frames; không tự công bố |
 | GET/HEAD /audio/{release_id}/{place_id} | Công khai; kiểm tra release hiện hành và asset ghim; hỗ trợ single Range (206), suffix/open-ended; 416 range sai |
 | GET/HEAD /admin/audio/{asset_id} | Admin; preview asset đã nhập |
 | GET /admin/users?offset=0&limit=50 | Admin; tối đa 100/trang; id, username, role, is_active, updated_at, is_protected; không trả password_hash/token |
 | PUT /admin/users/{user_id} | Admin + CSRF; `{role,is_active}`; chặn tự sửa và sửa Admin đang hoạt động (409); khóa thu hồi các phiên |
-| GET /admin/dashboard?day=YYYY-MM-DD | Admin; thêm guest_visitors, guest_journeys, guest_audio_plays theo ngày ICT |
+| GET /admin/dashboard?day=YYYY-MM-DD | Admin; số tổng guest_visitors, guest_journeys, guest_audio_plays và breakdown audio theo địa điểm, theo ngày ICT |
 | POST /events/guest | Công khai; ghi visit, journey_started hoặc audio_played với event_id chống gửi trùng |
-| GET /creator/campus | Creator; revision and current working draft as a starting point for a private proposal |
-| GET /creator/submissions?offset=0&limit=50 | Creator; own proposals and review state only |
-| GET /creator/submissions/{id} | Creator; own proposal only; other creators' IDs return 404 |
-| POST /creator/submissions | Creator + CSRF; `{base_revision,draft}`; creates a private full-tour draft |
-| PUT /creator/submissions/{id} | Creator + CSRF; `{revision,base_revision,draft}`; only own draft/rejected proposal; stale revision returns 409 |
-| POST /creator/submissions/{id}/submit | Creator + CSRF; `{revision}`; sends immutable-for-review revision to Admin |
-| GET /admin/submissions?offset=0&limit=50 | Admin; pending and approved proposals; no user/password/session data |
-| POST /admin/submissions/{id}/review | Admin + CSRF; `{revision,decision:"approved"|"rejected",note?}`; one review decision per pending revision |
-| POST /admin/submissions/{id}/apply | Admin + CSRF; `{revision}`; approved proposal replaces Admin draft only if its base revision still matches; then Admin publishes separately |
 
-Draft: `{title,language:"vi",places:[{id,title,description,source,location}]}`.
+Các endpoint Creator/submissions đã có trong một mốc trung gian nhưng đã được gỡ khỏi demo theo quyết định gộp Creator vào Admin. Chúng không thuộc OpenAPI/runtime hiện hành.
+
+Draft: `{title,language:"vi",places:[{id,title,description,source,location,translations}]}`. Trường gốc hiện là tiếng Việt; `translations` giữ localization theo ngôn ngữ.
+Mỗi bản dịch `en`/`ko` chứa `title`, `description`, `source` và `source_text_sha256` ràng buộc với mô tả tiếng Việt hiện tại. Admin nhập nội dung qua cùng form theo ngôn ngữ đã chọn; bản dịch chưa đủ ba trường không được gửi lưu. Khi sửa bản dịch, frontend tính lại checksum nguồn để bản dịch có thể được công bố. Khi sửa văn bản tiếng Việt, checksum cũ không còn khớp và bản dịch bị loại khỏi snapshot đến khi Admin cập nhật lại.
 ID địa điểm UUID, duy nhất trong tour; vị trí nullable hoặc GeoJSON Point `[longitude,latitude]`.
 Giới hạn kỹ thuật: tối đa 100 điểm, title 200, description 20000, source 2000 ký tự;
 không nhận field lạ. Nguồn và nội dung không được tự trim/viết lại. Snapshot bổ sung audio_id
 nullable cho từng điểm. Draft rỗng được lưu nhưng không được công bố.
 
-Đây là demo tiếng Việt với một tour, không phải hợp đồng hoàn chỉnh của release Việt–Anh/offline.
-Không tự tạo tọa độ, không tự công bố sau seed, không trả fallback nội dung tĩnh khi API lỗi.
+Đây là demo một tour, có nội dung/audio Việt–Anh; hỗ trợ trường localization `vi`, `en`, `ko` nhưng chưa có nội dung POI tiếng Hàn. Không tự tạo tọa độ, không tự công bố sau seed, không trả fallback nội dung tĩnh khi API lỗi.
 Toàn bộ phản hồi API vẫn no-store. Audio không phục vụ trực tiếp bằng GridFS ID.
 Import checksum/idempotence và bootstrap Admin ở các lệnh README.
 `audio_assets` đếm tất cả file ready đã nhập, gồm phiên bản cũ; không phải số địa điểm có audio.
 
-Creator đề xuất toàn tour trong collection `content_submissions`; Creator chỉ đọc/sửa đề xuất
-của mình. Gửi duyệt tăng revision nên không thể sửa bản đang xét. Admin duyệt hoặc trả kèm ghi chú;
-đề xuất đã duyệt chỉ thay nháp Admin khi revision gốc còn khớp. Gỡ/công bố vẫn là thao tác riêng.
-Các truy vấn tour/release/submission phục vụ workflow đọc primary để tránh đọc trạng thái cũ sau khi ghi.
+Lịch sử: Creator từng đề xuất toàn tour trong collection `content_submissions`; workflow/API này đã gỡ khỏi demo. Admin hiện biên soạn trực tiếp bản nháp và công bố riêng. Các truy vấn tour/release hiện hành đọc primary để tránh trạng thái cũ sau khi ghi.
 
 ## API xác thực đã có P1.3
 
@@ -96,7 +85,7 @@ Bootstrap refresh lấy mốc hết hạn từ server; Web Locks dùng để tu�
 BroadcastChannel chỉ gửi tín hiệu trạng thái, không có token trong message/storage.
 
 Mọi xác thực kiểm tra chữ ký/claims, phiên tồn tại/chưa hết hạn/chưa thu hồi và User đang hoạt động.
-Role đọc từ database mỗi request qua require_roles; chưa có endpoint quản trị thực.
+Role đọc từ database mỗi request qua require_roles; các API quản trị nội dung/tài khoản/dashboard được mô tả ở trên.
 CSRF sai/origin không được phép/quyền thiếu: 403; chưa xác thực: 401;
 username trùng: 409; payload không hợp lệ: 422 (không echo input);
 thiếu secret/database hoặc database lỗi: 503 với thông điệp đã lọc bí mật.

@@ -1,6 +1,7 @@
 """Byte ranges and snapshot/audio versioning regressions."""
 
 from copy import deepcopy
+from hashlib import sha256
 
 import pytest
 from fastapi import HTTPException
@@ -47,6 +48,59 @@ async def test_editing_text_cannot_reuse_outdated_audio():
     assert (await service.public()) == old
     await service.publish(3, "admin")
     assert (await service.public())["places"][0]["audio_id"] is None
+
+
+@pytest.mark.anyio
+async def test_published_release_binds_english_text_and_audio_separately():
+    service = content_service()
+    draft = deepcopy(service.repository.tour["draft"])
+    english = "Approved English narration for this place."
+    draft["places"][0]["translations"] = {
+        "en": {
+            "title": "Zone A",
+            "description": english,
+            "source": "User-approved English translation.",
+            "source_text_sha256": sha256(draft["places"][0]["description"].encode()).hexdigest(),
+        }
+    }
+    service.audio.attach_test_audio(draft["places"][0]["description"])
+    service.audio.attach_test_audio(english, language="en")
+    await service.save(SaveCampus(revision=1, draft=draft), "admin")
+    await service.publish(2, "admin")
+
+    release = await service.public()
+    place = release["places"][0]
+    assert place["audio_id"] == "test-asset"
+    assert place["audio_by_language"] == {"vi": "test-asset", "en": "test-asset-en"}
+    english_asset = await AudioService(service.audio, service).published_asset(
+        release["release_id"], place["id"], "en"
+    )
+    assert english_asset["_id"] == "test-asset-en"
+
+
+@pytest.mark.anyio
+async def test_changed_vietnamese_source_hides_stale_translation_on_next_release():
+    service = content_service()
+    draft = deepcopy(service.repository.tour["draft"])
+    original = draft["places"][0]["description"]
+    english = "Translation of the previous Vietnamese source."
+    draft["places"][0]["translations"] = {
+        "en": {
+            "title": "Zone A",
+            "description": english,
+            "source": "User-approved English translation.",
+            "source_text_sha256": sha256(original.encode()).hexdigest(),
+        }
+    }
+    draft["places"][0]["description"] = "Vietnamese source revised after translation."
+    service.audio.attach_test_audio(draft["places"][0]["description"])
+    service.audio.attach_test_audio(english, language="en")
+    await service.save(SaveCampus(revision=1, draft=draft), "admin")
+    await service.publish(2, "admin")
+
+    place = (await service.public())["places"][0]
+    assert place["translations"] == {}
+    assert place["audio_by_language"] == {"vi": "test-asset"}
 
 
 @pytest.mark.anyio

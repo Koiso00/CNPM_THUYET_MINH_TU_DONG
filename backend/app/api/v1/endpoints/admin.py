@@ -65,8 +65,11 @@ async def dashboard(day: date | None = Query(None), service=Depends(get_admin_se
 
 
 @router.get("/audio", dependencies=[Depends(admin)])
-async def audio_status(service=Depends(get_content_service)):
-    return await service.audio_status()
+async def audio_status(
+    language: str = Query("vi", pattern="^(vi|en|ko)$"),
+    service=Depends(get_content_service),
+):
+    return await service.audio_status(language)
 
 
 @router.get("/audio/{asset_id}", dependencies=[Depends(admin)])
@@ -86,6 +89,7 @@ async def upload_audio(
     place_id: UUID,
     request: Request,
     revision: int = Query(ge=1),
+    language: str = Query("vi", pattern="^(vi|en|ko)$"),
     service=Depends(get_audio_service),
 ):
     if request.headers.get("content-type", "").split(";", 1)[0] != "audio/mpeg":
@@ -95,4 +99,4 @@ async def upload_audio(
         if len(data) + len(chunk) > 10 * 1024 * 1024:
             raise HTTPException(413, "MP3 must not exceed 10 MB.")
         data.extend(chunk)
-    return await service.upload(str(place_id), revision, bytes(data))
+    return await service.upload(str(place_id), revision, bytes(data), language)

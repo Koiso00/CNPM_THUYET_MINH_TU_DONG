@@ -12,6 +12,7 @@ import { Brand, Icon } from "../shared/Icons";
 import { roleLabels as roles } from "../shared/WorkspaceNav";
 import { GuestWelcome } from "../features/guest/GuestWelcome";
 import { GuestSession } from "../features/guest/session";
+import { languageNames, readLanguage, saveLanguage, translate, type AppLanguage } from "../shared/i18n";
 
 const guestSession = new GuestSession();
 
@@ -71,6 +72,15 @@ export function App({ client = authClient }: { client?: AuthClient }) {
   const [logoutError, setLogoutError] = useState("");
   const [busy, setBusy] = useState(false);
   const [languageOpen, setLanguageOpen] = useState(false);
+  const [language, setLanguage] = useState<AppLanguage>(readLanguage);
+  function changeLanguage(next: AppLanguage) {
+    setLanguage(next);
+    saveLanguage(next);
+    setLanguageOpen(false);
+  }
+  useEffect(() => {
+    document.documentElement.lang = language;
+  }, [language]);
   useEffect(() => client.start(), [client]);
   useEffect(() => {
     const changed = () => setRoute(window.location.hash);
@@ -119,7 +129,7 @@ export function App({ client = authClient }: { client?: AuthClient }) {
   return (
     <div className={`site${state.status === "anonymous" && (route === "#/welcome" || !guestJourney || authRoute) ? " site-auth" : ""}`}>
       <a className="skip-link" href="#main-content">
-        Đến nội dung chính
+        {translate(language, "skip")}
       </a>
       <header className={`site-header${explore ? " explore-header" : ""}`}>
         <Brand />
@@ -134,7 +144,7 @@ export function App({ client = authClient }: { client?: AuthClient }) {
                   ?.scrollIntoView({ behavior: "smooth" })
               }
             >
-              <Icon name="headphones" size={15} /> Khám phá
+              <Icon name="headphones" size={15} /> {translate(language, "explore")}
             </button>
             <button
               type="button"
@@ -144,7 +154,7 @@ export function App({ client = authClient }: { client?: AuthClient }) {
                   ?.scrollIntoView({ behavior: "smooth" })
               }
             >
-              <Icon name="pin" size={15} /> Bản đồ khuôn viên
+              <Icon name="pin" size={15} /> {translate(language, "mapNav")}
             </button>
             <button
               type="button"
@@ -154,7 +164,7 @@ export function App({ client = authClient }: { client?: AuthClient }) {
                   ?.scrollIntoView({ behavior: "smooth" })
               }
             >
-              <Icon name="audio" size={15} /> Nội dung thuyết minh
+              <Icon name="audio" size={15} /> {translate(language, "contentNav")}
             </button>
           </nav>
         )}
@@ -182,7 +192,7 @@ export function App({ client = authClient }: { client?: AuthClient }) {
               </button>
             </>
           ) : (
-            !explore && <>
+            (guest || !explore) && <>
               <div className="language-picker">
                 <button
                   type="button"
@@ -192,27 +202,20 @@ export function App({ client = authClient }: { client?: AuthClient }) {
                   onClick={() => setLanguageOpen((open) => !open)}
                 >
                   <Icon name="globe" size={16} />
-                  <span>Languages:</span>
-                  <strong>Tiếng Việt (VI)</strong>
+                  <span>{translate(language, "language")}:</span>
+                  <strong>{languageNames[language]} ({language.toUpperCase()})</strong>
                   <span aria-hidden="true">⌄</span>
                 </button>
                 {languageOpen && (
-                  <div className="language-menu" role="listbox" aria-label="Chọn ngôn ngữ">
-                    <button type="button" role="option" aria-selected="true" onClick={() => setLanguageOpen(false)}>
-                      <span>Tiếng Việt</span><small>Đang dùng</small>
-                    </button>
-                    <button type="button" role="option" aria-selected="false" disabled>
-                      <span>English</span><small>Sắp có</small>
-                    </button>
-                    <button type="button" role="option" aria-selected="false" disabled>
-                      <span>한국어</span><small>Sắp có</small>
-                    </button>
+                  <div className="language-menu" role="listbox" aria-label={translate(language, "language")}>
+                    {(["vi", "en", "ko"] as AppLanguage[]).map((option) => (
+                      <button key={option} type="button" role="option" aria-selected={language === option} onClick={() => changeLanguage(option)}>
+                        <span>{languageNames[option]}</span><small>{language === option ? "✓" : option.toUpperCase()}</small>
+                      </button>
+                    ))}
                   </div>
                 )}
               </div>
-              <a className="guest-account-link" href="#/login" aria-label="Đăng nhập quản trị">
-                <Icon name="user" size={17} />
-              </a>
             </>
           )}
         </div>
@@ -254,10 +257,12 @@ export function App({ client = authClient }: { client?: AuthClient }) {
               username=""
               guest={guestSession}
               notice={state.notice}
+              language={language}
             />
           ) : (
             <GuestWelcome
               session={guestSession}
+              language={language}
               onStarted={() => {
                 window.location.hash = "/explore";
               }}
@@ -279,6 +284,7 @@ export function App({ client = authClient }: { client?: AuthClient }) {
             client={client}
             username={user.username}
             notice={logoutError || state.notice}
+            language={language}
           />
         ) : route === "#/admin" ? (
           <ContentPage client={client} />
@@ -288,10 +294,9 @@ export function App({ client = authClient }: { client?: AuthClient }) {
       </main>
       <footer className="site-footer">
         <span>
-          SGU Campus Guide <span className="footer-dot">·</span> Khám phá theo
-          cách của bạn
+          SGU Campus Guide <span className="footer-dot">·</span> {translate(language, "footer")}
         </span>
-        <span>Cơ sở chính · Đại học Sài Gòn</span>
+        <span>{language === "en" ? "Main Campus · Saigon University" : language === "ko" ? "본 캠퍼스 · 사이공대학교" : "Cơ sở chính · Đại học Sài Gòn"}</span>
       </footer>
     </div>
   );

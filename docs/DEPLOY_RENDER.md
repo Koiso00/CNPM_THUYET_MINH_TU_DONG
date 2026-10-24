@@ -2,7 +2,9 @@
 
 Tài liệu này ghi lại cách vận hành dịch vụ demo SGU Campus Guide đã tạo trên Render và MongoDB Atlas. Cấu hình hiện tại là **Render Web Service chạy Docker**, mã nguồn lấy từ GitHub nhánh `main`, dữ liệu người dùng/phiên lưu trên Atlas.
 
-> Đây là bản demo. Trang đăng nhập/đăng ký và giao diện Khám phá đã deploy; bản đồ/GPS, phát audio trong trang, quản trị địa điểm/người dùng và dashboard chưa hoàn thiện. Không dùng dữ liệu cá nhân hoặc mật khẩu thật khi trình diễn.
+> **Trạng thái 24/10/2026:** bản Render trước đó có dashboard Admin; người dùng xác nhận dashboard hoạt động sau khi sửa lỗi aggregate. Render hiện báo `sgu-campus-guide-demo` “Suspended by you”. Code mới trong workspace (đa ngôn ngữ và sửa giao diện mobile) chưa được deploy lên service. Nội dung/audio English đã có trong Atlas release, nhưng code phục vụ release ở phiên bản workspace chưa được phát hành trên Render.
+
+> Tài liệu bên dưới hướng dẫn cấu hình/vận hành chung. Không xem các dòng trạng thái cũ trong hướng dẫn này là mô tả bản demo đang chạy.
 
 ## Bản miễn phí hoạt động như thế nào?
 

@@ -1,8 +1,16 @@
-> **Trạng thái demo 23/10/2026:** khách không đăng nhập; welcome, ID khách/hành trình, nội dung/audio công khai, Admin và thống kê visit/journey/audio đã triển khai. QR vẫn hoãn. Chi tiết tại [kế hoạch khách/QR](DEMO_GUEST_QR_PLAN.md) và [báo cáo tiến độ](test-reports/DEMO_GUEST_PROGRESS_2026_10_23.md).
+> **Ảnh chụp ngày 23/10/2026 — lịch sử:** khách không đăng nhập; welcome, hành trình, nội dung/audio và dashboard đã có; QR còn hoãn tại thời điểm đó. Trạng thái mới nhất xem ở phần cập nhật 24/10 dưới đây và [kế hoạch khách/QR](DEMO_GUEST_QR_PLAN.md).
 
 # Kiểm thử và demo
 
-Trạng thái 24/10/2026: khách không đăng nhập; Admin quản lý nội dung/audio và dashboard; Stadia, 10 marker, GPS opt-in/mô phỏng/geofence đã có. Người dùng đã thử GPS/điện thoại, kiểm chứng tọa độ và xác nhận chạm điểm phát audio được. Nghiệm thu GPS tự nhận diện/tự phát và ngưỡng thực tế có thể để sau. Dashboard Admin hiện có bộ lọc ngày ICT, tổng visit/journey/audio và lượt phát audio theo địa điểm từ sự kiện thật. Đây là phần thống kê nền ưu tiên trước QR. Vị trí chỉ ở trình duyệt; mô phỏng không ghi thống kê thật. Frontend hiện 57 test đạt; build/typecheck đạt. Backend unit chạy được 166 test nhưng 7 test lỗi do quyền truy cập file/cấu hình trong môi trường; kiểm thử integration/Atlas chưa chạy. E2E hồi quy trước đó 12/12 desktop/mobile. Xem [báo cáo OSM/GPS](test-reports/MAP_OSM_PROGRESS_2026_10_24.md), [báo cáo Admin/audio](test-reports/DEMO_CONTENT_AUDIO_ADMIN.md) và [báo cáo khách](test-reports/DEMO_GUEST_PROGRESS_2026_10_23.md).
+## Cập nhật bản song ngữ — 24/10/2026
+
+Người dùng duyệt bản dịch và audio English cho 10 POI. Atlas release `09d43a32-43d1-4f2b-85d0-cdae2ad29981` có đủ 10 bản dịch, 10 audio English và 10 audio Việt. API trả byte range 206 cho cả hai ngôn ngữ; frontend chọn audio theo locale và giữ icon POI theo tên gốc. Hồi quy: 181 backend test đạt, 16 integration test skip theo mặc định; 61 frontend test đạt; Ruff/typecheck/build đạt. Code mới hiện ở workspace. Render báo service `sgu-campus-guide-demo` “Suspended by you”, nên chưa deploy code lên đó.
+
+## Cập nhật biên tập nội dung theo ngôn ngữ — 24/10/2026
+
+Admin có bộ chọn Tiếng Việt/English/한국어 cho các trường tên địa điểm, thuyết minh và nguồn tư liệu. Danh sách và tải MP3 theo ngôn ngữ đang chọn; có thể nghe thử audio đã nhập. Bản dịch đang nhập dở được giữ trong biểu mẫu và không gửi như bản hợp lệ; sửa nội dung Việt làm checksum bản dịch cũ mất hiệu lực đến khi Admin cập nhật bản dịch. Tên tour hiện dùng chung giữa các ngôn ngữ. Build/typecheck và 61 frontend test đạt; backend 181 test đạt, 16 integration test bỏ qua theo mặc định. Xem [nhật ký Admin đa ngôn ngữ](test-reports/ADMIN_MULTILINGUAL_CONTENT_2026_10_24.md).
+
+Trạng thái 24/10/2026: khách không đăng nhập; Admin quản lý nội dung/audio và dashboard; Stadia, 10 marker, GPS opt-in/mô phỏng/geofence đã có. Người dùng đã thử GPS trên điện thoại, kiểm chứng tọa độ thực địa và xác nhận chạm điểm phát audio được. Tự phát theo geofence trên iPhone/Safari và ngưỡng thực tế còn chờ nghiệm thu. Dashboard có bộ lọc ngày ICT, tổng visit/journey/audio và lượt phát audio theo địa điểm từ sự kiện thật; người dùng xác nhận bản deploy hoạt động sau sửa lỗi aggregate async. Mô phỏng không ghi thống kê thật. Đợt hồi quy đa ngôn ngữ gần nhất: frontend 61 test; backend 181 test, 16 integration skip mặc định; Ruff/typecheck/build đạt. E2E 12/12 desktop/mobile là kết quả hồi quy trước đó. Render hiện báo service “Suspended by you”; code workspace mới chưa deploy lên đó. Xem [nhật ký dashboard](test-reports/ADMIN_DASHBOARD_PROGRESS_2026_10_24.md), [OSM/GPS](test-reports/MAP_OSM_PROGRESS_2026_10_24.md), [đa ngôn ngữ](test-reports/MULTILINGUAL_UI_PROGRESS_2026_10_24.md), [Admin/audio](test-reports/DEMO_CONTENT_AUDIO_ADMIN.md) và [khách](test-reports/DEMO_GUEST_PROGRESS_2026_10_23.md).
 
 ## Kiểm tra khung
 
@@ -10,7 +18,7 @@ Typecheck/build frontend; kiểm tra cú pháp và lint Python; smoke test healt
 Kiểm tra frontend build được phục vụ cùng nguồn FastAPI.
 Những kiểm tra này không xác nhận chức năng nghiệp vụ, kết nối MongoDB hoặc Docker.
 
-### Kết quả khung ngày 21/10/2026
+### Kết quả khung ngày 21/10/2026 — lịch sử
 
 - Đạt: TypeScript và production build với React 19.2.9, Vite 7.3.7, Node.js 24.19.0.
 - Đạt: lint, kiểm tra định dạng và biên dịch Python 3.12.10.
@@ -18,7 +26,7 @@ Những kiểm tra này không xác nhận chức năng nghiệp vụ, kết n�
 - Đạt: FastAPI phục vụ frontend đã build và các tài nguyên JS/CSS cùng nguồn với API.
 - Đạt: liên kết Markdown nội bộ; bản kế hoạch gốc trùng nội dung byte với file được chọn.
 - Đạt: cấu trúc YAML của Compose đọc được. Chưa chạy Docker vì máy chưa có Docker.
-- Chưa kiểm thử: MongoDB/GridFS, auth/RBAC, GPS, audio, PWA/offline, AI hoặc triển khai cloud.
+- Tại thời điểm đó chưa kiểm thử MongoDB/GridFS, auth/RBAC, GPS, audio, PWA/offline, AI hoặc triển khai cloud. Các phần đã thực hiện sau đó có báo cáo riêng.
 
 Đây là kết quả kiểm tra nền tảng, không phải báo cáo nghiệm thu sản phẩm.
 
@@ -30,10 +38,7 @@ Cập nhật 23/10: khách công khai, ID khách/hành trình và thống kê c�
 [báo cáo demo khách](test-reports/DEMO_GUEST_PROGRESS_2026_10_23.md). QR/camera vẫn hoãn.
 Các số lượng và giới hạn theo từng mốc cũ bên dưới là lịch sử kiểm thử.
 
-Cập nhật UI 23/10: `#/welcome` luôn là trang chào độc lập; `#/explore` chỉ mở sau khi
-khách bắt đầu. Explore không hiển thị Languages hoặc đăng nhập quản trị; Admin đã
-đăng nhập vẫn có link `Admin` vào `#/management`. Đăng ký không còn trong UI và route
-`#/register` chuyển về login. English/한국어 mới chỉ có menu trạng thái “Sắp có”.
+Mốc UI 23/10: `#/welcome` tách khỏi `#/explore`, khách không đăng nhập; route đăng ký cũ chuyển về login. Trạng thái mới 24/10: bộ chọn VI/EN/KO hoạt động tại Welcome và giữ lựa chọn trong hành trình; header mobile hiển thị bộ chọn. Nội dung/audio English cho 10 POI có trong release đã duyệt; UI tiếng Hàn có nhưng chưa có nội dung/audio POI tiếng Hàn. Chi tiết tại [báo cáo đa ngôn ngữ](test-reports/MULTILINGUAL_UI_PROGRESS_2026_10_24.md).
 
 Kết quả từng phần được cập nhật riêng: [P1.1 MongoDB](test-reports/P1_1_MONGODB.md).
 P1.1 đã có 34 test cục bộ đạt và một integration test ping Atlas thật đạt.
@@ -43,7 +48,7 @@ P1.3: [API xác thực](test-reports/P1_3_AUTH.md), 124 test cục bộ và 14 t
 Luồng HTTP đã kiểm thử. Demo ưu tiên mới theo [DEMO_2_DAYS](DEMO_2_DAYS.md).
 P1.4: [UI auth và trạng thái phiên](test-reports/P1_4_AUTH_UI.md), 18 test frontend
 và 4 test Edge/Atlas tạm đạt; desktop 1366×900, mobile viewport 390×844.
-Chưa thử trên điện thoại vật lý; màn hình quản trị mới là khung, chưa có nghiệp vụ.
+Các số kiểm thử P1.4 bên trên thuộc mốc ban đầu. Người dùng đã kiểm tra bản đồ/audio và tọa độ trên điện thoại; trang Admin và dashboard hiện có nghiệp vụ. Các nghiệm thu còn lại được nêu trong trạng thái 24/10 ở đầu tài liệu.
 Chuẩn bị audio: [10 MP3 tiếng Việt giọng nam](test-reports/DEMO_AUDIO_VI_MALE.md),
 131 test cục bộ đạt; 10/10 file khớp checksum/nguồn và có thời lượng MP3 hợp lệ.
 Chưa nghe duyệt hoặc kiểm thử trình phát.

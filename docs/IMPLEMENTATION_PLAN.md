@@ -2,7 +2,9 @@
 
 Nguồn chuẩn: [kế hoạch gốc](PROJECT_PLAN.md). Các tuần là mốc tương đối, không tự đổi thành
 deadline lịch hoặc cam kết tiến độ. Không áp dụng phương án rút gọn 5 ngày.
-Ưu tiên cập nhật 24/10 theo yêu cầu người dùng: Stadia/GPS và phát audio khi chạm điểm đã hoạt động trên điện thoại; 10 tọa độ đã kiểm chứng thực địa. Nghiệm thu GPS/geofence thực tế có thể để sau. Dashboard Admin đã được bổ sung bộ lọc ngày ICT và lượt phát audio theo từng địa điểm từ sự kiện thật; QR là phần tiếp theo. GPS tự nhận diện, autoplay theo geofence và ngưỡng cần nghiệm thu trước demo chính thức. Offline/AI/dịch tiếp tục hoãn.
+Ưu tiên hiện hành — cập nhật 24/10/2026: dashboard thống kê nền đã hoạt động trên deploy. Giao diện khách VI/EN/KO đã hoàn tất, lựa chọn ngôn ngữ được giữ xuyên hành trình; nội dung POI và audio English cho 10 điểm đã được người dùng duyệt và công bố cùng tiếng Việt. QR là phần phát triển kế tiếp. GPS tự nhận diện/tự phát trên iPhone/Safari và ngưỡng geofence được để sau, cần nghiệm thu trước demo chính thức. Nội dung/audio Hàn, offline, AI và dịch/TTS tự động còn hoãn.
+
+**Tiến độ 24/10:** giao diện khách VI/EN/KO, nội dung/audio English và biên tập nội dung/audio theo locale trong Admin đã triển khai. Bộ chọn ngôn ngữ mobile Welcome cũng đã được khôi phục, menu được kiểm tra trực quan; chi tiết và kiểm thử tại [báo cáo đa ngôn ngữ](test-reports/MULTILINGUAL_UI_PROGRESS_2026_10_24.md) và [nhật ký Admin](test-reports/ADMIN_MULTILINGUAL_CONTENT_2026_10_24.md).
 
 ## Đã thực hiện: khung dự án
 
@@ -11,18 +13,15 @@ deadline lịch hoặc cam kết tiến độ. Không áp dụng phương án r�
 - FastAPI factory, health endpoint, router và thư mục nghiệp vụ giữ chỗ.
 - Biến môi trường mẫu, cấu hình Docker/Compose; chưa chạy Docker.
 
-## Các mốc tiếp theo
+## Các mốc nền tảng đã qua và lộ trình gốc
 
 Chi tiết đầu việc và trạng thái từng phần tại [WORK_BREAKDOWN](WORK_BREAKDOWN.md).
 P1.1 đã hoàn tất: vòng đời kết nối, cấu hình và readiness MongoDB, 34 test cục bộ và một ping Atlas thật đạt.
 P1.2 đã hoàn tất mô hình/repository User/session và index thật; 69 test cục bộ,
 12 test Atlas đạt theo [báo cáo](test-reports/P1_2_USER_SESSIONS.md).
 P1.3 hoàn tất API JWT cookie/CSRF và dependency RBAC; 124 test cục bộ, 14 test Atlas đạt.
-P1.4 đã có giao diện đăng ký/đăng nhập và trạng thái phiên: 18 test frontend,
-4 test Edge/Atlas tạm đạt. Tiếp theo là nội dung/audio/admin/dashboard theo thứ tự demo 2 ngày.
-P1.4.1 đã bổ sung trang khám phá với 10 mô tả nguồn và vùng bản đồ giữ chỗ; xem
-[báo cáo](test-reports/P1_4_1_EXPLORE_UI.md). Dashboard và chức năng quản lý chưa hoạt động;
-trang Creator/Admin hiện mới có khung theo role.
+P1.4 đã có giao diện đăng nhập và trạng thái phiên: kết quả kiểm thử ở báo cáo P1.4 là ảnh chụp của mốc ban đầu. Nội dung/audio/Admin/dashboard đã được triển khai sau đó; trạng thái mới nhất xem ở đầu tài liệu và WORK_BREAKDOWN.
+P1.4.1 ban đầu tạo trang khám phá tĩnh; các phần bản đồ/GPS/audio, Admin và dashboard được bổ sung ở các mốc sau. Trạng thái hiện hành và kết quả kiểm thử được ghi trong [WORK_BREAKDOWN](WORK_BREAKDOWN.md) cùng các báo cáo theo tính năng.
 Sau từng phần ghi test, lỗi đã sửa và đối chiếu phạm vi trước khi đánh dấu hoàn thành.
 
 | Mốc | Công việc | Điều kiện chuyển mốc |

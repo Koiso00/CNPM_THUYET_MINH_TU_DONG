@@ -65,4 +65,12 @@
 - Frontend: **39 test đạt**; `npm run build` đạt, gồm TypeScript typecheck và production build.
 - Trình duyệt của người dùng đang có phiên Admin `phong`: trang Quản trị hiển thị dashboard/danh sách tài khoản; trang Nội dung tải đủ danh sách 10 địa điểm, thao tác lưu/công bố và thư viện audio. Chỉ kiểm tra hiển thị/điều hướng; không lưu, công bố, xóa, upload hay phát audio.
 - Đây là smoke test guest/API, build và điều hướng Admin; chưa xác nhận thao tác ghi thật của Admin trên giao diện hoặc phát audio trong trình duyệt.
-- Demo tiếp tục chạy tại `http://127.0.0.1:5173/#/welcome`; backend tại `http://127.0.0.1:8000`. E2E Atlas ghi tạm không chạy lại để tránh tạo dữ liệu kiểm thử ngoài lượt này. QR/GPS/offline vẫn chưa triển khai.
+- Demo tiếp tục chạy tại `http://127.0.0.1:5173/#/welcome`; backend tại `http://127.0.0.1:8000`. E2E Atlas ghi tạm không chạy lại để tránh tạo dữ liệu kiểm thử ngoài lượt này. Các trạng thái “QR/GPS chưa triển khai” ở phần trên là ảnh chụp lịch sử trước khi có bản cập nhật 24/10 dưới đây.
+
+## Cập nhật trạng thái sau báo cáo — 24/10/2026
+
+- Người dùng đã thử Stadia/GPS trên điện thoại, kiểm chứng thực địa 10 tọa độ và xác nhận chạm địa điểm phát audio được. Safari/iPhone vẫn có thể chặn tự phát khi geofence nhận điểm; tự phát/ngưỡng còn chờ nghiệm thu.
+- Dashboard Admin có lọc ngày ICT và lượt nghe theo địa điểm; người dùng xác nhận hoạt động trên deploy sau khi sửa lỗi aggregate async.
+- Giao diện khách VI/EN/KO đã hoàn tất; người dùng duyệt 10 bản dịch English và 10 MP3 English, đã công bố release song ngữ trên Atlas. Xem [báo cáo đa ngôn ngữ](MULTILINGUAL_UI_PROGRESS_2026_10_24.md).
+- Bộ chọn ngôn ngữ mobile ở Welcome đã được khôi phục và kiểm tra trực quan; frontend build/typecheck và 61 test đạt trong đợt đa ngôn ngữ.
+- QR/camera chưa triển khai; QR là bước phát triển kế tiếp sau dashboard và đa ngôn ngữ. Render hiện “Suspended by you”; code workspace mới chưa deploy lên service.

@@ -2957,7 +2957,13 @@ fieldset {
   .site-auth:has(.guest-welcome) .brand { gap: 9px; font-size: 15px; }
   .site-auth:has(.guest-welcome) .brand-symbol { width: 37px; height: 37px; border-radius: 13px; }
   .site-auth:has(.guest-welcome) .brand small { font-size: 6px; }
-  .site-auth:has(.guest-welcome) .language-label { display: none; }
+  .site-auth:has(.guest-welcome) .language-label {
+    gap: 5px;
+    padding-inline: 8px;
+    font-size: 9px;
+  }
+  .site-auth:has(.guest-welcome) .language-label > span:first-of-type { display: none; }
+  .site-auth:has(.guest-welcome) .language-label strong { font-size: 9px; }
   .guest-welcome {
     display: flex;
     min-height: calc(100svh - 109px);

@@ -46,8 +46,8 @@ class MemoryAudio:
         self.choices = {}
         self.data = {}
 
-    async def for_text(self, checksum):
-        return self.assets.get(self.choices.get(checksum))
+    async def for_text(self, checksum, *, language="vi"):
+        return self.assets.get(self.choices.get((language, checksum)))
 
     async def find(self, asset_id):
         return self.assets.get(asset_id)
@@ -56,19 +56,27 @@ class MemoryAudio:
         existed = asset["_id"] in self.assets
         self.assets[asset["_id"]] = deepcopy(asset)
         self.data[asset["_id"]] = data
-        if replace or asset["text_sha256"] not in self.choices:
-            self.choices[asset["text_sha256"]] = asset["_id"]
+        choice = (asset.get("language", "vi"), asset["text_sha256"])
+        if replace or choice not in self.choices:
+            self.choices[choice] = asset["_id"]
         return not existed
 
     async def read(self, asset, start, length):
         return self.data[asset["_id"]][start : start + length]
 
-    def attach_test_audio(self, description):
+    def attach_test_audio(self, description, *, language="vi"):
         checksum = sha256(description.encode()).hexdigest()
-        asset = {"_id": "test-asset", "bytes": 10, "duration_seconds": 1, "text_sha256": checksum}
-        self.assets["test-asset"] = asset
-        self.choices[checksum] = "test-asset"
-        self.data["test-asset"] = b"0123456789"
+        asset_id = "test-asset" if language == "vi" else f"test-asset-{language}"
+        asset = {
+            "_id": asset_id,
+            "bytes": 10,
+            "duration_seconds": 1,
+            "text_sha256": checksum,
+            "language": language,
+        }
+        self.assets[asset_id] = asset
+        self.choices[(language, checksum)] = asset_id
+        self.data[asset_id] = b"0123456789"
 
 
 def content_service():

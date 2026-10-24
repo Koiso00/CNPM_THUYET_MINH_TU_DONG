@@ -38,7 +38,7 @@ function adminClient() {
   vi.spyOn(client, "get").mockImplementation(async (path) => {
     if (path === "/admin/campus") return structuredClone(campus);
     if (path.startsWith("/admin/dashboard")) return stats;
-    if (path === "/admin/audio")
+    if (path.startsWith("/admin/audio"))
       return [
         {
           place_id: place.id,
@@ -188,7 +188,7 @@ it("reuses the audio element and starts the newly selected place from the visito
   expect(play).toHaveBeenCalledOnce();
   expect(screen.getByLabelText("Nghe Khu A")).toHaveAttribute(
     "src",
-    "/api/v1/audio/release-1/place-1",
+    "/api/v1/audio/release-1/place-1?language=vi",
   );
   await userEvent.click(screen.getByRole("button", { name: "Nghe thuyết minh" }));
   expect(play).toHaveBeenCalledTimes(2);
@@ -196,7 +196,7 @@ it("reuses the audio element and starts the newly selected place from the visito
   expect(screen.getByLabelText("Nghe Khu B")).toBe(audioBeforeSelection);
   expect(screen.getByLabelText("Nghe Khu B")).toHaveAttribute(
     "src",
-    "/api/v1/audio/release-1/place-2",
+    "/api/v1/audio/release-1/place-2?language=vi",
   );
   view.unmount();
   play.mockRestore();

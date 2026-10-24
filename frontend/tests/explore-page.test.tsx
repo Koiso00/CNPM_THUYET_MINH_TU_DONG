@@ -167,9 +167,45 @@ it("starts audio directly from a visitor tap on a place with published audio", a
   expect(load).toHaveBeenCalledOnce();
   expect(screen.getByLabelText("Nghe Khu A")).toHaveAttribute(
     "src",
-    "/api/v1/audio/release/khu-a",
+    "/api/v1/audio/release/khu-a?language=vi",
   );
   expect(recordAudio).toHaveBeenCalledWith("khu-a", "release");
+  view.unmount();
+  play.mockRestore();
+  load.mockRestore();
+  pause.mockRestore();
+});
+
+it("keeps Vietnamese POI icons and plays the approved English audio with English content", async () => {
+  const user = userEvent.setup();
+  const play = vi.spyOn(HTMLMediaElement.prototype, "play").mockImplementation(function (this: HTMLMediaElement) {
+    fireEvent.play(this);
+    return Promise.resolve();
+  });
+  const load = vi.spyOn(HTMLMediaElement.prototype, "load").mockImplementation(() => {});
+  const pause = vi.spyOn(HTMLMediaElement.prototype, "pause").mockImplementation(() => {});
+  const englishPlaces = places.map((place) => place.id === "khu-a"
+    ? {
+        ...place,
+        audio_id: "vi-audio",
+        audio_by_language: { vi: "vi-audio", en: "en-audio" },
+        translations: { en: { title: "Zone A", description: "Approved English description.", source: "Reviewed" } },
+      }
+    : place);
+  const view = render(
+    <ExplorePage username="guest" places={englishPlaces} releaseId="release" language="en" />,
+  );
+
+  const zoneA = screen.getByRole("article", { name: "Zone A" });
+  expect(zoneA.querySelector(".poi-number-letter")).toHaveTextContent("A");
+  expect(within(zoneA).getByText("Approved English description.")).toBeInTheDocument();
+  await user.click(within(zoneA).getByRole("button", { name: "Listen to audio guide" }));
+  expect(play).toHaveBeenCalledOnce();
+  expect(screen.getByLabelText("Play audio for Zone A")).toHaveAttribute(
+    "src",
+    "/api/v1/audio/release/khu-a?language=en",
+  );
+
   view.unmount();
   play.mockRestore();
   load.mockRestore();

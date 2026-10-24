@@ -2,6 +2,8 @@
 
 # Rà tiến độ và kế hoạch sửa demo — 23/10/2026
 
+> **Lưu ý cập nhật 24/10/2026:** các trạng thái “chưa triển khai” bên dưới ghi nhận tại mốc 23/10. Hiện dashboard đã hoạt động trên deploy, 10 tọa độ đã kiểm chứng thực địa, chạm điểm phát audio trên điện thoại hoạt động, giao diện khách VI/EN/KO và nội dung/audio English cho 10 POI đã hoàn tất. QR là bước tiếp theo; nghiệm thu GPS autoplay/ngưỡng vẫn còn. Xem [báo cáo đa ngôn ngữ](MULTILINGUAL_UI_PROGRESS_2026_10_24.md) và [dashboard](ADMIN_DASHBOARD_PROGRESS_2026_10_24.md).
+
 ## Cập nhật nghiệm thu tiếp theo — 23/10/2026
 
 Kế hoạch D1–D3 đã có luồng thực tế trong working tree; không còn ở trạng thái “chưa triển khai” như ghi chú tại mốc dừng bên dưới. Atlas hiện có `phong` là Admin active, 10 địa điểm nháp, 10 MP3 ready trong GridFS và một release công bố (đã kiểm tra chỉ đọc). Backend test tập trung 20 đạt; frontend 39 đạt, build/typecheck đạt; E2E 8/8 lượt desktop/mobile đạt trên dữ liệu Atlas tạm và đã xác minh dọn sạch. Chi tiết ở [báo cáo khách](DEMO_GUEST_PROGRESS_2026_10_23.md) và [báo cáo Admin/audio](DEMO_CONTENT_AUDIO_ADMIN.md).

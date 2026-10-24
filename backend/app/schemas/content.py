@@ -22,12 +22,27 @@ class Point(StrictModel):
         return value
 
 
+class LocalizedPlace(StrictModel):
+    title: str = Field(min_length=1, max_length=200)
+    description: str = Field(min_length=1, max_length=20000)
+    source: str = Field(min_length=1, max_length=2000)
+    source_text_sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
+
+    @field_validator("title", "description", "source")
+    @classmethod
+    def nonblank(cls, value):
+        if not value.strip():
+            raise ValueError("Must not be blank.")
+        return value
+
+
 class Place(StrictModel):
     id: UUID
     title: str = Field(min_length=1, max_length=200)
     description: str = Field(min_length=1, max_length=20000)
     source: str = Field(min_length=1, max_length=2000)
     location: Point | None = None
+    translations: dict[Literal["en", "ko"], LocalizedPlace] = Field(default_factory=dict)
 
     @field_validator("title", "description", "source")
     @classmethod

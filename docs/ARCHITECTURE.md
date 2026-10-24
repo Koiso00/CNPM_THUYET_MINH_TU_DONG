@@ -1,10 +1,10 @@
-> **Ưu tiên 24/10/2026:** OSM và tọa độ do người dùng cung cấp đã có; GPS opt-in, mô phỏng và geofence cùng luồng frontend đã triển khai. Hoàn thiện dashboard thống kê Admin trước khi làm QR; nghiệm thu thực địa/thiết bị có thể để sau.
+> **Ưu tiên 24/10/2026:** dashboard thống kê Admin và đa ngôn ngữ đã hoàn tất phần demo; QR là bước phát triển kế tiếp. OSM/Stadia và GPS opt-in/mô phỏng/geofence có trong frontend. Nghiệm thu GPS tự phát và ngưỡng thực địa có thể để sau nhưng cần xong trước demo chính thức.
 
 # Kiến trúc
 
-## Trạng thái demo hiện hành — 23/10/2026
+## Trạng thái demo hiện hành — cập nhật 24/10/2026
 
-Khách dùng `#/welcome` không cần tài khoản; bắt đầu hành trình mới mới mở `#/explore`. Browser giữ ID khách và hành trình trong localStorage. Nội dung và audio công khai lấy từ release đã công bố; audio phát thủ công. Visit/journey/audio được ghi qua API sự kiện công khai có schema giới hạn và đếm theo ngày ICT. Admin biên soạn trực tiếp tại `#/admin`, xem dashboard/quản lý tài khoản tại `#/management`; Creator workflow/API đã gỡ khỏi demo. Bản đồ OSM, tọa độ người dùng cung cấp và GPS opt-in/mô phỏng cùng geofence đã tích hợp phía frontend; chưa nghiệm thu GPS thiết bị/thực địa. QR chỉ làm sau bước này. Offline, AI và ngôn ngữ khác vẫn hoãn. Đây là mô tả demo đang chạy; phần thiết kế dài hạn bên dưới vẫn tham khảo kế hoạch gốc.
+Khách dùng `#/welcome` không cần tài khoản; bắt đầu hành trình mới mới mở `#/explore`. Browser giữ ID khách và hành trình trong localStorage. Nội dung/audio công khai lấy từ release đã công bố; giao diện và nội dung/audio POI English/Việt theo locale. Visit/journey/audio được ghi qua API sự kiện công khai có schema giới hạn và đếm theo ngày ICT. Admin biên soạn trực tiếp tại `#/admin`, chọn VI/EN/KO để sửa nội dung từng địa điểm và quản lý MP3 tương ứng; xem dashboard/quản lý tài khoản tại `#/management`. Creator workflow/API đã gỡ khỏi demo. Stadia Maps, 10 tọa độ người dùng cung cấp và GPS opt-in/mô phỏng cùng geofence đã tích hợp phía frontend; người dùng đã kiểm chứng tọa độ thực địa và xác nhận chạm điểm phát audio trên điện thoại. Tự phát theo geofence trên iPhone/Safari và ngưỡng GPS chưa nghiệm thu. Dashboard nền hoạt động trên deploy theo xác nhận người dùng. QR là bước phát triển kế tiếp; offline và AI vẫn hoãn. Các phần dài hạn bên dưới vẫn tham khảo kế hoạch gốc.
 
 Trạng thái: phần đầu mô tả demo đang chạy; các mục dài hạn bên dưới là thiết kế mục tiêu.
 
@@ -33,7 +33,7 @@ Trình phát duy nhất được dừng khi đổi địa điểm hoặc rời t
 Admin API dùng RBAC/CSRF hiện có. Khóa user thu hồi phiên; mở khóa không hồi sinh phiên cũ.
 Admin đang hoạt động được bảo vệ khỏi khóa/hạ quyền trên web. Dashboard dùng count database,
 snapshot hiện hành và event visit/journey/audio theo ngày. QR, Dịch/TTS tự động, bản đồ,
-GPS/geofence frontend đang thử nghiệm; GPS thực địa, QR, offline và AI chưa nghiệm thu. Các phần dài hạn bên dưới giữ vai trò thiết kế mục tiêu.
+QR/camera, offline và AI chưa triển khai. GPS tự nhận diện/tự phát theo geofence và ngưỡng thực địa còn chờ nghiệm thu. Các phần dài hạn bên dưới giữ vai trò thiết kế mục tiêu.
 P1.1 đã bổ sung connection pool MongoDB theo lifespan và endpoint readiness.
 P1.2 có model/repository User/session và unique/TTL index thật trên Atlas.
 P1.3 có API JWT cookie/CSRF và dependency RBAC, đã kiểm thử với Atlas thật.
@@ -110,7 +110,7 @@ Middleware kiểm tra mọi API unsafe, Origin theo allowlist và Sec-Fetch-Site
 Argon2 chạy trong threadpool; phản hồi validation bỏ input để không phản chiếu mật khẩu.
 Mỗi request xác thực tra phiên còn hiệu lực và User còn hoạt động; role lấy từ database.
 API auth trả no-store; secret thiếu thì 503, không dùng khóa mặc định.
-RBAC là dependency dùng chung; màn hình và API quản trị nội dung chưa được xây dựng.
+RBAC là dependency dùng chung; API và màn hình quản trị nội dung/tài khoản đã triển khai trong demo. Chi tiết theo hợp đồng hiện hành ở [DATA_AND_API](DATA_AND_API.md).
 Chính sách đã chốt: access token 15 phút, tự gia hạn trong phiên tối đa 7 ngày tuyệt đối.
 Session lưu digest refresh token, thay digest bằng cập nhật nguyên tử; không kéo dài expires_at.
 TTL chỉ dọn dữ liệu cũ, repository luôn kiểm tra thời hạn/thu hồi khi truy vấn phiên.
@@ -127,8 +127,7 @@ nội dung/MP3 theo ngôn ngữ. Không bắt tải mọi ngôn ngữ trên serv
 Mục tiêu: Render phục vụ frontend/API và Atlas Free lưu dữ liệu. Không lưu tài nguyên cần tồn tại
 lâu dài trên filesystem tạm của Render.
 Docker Compose là bản dự phòng FastAPI + MongoDB có volume; dùng HTTPS khi thử GPS trên điện thoại.
-Hiện có cấu hình Docker nhưng chưa chạy xác minh, chưa triển khai ứng dụng lên cloud.
-Atlas đã được người dùng tạo và kiểm thử ping thật thành công; chưa triển khai ứng dụng lên Render.
+Hiện có cấu hình Docker nhưng chưa chạy xác minh trong repository. Ứng dụng đã từng được triển khai lên Render; dashboard đã hoạt động theo xác nhận người dùng. Tại lần cập nhật 24/10, Render báo service “Suspended by you”, nên thay đổi code mới trong workspace chưa deploy lên đó. Atlas đã được kiểm thử; xem [hướng dẫn deploy](DEPLOY_RENDER.md).
 
 ## Kết nối dữ liệu P1.1
 
