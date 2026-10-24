@@ -1,4 +1,4 @@
-> **Cập nhật 24/10/2026:** người dùng đã cấu hình Stadia, thử bản đồ/GPS trên điện thoại và kiểm chứng 10 tọa độ thực địa. iPhone/Safari chặn tự phát audio; đã điều chỉnh thẻ audio và cần thử lại. QR chờ xác nhận luồng audio và ngưỡng geofence.
+> **Cập nhật người dùng 24/10/2026:** Stadia/GPS hoạt động trên điện thoại, 10 tọa độ kiểm chứng thực địa, chạm địa điểm phát audio được. Nghiệm thu GPS/geofence thực tế để sau. Ưu tiên tiếp theo là hoàn thiện dashboard thống kê Admin; chỉ bắt đầu QR sau khi dashboard đạt tiêu chí.
 
 Xem [rà tiến độ và thứ tự sửa demo D0–D7](test-reports/DEMO_REVISION_PROGRESS_2026_10_23.md), cập nhật 23/10/2026. Kết quả sau triển khai được ghi trong báo cáo tiến độ khách và Admin/audio.
 
@@ -32,6 +32,7 @@ giữ các đầu việc dài hạn bên dưới để triển khai sau demo.
 - Smoke test 24/10 trên demo đang chạy: backend readiness `ready`/database `connected`; release công khai có 10 địa điểm và 10/10 có audio ID; frontend trả 200; 39 test frontend và build/typecheck đạt. Chỉ đọc dữ liệu Atlas, không đăng nhập hoặc ghi dữ liệu.
 - Kiểm tra trên trình duyệt người dùng: phiên Admin `phong` hoạt động; trang Quản trị và Nội dung tải được, hiển thị dashboard/tài khoản, 10 địa điểm cùng điều khiển lưu/công bố và thư viện audio. Chỉ quan sát, không ghi dữ liệu.
 - Cập nhật 24/10: OSM/10 marker và GPS thật opt-in/mô phỏng/geofence/autoplay frontend đã triển khai; 54 test frontend và build/typecheck đạt. Việc kế tiếp là người dùng thử nút mô phỏng, sau đó nghiệm thu autoplay/GPS thật qua HTTPS trên điện thoại và xác minh tọa độ/ngưỡng thực địa; chưa làm QR. Không ghi vị trí GPS hay dữ liệu mô phỏng vào Atlas.
+- Cập nhật ưu tiên theo người dùng 24/10: nghiệm thu thực địa có thể để sau; dashboard Admin được làm trước QR. Đã bổ sung bộ chọn ngày và bảng lượt phát audio theo địa điểm từ sự kiện thật; dashboard giữ các tổng tài khoản, nội dung, khách, hành trình và audio. Dữ liệu GPS mô phỏng không tính vào báo cáo. QR là bước kế tiếp sau dashboard thống kê nền.
 
 ### Mốc demo ngày 22/10/2026
 
@@ -63,7 +64,7 @@ hoặc nghiệm thu thiết bị thật.
 | P1.4.1 | Trang khám phá sau đăng nhập | Hiển thị 10 mô tả nguồn, chọn địa điểm; chừa vùng thay bằng ảnh sơ đồ; không giả GPS/audio | Hoàn tất giao diện: 4 test mới, tổng 22 test frontend; rà Edge desktop/tablet/mobile — [báo cáo](test-reports/P1_4_1_EXPLORE_UI.md) |
 | P1.5 | Mô hình Tour/POI/Localization và nhập mẫu có nguồn | GeoJSON đúng thứ tự; tách nháp/công bố; không bịa nội dung | Có tập con demo: tour nháp chứa POI/nội dung vi, vị trí nullable, nguồn và snapshot; chưa tách collection |
 | P2.1 | MapLibre + tile nền trực tuyến | Bản đồ tương tác khuôn viên, attribution rõ, lỗi tải có thể thử lại; marker dùng tọa độ người dùng cung cấp | Stadia Maps Alidade Bright raster đã được người dùng cấu hình domain và xác nhận chạy trên điện thoại. Có 10 marker; danh sách hiển thị tên/nội dung, ký hiệu A–E đồng nhất, panel map/audio chỉ hiện sau khi chọn. |
-| P2.2 | GPS thật/mô phỏng và geofence | Cùng luồng xử lý; xử lý mẫu cũ/sai số; khảo sát thực tế | GPS đã được người dùng thử trên điện thoại, 10 tọa độ đã kiểm chứng thực địa. iPhone/Safari chặn tự phát, phải nhấn Phát; đã điều chỉnh để chuẩn bị thẻ audio trong thao tác bật GPS/mô phỏng, cần thử lại trên iPhone. Ngưỡng 30/45 m và accuracy 25 m chưa được người dùng xác nhận riêng. |
+| P2.2 | GPS thật/mô phỏng và geofence | Cùng luồng xử lý; xử lý mẫu cũ/sai số; khảo sát thực tế | GPS đã được người dùng thử trên điện thoại, 10 tọa độ đã kiểm chứng thực địa, chạm điểm phát audio được. Người dùng dời nghiệm thu GPS tự nhận diện/tự phát và ngưỡng 30/45 m sang sau. |
 | P2.3 | Phiên tham quan và hàng đợi audio | Không phát chồng/lặp; chọn điểm thủ công được | Có phát thủ công, dừng khi đổi điểm/rời trang; chưa có phiên tham quan/hàng đợi GPS |
 | P3.1 | Creator, gửi duyệt, Admin duyệt và snapshot | Đúng quyền sở hữu; bản nháp không làm đổi bản công bố | Workflow Creator thuộc kế hoạch dài hạn; đã gỡ khỏi demo hiện tại. Admin biên soạn trực tiếp, lưu nháp và công bố riêng. |
 | P3.2 | Dịch Việt–Anh và jobs bền vững | Retry hữu hạn, chống trùng, kiểm tra phiên bản nguồn | Chưa làm |
@@ -71,7 +72,7 @@ hoặc nghiệm thu thiết bị thật.
 | P4.1 | Service worker, IndexedDB và pack theo ngôn ngữ | Đủ tài nguyên chung + nội dung/MP3 ngôn ngữ chọn; thêm ngôn ngữ không tải lại tài nguyên chung hợp lệ | Chưa làm |
 | P4.2 | Resume, checksum, dung lượng, cập nhật và logout offline | Không báo đủ khi thiếu file; không lộ dữ liệu giữa tài khoản | Chưa làm |
 | P5.1 | Gemini hỗ trợ bản nháp | Dựa trên tư liệu được cấp; không tự công bố; xử lý quota/lỗi | Chưa làm |
-| P5.2 | Dashboard và audit theo bản gốc | Đúng sự kiện, chống trùng, tách mô phỏng | Demo đã có usage events visit/journey/audio theo ngày ICT; chưa có QR/GPS events và audit dài hạn |
+| P5.2 | Dashboard và audit theo bản gốc | Bộ lọc ngày; khách/hành trình/lượt audio tổng hợp và audio theo địa điểm; dữ liệu thật, chống trùng, tách mô phỏng | Dashboard thống kê nền đã có bộ lọc ngày ICT và lượt audio theo địa điểm; QR events và audit dài hạn chưa có, sẽ triển khai theo phần QR/kế hoạch gốc. |
 | P5.3 | Nội dung 8–10 điểm, cloud/local và nghiệm thu | Test thiết bị, thực địa, triển khai và diễn tập | Chưa làm |
 
 ### Cập nhật phần demo khách và giao diện — 23/10/2026

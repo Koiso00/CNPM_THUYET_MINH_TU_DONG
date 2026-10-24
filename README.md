@@ -1,4 +1,4 @@
-> **Cập nhật người dùng ngày 24/10/2026:** domain Stadia đã cấu hình, bản đồ và GPS hoạt động khi thử trên điện thoại; 10 tọa độ đã được người dùng kiểm chứng thực địa. iPhone/Safari chặn lần tự phát audio sau khi geofence xác nhận, vẫn phát được khi nhấn Phát. Đã điều chỉnh trình phát để chuẩn bị thẻ audio từ thao tác bật GPS/mô phỏng; cần thử lại trên iPhone trước khi coi tự phát đạt. Chưa có xác nhận riêng về ngưỡng geofence 30/45 m. QR vẫn chờ nghiệm thu luồng này.
+> **Cập nhật người dùng ngày 24/10/2026:** Stadia/GPS hoạt động trên điện thoại; 10 tọa độ đã kiểm chứng thực địa và chạm địa điểm phát audio được. Nghiệm thu GPS/geofence thực tế có thể để sau. Ưu tiên phát triển kế tiếp là hoàn thiện dashboard thống kê Admin; QR làm sau dashboard. Cần nghiệm thu GPS tự nhận diện và ngưỡng geofence trước buổi demo chính thức.
 
 > **Trạng thái demo 23/10/2026:** khách không đăng nhập; welcome, ID khách/hành trình, nội dung/audio công khai, Admin và thống kê visit/journey/audio đã triển khai. QR vẫn hoãn. Chi tiết tại [kế hoạch khách/QR](docs/DEMO_GUEST_QR_PLAN.md) và [báo cáo khách](docs/test-reports/DEMO_GUEST_PROGRESS_2026_10_23.md).
 

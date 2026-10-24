@@ -57,7 +57,7 @@
 2. Dùng điện thoại thật qua HTTPS, kiểm tra cho phép/từ chối quyền, sai số thực tế, tab nền và tiết kiệm pin.
 3. Khảo sát/hiệu chỉnh bán kính vào-ra cho khuôn viên; xác nhận cách xử lý các geofence gần/chồng lấn.
 4. E2E GPS (mock provider ở test) và mô phỏng qua 2 mẫu/đóng-dừng, đảm bảo sự kiện mô phỏng không vào dashboard thật.
-5. Chỉ chuyển sang QR sau khi bản đồ và luồng GPS/geofence được người dùng nghiệm thu.
+5. Theo cập nhật người dùng ngày 24/10, có thể phát triển QR trước nghiệm thu thực địa. GPS tự nhận diện, autoplay theo geofence và xác nhận ngưỡng vẫn cần hoàn tất trước demo chính thức.
 
 Không có thao tác ghi/xóa dữ liệu Atlas trong phần việc này.
 
@@ -82,3 +82,4 @@ Không có thao tác ghi/xóa dữ liệu Atlas trong phần việc này.
 - Đã đổi marker và nút thẻ có audio để gọi `play()` đồng bộ ngay trong thao tác chạm; thẻ audio được giữ lại và thay nguồn khi chuyển điểm. Nút danh sách đổi thành “Nghe thuyết minh”; điểm chưa có audio vẫn chỉ mở nội dung.
 - Kiểm tra hồi quy: **57/57 frontend test đạt**. Trên Edge viewport 390×844 với MP3 công bố từ Atlas, chạm “Nghe thuyết minh” chọn Khu A và audio phát (currentTime tăng ~2,54 giây, readyState 4). Đây chưa phải kiểm tra iPhone/Safari.
 - Một sự kiện audio thử đã được gửi nhầm vào Atlas do chạy thử với ID hành trình giả; đã xóa đúng một bản ghi khớp đồng thời visitor ID, journey ID, release ID và place ID của bài thử. Không có dữ liệu tour/audio nào thay đổi.
+- Người dùng xác nhận sau khi dùng bản cập nhật trên điện thoại, chạm địa điểm và nghe audio đã hoạt động. Đây xác nhận luồng chọn điểm thủ công; GPS tự nhận diện/tự phát và ngưỡng 30/45 m vẫn cần nghiệm thu riêng trước QR.

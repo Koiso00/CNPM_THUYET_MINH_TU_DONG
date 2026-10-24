@@ -20,19 +20,24 @@ const campus = {
   published_release_id: null,
 };
 const stats = {
+  day: "2026-10-24",
   users: 3,
   active_users: 2,
   audio_assets: 1,
   draft_places: 1,
   published_places: 0,
   published_tours: 0,
+  guest_visitors: 0,
+  guest_journeys: 0,
+  guest_audio_plays: 0,
+  guest_audio_by_place: [],
 };
 
 function adminClient() {
   const client = new AuthClient();
   vi.spyOn(client, "get").mockImplementation(async (path) => {
     if (path === "/admin/campus") return structuredClone(campus);
-    if (path === "/admin/dashboard") return stats;
+    if (path.startsWith("/admin/dashboard")) return stats;
     if (path === "/admin/audio")
       return [
         {
@@ -135,7 +140,7 @@ it("saves before publishing and keeps account management separate", async () => 
   expect(
     screen.queryByRole("region", { name: "Dashboard" }),
   ).not.toBeInTheDocument();
-  expect(client.get).not.toHaveBeenCalledWith("/admin/dashboard");
+  expect(client.get).not.toHaveBeenCalledWith(expect.stringContaining("/admin/dashboard"));
   expect(client.get).not.toHaveBeenCalledWith(
     expect.stringContaining("/admin/users"),
   );
@@ -205,6 +210,15 @@ it("loads dashboard and accounts independently from campus content", async () =>
   await screen.findByLabelText("Vai trò visitor");
   const dashboard = screen.getByRole("region", { name: "Dashboard" });
   expect(dashboard).toHaveTextContent("Tổng tài khoản3");
+  expect(dashboard).toHaveTextContent("Lượt phát audio theo địa điểm");
+  const get = vi.mocked(client.get);
+  expect(get).toHaveBeenCalledWith(expect.stringMatching(/\/admin\/dashboard\?day=\d{4}-\d{2}-\d{2}/));
+  fireEvent.change(screen.getByLabelText("Ngày thống kê"), {
+    target: { value: "2026-10-20" },
+  });
+  await waitFor(() =>
+    expect(get).toHaveBeenCalledWith("/admin/dashboard?day=2026-10-20"),
+  );
   expect(
     screen.queryByLabelText("Nội dung thuyết minh"),
   ).not.toBeInTheDocument();
@@ -234,7 +248,7 @@ it("shows a dashboard failure and retries without inventing counts", async () =>
   const client = adminClient();
   const get = vi.spyOn(client, "get");
   get.mockImplementation(async (path) => {
-    if (path === "/admin/dashboard") throw new TypeError("offline");
+    if (path.startsWith("/admin/dashboard")) throw new TypeError("offline");
     return [];
   });
   render(<ManagementPage client={client} />);
@@ -243,7 +257,7 @@ it("shows a dashboard failure and retries without inventing counts", async () =>
   );
   expect(document.querySelectorAll(".admin-stats article")).toHaveLength(0);
   get.mockImplementation(async (path) =>
-    path === "/admin/dashboard" ? stats : [],
+    path.startsWith("/admin/dashboard") ? stats : [],
   );
   await userEvent.click(
     screen.getByRole("button", { name: "Làm mới số liệu" }),
@@ -256,7 +270,7 @@ it("shows a dashboard failure and retries without inventing counts", async () =>
 it("disables editing protected administrators", async () => {
   const client = adminClient();
   vi.spyOn(client, "get").mockImplementation(async (path) =>
-    path === "/admin/dashboard"
+    path.startsWith("/admin/dashboard")
       ? stats
       : [
           {
@@ -277,7 +291,7 @@ it("disables editing protected administrators", async () => {
 it("retries loading accounts without treating a failed request as an empty list", async () => {
   const client = adminClient();
   const get = vi.spyOn(client, "get").mockImplementation(async (path) => {
-    if (path === "/admin/dashboard") return stats;
+    if (path.startsWith("/admin/dashboard")) return stats;
     throw new TypeError("offline");
   });
   render(<ManagementPage client={client} />);
@@ -288,7 +302,7 @@ it("retries loading accounts without treating a failed request as an empty list"
     screen.queryByText("Không có tài khoản trong trang này."),
   ).not.toBeInTheDocument();
   get.mockImplementation(async (path) =>
-    path === "/admin/dashboard"
+    path.startsWith("/admin/dashboard")
       ? stats
       : [{ id: "user-1", username: "visitor", role: "user", is_active: true }],
   );
@@ -307,7 +321,7 @@ it("pages through accounts without keeping rows from the previous page", async (
     is_active: true,
   }));
   vi.spyOn(client, "get").mockImplementation(async (path) =>
-    path === "/admin/dashboard"
+    path.startsWith("/admin/dashboard")
       ? stats
       : path.includes("offset=20")
         ? accounts.slice(20)
