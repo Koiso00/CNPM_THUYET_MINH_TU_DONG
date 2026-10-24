@@ -1,16 +1,15 @@
-> **Cập nhật người dùng 24/10/2026:** Stadia/GPS hoạt động trên điện thoại, 10 tọa độ kiểm chứng thực địa, chạm địa điểm phát audio được. Nghiệm thu GPS/geofence thực tế để sau. Ưu tiên tiếp theo là hoàn thiện dashboard thống kê Admin; chỉ bắt đầu QR sau khi dashboard đạt tiêu chí.
+> **Cập nhật người dùng 24/10/2026:** Stadia/GPS hoạt động trên điện thoại; 10 tọa độ đã kiểm chứng thực địa và chạm địa điểm phát audio được. Dashboard thống kê Admin đã hoàn thiện phần nền và người dùng xác nhận bản deploy hoạt động. Giao diện VI/EN/KO cùng nội dung/audio English cho 10 điểm đã hoàn tất. QR là bước phát triển kế tiếp; GPS tự phát trên iPhone/Safari và ngưỡng thực địa vẫn cần nghiệm thu trước demo chính thức.
 
 Xem [rà tiến độ và thứ tự sửa demo D0–D7](test-reports/DEMO_REVISION_PROGRESS_2026_10_23.md), cập nhật 23/10/2026. Kết quả sau triển khai được ghi trong báo cáo tiến độ khách và Admin/audio.
 
-> **Trạng thái demo 23/10/2026:** khách không đăng nhập; welcome, ID khách/hành trình, nội dung/audio công khai, Admin và thống kê visit/journey/audio đã triển khai. QR vẫn hoãn. Chi tiết tại [kế hoạch khách/QR](DEMO_GUEST_QR_PLAN.md) và [báo cáo tiến độ](test-reports/DEMO_GUEST_PROGRESS_2026_10_23.md).
+> **Ảnh chụp ngày 23/10/2026 — lịch sử:** khách không đăng nhập, Admin quản lý nội dung/dashboard, QR còn hoãn. Cập nhật mới nhất nằm ở trạng thái 24/10 đầu tài liệu và trong [kế hoạch khách/QR](DEMO_GUEST_QR_PLAN.md).
 
 # Công việc triển khai và kiểm soát chất lượng
 
 Nguồn phạm vi: [kế hoạch được chọn](PROJECT_PLAN.md).
 Yêu cầu cách làm mới: chia nhỏ công việc, kiểm thử sau mỗi phần, ghi lỗi và đối chiếu kế hoạch.
 Đây là thứ tự kỹ thuật để thực hiện kế hoạch, không thay lộ trình thành cam kết deadline mới.
-Ưu tiên hiện hành: [demo 2 ngày](DEMO_2_DAYS.md) đã được người dùng xác nhận;
-giữ các đầu việc dài hạn bên dưới để triển khai sau demo.
+Ưu tiên hiện hành: QR sau khi hoàn tất dashboard và đa ngôn ngữ. GPS/geofence thực tế được để sau; giữ các đầu việc dài hạn bên dưới để theo dõi phần còn lại của kế hoạch gốc.
 
 ## Quy trình cho mỗi phần
 
@@ -31,8 +30,10 @@ giữ các đầu việc dài hạn bên dưới để triển khai sau demo.
 - Người dùng đã nghe 10 MP3 demo và xác nhận đúng, không cần thay; Atlas release hiện tại đã gắn audio đủ 10/10 địa điểm. Chưa thay đổi snapshot/release.
 - Smoke test 24/10 trên demo đang chạy: backend readiness `ready`/database `connected`; release công khai có 10 địa điểm và 10/10 có audio ID; frontend trả 200; 39 test frontend và build/typecheck đạt. Chỉ đọc dữ liệu Atlas, không đăng nhập hoặc ghi dữ liệu.
 - Kiểm tra trên trình duyệt người dùng: phiên Admin `phong` hoạt động; trang Quản trị và Nội dung tải được, hiển thị dashboard/tài khoản, 10 địa điểm cùng điều khiển lưu/công bố và thư viện audio. Chỉ quan sát, không ghi dữ liệu.
-- Cập nhật 24/10: OSM/10 marker và GPS thật opt-in/mô phỏng/geofence/autoplay frontend đã triển khai; 54 test frontend và build/typecheck đạt. Việc kế tiếp là người dùng thử nút mô phỏng, sau đó nghiệm thu autoplay/GPS thật qua HTTPS trên điện thoại và xác minh tọa độ/ngưỡng thực địa; chưa làm QR. Không ghi vị trí GPS hay dữ liệu mô phỏng vào Atlas.
-- Cập nhật ưu tiên theo người dùng 24/10: nghiệm thu thực địa có thể để sau; dashboard Admin được làm trước QR. Đã bổ sung bộ chọn ngày và bảng lượt phát audio theo địa điểm từ sự kiện thật; dashboard giữ các tổng tài khoản, nội dung, khách, hành trình và audio. Dữ liệu GPS mô phỏng không tính vào báo cáo. QR là bước kế tiếp sau dashboard thống kê nền.
+- Cập nhật 24/10: Stadia/10 marker và GPS opt-in/mô phỏng/geofence frontend đã triển khai. Người dùng đã kiểm chứng tọa độ tại thực địa, thử GPS trên điện thoại và xác nhận chạm điểm phát audio được. iPhone/Safari có thể chặn tự phát theo geofence; tự phát/ngưỡng được dời sang giai đoạn nghiệm thu sau. Không ghi vị trí GPS hay dữ liệu mô phỏng vào Atlas.
+- Cập nhật ưu tiên theo người dùng 24/10: nghiệm thu GPS/geofence thực tế có thể để sau; dashboard Admin được làm trước QR. Đã bổ sung bộ chọn ngày và bảng lượt phát audio theo địa điểm từ sự kiện thật; dashboard giữ các tổng tài khoản, nội dung, khách, hành trình và audio. Dữ liệu GPS mô phỏng không tính vào báo cáo. QR là bước kế tiếp sau dashboard thống kê và hỗ trợ đa ngôn ngữ.
+- Nhật ký deploy 24/10: Render log cho thấy aggregate async bị thiếu `await`, gây 500 ở API dashboard. Đã sửa và thêm test hồi quy; người dùng xác nhận dashboard trên deploy đã hoạt động. Xem [nhật ký dashboard Admin](test-reports/ADMIN_DASHBOARD_PROGRESS_2026_10_24.md).
+- Cập nhật 24/10: đã triển khai chọn VI/EN/KO xuyên hành trình và Admin biên tập theo locale. Người dùng duyệt 10 bản dịch POI English và 10 MP3; Atlas có release song ngữ, gắn audio theo vi/en và bảo vệ bản dịch bằng checksum nguồn Việt. Giao diện phát audio theo ngôn ngữ; icon POI giữ cùng ký hiệu với tiếng Việt. Kiểm tra gần nhất của đợt đa ngôn ngữ: 181 backend test đạt, 16 integration test bỏ qua theo cấu hình mặc định; 61 frontend test đạt; Ruff, typecheck và build đạt. Release: `09d43a32-43d1-4f2b-85d0-cdae2ad29981`. Xem [báo cáo đa ngôn ngữ](test-reports/MULTILINGUAL_UI_PROGRESS_2026_10_24.md) và [báo cáo audio English](test-reports/DEMO_AUDIO_EN_DRAFT_2026_10_24.md). Render báo service “Suspended by you”, vì vậy code workspace mới chưa deploy lên đó; nội dung/audio POI tiếng Hàn chưa có. QR là bước kế tiếp.
 
 ### Mốc demo ngày 22/10/2026
 
@@ -65,15 +66,15 @@ hoặc nghiệm thu thiết bị thật.
 | P1.5 | Mô hình Tour/POI/Localization và nhập mẫu có nguồn | GeoJSON đúng thứ tự; tách nháp/công bố; không bịa nội dung | Có tập con demo: tour nháp chứa POI/nội dung vi, vị trí nullable, nguồn và snapshot; chưa tách collection |
 | P2.1 | MapLibre + tile nền trực tuyến | Bản đồ tương tác khuôn viên, attribution rõ, lỗi tải có thể thử lại; marker dùng tọa độ người dùng cung cấp | Stadia Maps Alidade Bright raster đã được người dùng cấu hình domain và xác nhận chạy trên điện thoại. Có 10 marker; danh sách hiển thị tên/nội dung, ký hiệu A–E đồng nhất, panel map/audio chỉ hiện sau khi chọn. |
 | P2.2 | GPS thật/mô phỏng và geofence | Cùng luồng xử lý; xử lý mẫu cũ/sai số; khảo sát thực tế | GPS đã được người dùng thử trên điện thoại, 10 tọa độ đã kiểm chứng thực địa, chạm điểm phát audio được. Người dùng dời nghiệm thu GPS tự nhận diện/tự phát và ngưỡng 30/45 m sang sau. |
-| P2.3 | Phiên tham quan và hàng đợi audio | Không phát chồng/lặp; chọn điểm thủ công được | Có phát thủ công, dừng khi đổi điểm/rời trang; chưa có phiên tham quan/hàng đợi GPS |
+| P2.3 | Phiên tham quan và hàng đợi audio | Không phát chồng/lặp; chọn điểm thủ công được | Phát thủ công và thử tự phát khi geofence nhận điểm đã có; chưa có hàng đợi GPS và chưa nghiệm thu chặn phát chồng/lặp trên thiết bị |
 | P3.1 | Creator, gửi duyệt, Admin duyệt và snapshot | Đúng quyền sở hữu; bản nháp không làm đổi bản công bố | Workflow Creator thuộc kế hoạch dài hạn; đã gỡ khỏi demo hiện tại. Admin biên soạn trực tiếp, lưu nháp và công bố riêng. |
-| P3.2 | Dịch Việt–Anh và jobs bền vững | Retry hữu hạn, chống trùng, kiểm tra phiên bản nguồn | Chưa làm |
-| P3.3 | Edge-TTS và audio fallback | MP3 đúng phiên bản; thử từng tầng và lỗi nhà cung cấp | Chưa làm |
+| P3.2 | Dịch Việt–Anh và jobs bền vững | Retry hữu hạn, chống trùng, kiểm tra phiên bản nguồn | 10 bản dịch English thủ công đã được duyệt/công bố; pipeline dịch tự động/job bền vững chưa triển khai |
+| P3.3 | Edge-TTS và audio fallback | MP3 đúng phiên bản; thử từng tầng và lỗi nhà cung cấp | 10 MP3 tiếng Việt và 10 MP3 English đã được tạo/nghe duyệt; TTS job và fallback nhiều tầng chưa triển khai |
 | P4.1 | Service worker, IndexedDB và pack theo ngôn ngữ | Đủ tài nguyên chung + nội dung/MP3 ngôn ngữ chọn; thêm ngôn ngữ không tải lại tài nguyên chung hợp lệ | Chưa làm |
 | P4.2 | Resume, checksum, dung lượng, cập nhật và logout offline | Không báo đủ khi thiếu file; không lộ dữ liệu giữa tài khoản | Chưa làm |
 | P5.1 | Gemini hỗ trợ bản nháp | Dựa trên tư liệu được cấp; không tự công bố; xử lý quota/lỗi | Chưa làm |
 | P5.2 | Dashboard và audit theo bản gốc | Bộ lọc ngày; khách/hành trình/lượt audio tổng hợp và audio theo địa điểm; dữ liệu thật, chống trùng, tách mô phỏng | Dashboard thống kê nền đã có bộ lọc ngày ICT và lượt audio theo địa điểm; QR events và audit dài hạn chưa có, sẽ triển khai theo phần QR/kế hoạch gốc. |
-| P5.3 | Nội dung 8–10 điểm, cloud/local và nghiệm thu | Test thiết bị, thực địa, triển khai và diễn tập | Chưa làm |
+| P5.3 | Nội dung 8–10 điểm, cloud/local và nghiệm thu | Test thiết bị, thực địa, triển khai và diễn tập | Đã có 10 điểm, kiểm chứng tọa độ thực địa, dashboard đã chạy trên deploy; còn nghiệm thu GPS tự phát/ngưỡng, cập nhật code workspace lên Render khi service hoạt động lại và diễn tập tổng thể |
 
 ### Cập nhật phần demo khách và giao diện — 23/10/2026
 
@@ -82,9 +83,9 @@ hoặc nghiệm thu thiết bị thật.
 - Đã giữ lối vào quản lý cho Admin: Admin active vẫn thấy liên kết `Admin` và vào `#/management`; đăng ký bị bỏ khỏi UI, route legacy chuyển về login.
 - Đã kiểm tra lại frontend sau thay đổi: 39 test đạt, typecheck/build đạt.
 - E2E desktop và viewport mobile đạt cho Admin/tài khoản/nội dung/audio và luồng khách welcome/bắt đầu/tải lại/tab mới; xem [báo cáo khách](test-reports/DEMO_GUEST_PROGRESS_2026_10_23.md).
-- Chưa đánh dấu hoàn tất các phần QR, camera, GPS, offline, dịch nội dung hoặc ngôn ngữ English/한국어; menu ngôn ngữ hiện chỉ là thiết kế giao diện.
+- **Ảnh chụp trạng thái ngày 23/10:** lúc đó QR/camera/GPS, offline và nội dung English/한국어 chưa hoàn tất; bộ chọn ngôn ngữ chỉ là giao diện. Trạng thái mới hơn ngày 24/10 được ghi ở đầu tài liệu và trong các báo cáo liên kết.
 
-Khảo sát tư liệu có thể tiến hành song song với phát triển; chưa có bộ dữ liệu thật được duyệt.
+Khảo sát tư liệu có thể tiến hành song song với phát triển. Mười tọa độ đã được người dùng kiểm chứng thực địa; nội dung English/audio English cũng đã được duyệt. Không suy rộng các xác nhận này thành kiểm duyệt lịch sử của nhà trường.
 Chuẩn bị sớm theo yêu cầu mới: đã tạo 10 MP3 demo tiếng Việt giọng nam,
 131 test cục bộ đạt và 10/10 file qua kiểm tra kỹ thuật — [báo cáo](test-reports/DEMO_AUDIO_VI_MALE.md).
 Đây là chuẩn bị asset, không đánh dấu P3.3 TTS/jobs/fallback đã hoàn tất.

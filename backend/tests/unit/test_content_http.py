@@ -1,6 +1,7 @@
 """Actual HTTP/auth/CSRF over deterministic content storage doubles."""
 
 from copy import deepcopy
+from hashlib import sha256
 from uuid import uuid4
 
 import pytest
@@ -11,7 +12,7 @@ from app.api.content_dependencies import (
     get_content_service,
 )
 from app.models.user import UserRecord, UserRole
-from app.schemas.content import CampusDraft, Point
+from app.schemas.content import CampusDraft, Point, SaveCampus
 from app.services.audio import AudioService
 from tests.auth_support import auth_harness, csrf_headers, register_and_login
 from tests.content_support import content_service
@@ -160,6 +161,43 @@ async def test_published_audio_range_and_private_assets(settings_factory):
             headers=await csrf_headers(client),
         )
         assert (await client.get(url)).status_code == 404
+
+
+async def test_public_english_audio_is_bound_to_the_matching_translation(settings_factory):
+    h = auth_harness(settings_factory)
+    service = attach(h)
+    draft = deepcopy(service.repository.tour["draft"])
+    english = "Approved English POI narration."
+    draft["places"][0]["translations"] = {
+        "en": {
+            "title": "Zone A",
+            "description": english,
+            "source": "Reviewed",
+            "source_text_sha256": sha256(draft["places"][0]["description"].encode()).hexdigest(),
+        }
+    }
+    service.audio.attach_test_audio(draft["places"][0]["description"])
+    service.audio.attach_test_audio(english, language="en")
+    await service.save(SaveCampus(revision=1, draft=draft), "admin")
+    async with h.client as client:
+        await register_and_login(client)
+        role(h, UserRole.ADMIN)
+        published = await client.post(
+            "/api/v1/admin/campus/publish",
+            json={"revision": 2},
+            headers=await csrf_headers(client),
+        )
+        assert published.status_code == 200
+        public = (await client.get("/api/v1/content/campus")).json()
+        place = public["places"][0]
+        assert place["translations"]["en"]["description"] == english
+        assert place["audio_by_language"]["en"] == "test-asset-en"
+        response = await client.get(
+            f"/api/v1/audio/{public['release_id']}/{place['id']}?language=en",
+            headers={"Range": "bytes=2-5"},
+        )
+        assert response.status_code == 206
+        assert response.content == b"2345"
 
 
 async def test_empty_tour_and_unknown_fields_rejected(settings_factory):

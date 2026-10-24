@@ -34,12 +34,22 @@ class AudioService:
         self.repository = repository
         self.content = content
 
-    async def published_asset(self, release_id, place_id):
+    async def published_asset(self, release_id, place_id, language="vi"):
         snapshot = await self.content.public()
         place = next((p for p in snapshot["places"] if p["id"] == place_id), None)
-        if snapshot["release_id"] != release_id or not place or not place.get("audio_id"):
+        audio_id = (
+            place.get("audio_by_language", {}).get(language)
+            if place and language != "vi"
+            else place.get("audio_id")
+            if place
+            else None
+        )
+        if snapshot["release_id"] != release_id or not audio_id:
             raise HTTPException(404, "Published audio not found.")
-        return await self.asset(place["audio_id"])
+        asset = await self.asset(audio_id)
+        if asset.get("language", "vi") != language:
+            raise HTTPException(404, "Published audio not found.")
+        return asset
 
     async def asset(self, asset_id):
         asset = await self.repository.find(asset_id)
@@ -47,7 +57,7 @@ class AudioService:
             raise HTTPException(404, "Audio not found.")
         return asset
 
-    async def upload(self, place_id, revision, data):
+    async def upload(self, place_id, revision, data, language="vi"):
         tour = await self.content.draft()
         if tour["revision"] != revision:
             raise HTTPException(409, "Draft changed. Reload before uploading audio.")
@@ -60,14 +70,17 @@ class AudioService:
                 raise ValueError("Empty MP3.")
         except (MutagenError, ValueError):
             raise HTTPException(422, "File must contain valid MP3 audio frames.") from None
-        text_sha = sha256(place["description"].encode("utf-8")).hexdigest()
+        localized = place if language == "vi" else place.get("translations", {}).get(language)
+        if localized is None:
+            raise HTTPException(404, "Translation not found.")
+        text_sha = sha256(localized["description"].encode("utf-8")).hexdigest()
         checksum = sha256(data).hexdigest()
         asset_id = sha256(f"upload\0{text_sha}\0{checksum}".encode()).hexdigest()
         await self.repository.store(
             {
                 "_id": asset_id,
                 "filename": f"{asset_id}.mp3",
-                "language": "vi",
+                "language": language,
                 "voice": "admin-upload",
                 "text_sha256": text_sha,
                 "sha256": checksum,

@@ -1,8 +1,10 @@
-> **Cập nhật ưu tiên ngày 24/10/2026:** Stadia/GPS hoạt động trên điện thoại, 10 tọa độ đã kiểm chứng thực địa và chạm điểm phát audio được. Nghiệm thu GPS/geofence thực tế có thể để sau. Theo yêu cầu mới nhất, hoàn thiện dashboard thống kê Admin trước; chỉ triển khai QR sau dashboard. GPS tự nhận diện và ngưỡng geofence vẫn cần nghiệm thu trước demo chính thức.
+> **Cập nhật ưu tiên ngày 24/10/2026:** Stadia/GPS hoạt động trên điện thoại, 10 tọa độ đã kiểm chứng thực địa và chạm điểm phát audio được. Dashboard thống kê nền đã triển khai và người dùng xác nhận bản deploy hoạt động. Giao diện khách VI/EN/KO cùng nội dung/audio English cho 10 POI đã hoàn tất. QR là phần phát triển kế tiếp. GPS tự nhận diện/tự phát trên iPhone/Safari và ngưỡng geofence vẫn cần nghiệm thu trước demo chính thức.
+
+> **Tiến độ đa ngôn ngữ 24/10:** giao diện khách VI/EN/KO được giữ xuyên trang/tải lại; 10 bản dịch POI English và 10 MP3 English đã được người dùng duyệt và công bố trong Atlas cùng nội dung/audio Việt. Admin có thể biên tập nội dung/audio theo locale. Chưa có nội dung/audio POI tiếng Hàn. Xem [báo cáo](test-reports/MULTILINGUAL_UI_PROGRESS_2026_10_24.md).
 
 # Điều chỉnh demo: khách không đăng nhập và QR — cập nhật 23/10/2026
 
-Trạng thái: Admin, nội dung/audio công bố và luồng khách cơ bản đã triển khai. Bản đồ Stadia, GPS và geofence frontend đã có; chạm địa điểm phát audio được trên điện thoại. Theo cập nhật 24/10, hoàn thiện dashboard thống kê Admin trước QR; nghiệm thu GPS tự nhận diện và ngưỡng thực tế để sau, trước demo chính thức.
+Trạng thái: Admin, nội dung/audio công bố, luồng khách, dashboard thống kê nền và hỗ trợ đa ngôn ngữ Việt/Anh đã triển khai. Bản đồ Stadia, GPS và geofence frontend đã có; chạm địa điểm phát audio được trên điện thoại. QR là bước phát triển kế tiếp. Nghiệm thu GPS tự nhận diện/tự phát và ngưỡng thực tế có thể để sau, nhưng cần xong trước demo chính thức.
 Tài liệu này cập nhật phạm vi demo trong DEMO_2_DAYS.md, không ghi đè kế hoạch gốc dài hạn.
 
 ### Đối chiếu triển khai hiện tại — cập nhật 24/10/2026
@@ -10,8 +12,14 @@ Tài liệu này cập nhật phạm vi demo trong DEMO_2_DAYS.md, không ghi đ
 - Đã có welcome không đăng nhập, ID khách trong browser, ID hành trình khi bắt đầu,
   public content/audio và usage events visit/journey/audio.
 - `#/welcome` và `#/explore` đã tách rõ; UI Admin không còn đăng ký. Admin active vẫn
-  vào được `#/management`; English/한국어 mới chỉ là menu giao diện “Sắp có”.
-- GPS opt-in/mô phỏng/geofence frontend đã có; QR/camera/offline/AI/dịch/TTS tự động chưa triển khai. Hoàn thiện dashboard Admin trước QR; nghiệm thu GPS/geofence thực tế được dời sang sau.
+  vào được `#/management`; khách chọn được VI/EN/KO và lựa chọn theo qua trang khám phá/tải lại.
+- GPS opt-in/mô phỏng/geofence frontend đã có; QR/camera/offline/AI/dịch/TTS tự động chưa triển khai. Dashboard thống kê nền đã hoàn thiện và được xác nhận chạy trên deploy. Giao diện đa ngôn ngữ và nội dung/audio English đã hoàn tất; QR là bước tiếp theo. Nghiệm thu GPS/geofence thực tế được dời sang sau.
+
+### Quy tắc ngôn ngữ cho hành trình — yêu cầu người dùng
+
+- Khách chọn ngôn ngữ tại trang chào mừng; lựa chọn đó được giữ khi chuyển sang các trang tiếp theo của hành trình và sau khi tải lại.
+- Giao diện khách theo ngôn ngữ đã chọn. Ngôn ngữ nội dung/audio được hiển thị riêng; nội dung và audio hiện được công bố bằng tiếng Việt và English.
+- Cập nhật 24/10: người dùng đã duyệt 10 bản dịch English, 10 MP3 English; Admin có thể chỉnh locale và bổ sung audio tiếng Hàn sau này. Chi tiết tại [báo cáo đa ngôn ngữ](test-reports/MULTILINGUAL_UI_PROGRESS_2026_10_24.md).
 
 ### Kiểm kê tài khoản và release — 24/10/2026
 
@@ -69,7 +77,7 @@ Ghi chú lịch sử: quyết định ngày 24/10 ban đầu xếp GPS/geofence 
 5. Thu sự kiện truy cập, bắt đầu hành trình, QR theo điểm và audio theo điểm; dashboard theo ngày đếm ID khách truy cập khác nhau, số hành trình riêng; chống nhân đôi do gửi lại request. Chốt múi giờ và cách tính ngày trước nghiệm thu.
 6. Xóa dữ liệu tài khoản User/Creator cũ đúng phạm vi đã cho phép và thu hồi phiên liên quan; kiểm tra đề xuất Creator cũ trước khi xử lý; kiểm thử và ghi kết quả thật trước đánh dấu hoàn tất.
 
-Đây là thứ tự công việc, chưa có ước lượng hoàn thành mới. Theo cập nhật 24/10, GPS/geofence frontend đã làm; GPS thực địa/thiết bị còn chờ nghiệm thu. Offline/AI/dịch và TTS tự động vẫn ngoài phạm vi hiện tại. Không tự tạo bản dịch/MP3 chưa được duyệt.
+Đây là đặc tả QR dài hạn, không phải mô tả trạng thái hiện hành. Dashboard và đa ngôn ngữ đã hoàn tất phần demo; QR chưa triển khai và là phần tiếp theo. GPS/geofence frontend đã làm; tự nhận điểm/tự phát trên Safari và ngưỡng thực địa còn chờ nghiệm thu. Offline/AI/dịch và TTS tự động vẫn ngoài phạm vi hiện tại. Không tự tạo bản dịch/MP3 chưa được duyệt.
 
 ## Tiêu chí kiểm thử cần bổ sung
 

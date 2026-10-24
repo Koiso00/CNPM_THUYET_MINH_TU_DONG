@@ -1,6 +1,6 @@
 > **Ưu tiên mới ngày 23/10/2026:** tạm hoãn toàn bộ QR (tạo/tải/in mã, mở từ QR, quét trong web và thống kê QR) đến khi hoàn thành Admin và thiết lập địa điểm/audio phát. Các thiết kế QR bên dưới được giữ cho giai đoạn sau. “Địa điểm phát” trước mắt là địa điểm gắn nội dung/MP3 và chọn nghe thủ công; nếu cần tự kích hoạt theo tọa độ/GPS thì phải chốt thêm.
 
-> **Cập nhật kế hoạch demo 23/10/2026:** khách không đăng nhập, giữ ID khách khi quay lại cùng trình duyệt; mỗi lần tham quan có ID hành trình riêng. Creator/Admin gộp thành một vai trò, tạo một Admin ban đầu lúc thiết lập và xóa User/Creator cũ khi chuyển đổi. Có hai luồng QR; dashboard đếm ID khách truy cập theo ngày, hành trình và QR/audio theo điểm. Xem [kế hoạch demo mới](DEMO_GUEST_QR_PLAN.md). Đây là kế hoạch, chưa triển khai; các phần bên dưới mô tả ứng dụng đang chạy hoặc lịch sử.
+> **Tài liệu mốc demo 21–23/10/2026:** nội dung bên dưới là kế hoạch ngắn hạn và lịch sử triển khai, không phải trạng thái mới nhất. Tại 24/10, khách, Admin, dashboard, bản đồ/GPS frontend và giao diện/nội dung/audio song ngữ đã được triển khai từng phần; QR là bước tiếp theo. Xem trạng thái hiện hành trong [kế hoạch khách/QR](DEMO_GUEST_QR_PLAN.md), [WORK_BREAKDOWN](WORK_BREAKDOWN.md) và các báo cáo ngày 24/10.
 
 # Phạm vi demo ưu tiên trong 2 ngày
 

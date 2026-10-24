@@ -1,5 +1,7 @@
 # Demo nội dung, audio và quản trị — 22/10/2026
 
+> **Cập nhật trạng thái 24/10/2026:** nội dung/audio tiếng Việt và English cho 10 POI đã được người dùng nghe/rà soát, duyệt và công bố; người dùng đã xác nhận nghe audio khi chạm điểm trên điện thoại. Dashboard thống kê hoạt động trên deploy theo xác nhận người dùng. Giao diện/Admin đa ngôn ngữ được ghi ở [báo cáo riêng](MULTILINGUAL_UI_PROGRESS_2026_10_24.md) và [nhật ký Admin](ADMIN_MULTILINGUAL_CONTENT_2026_10_24.md). Các mục “chưa nghe duyệt”, “chưa có tọa độ/GPS” trong phần thân là kết quả tại thời điểm của các lượt kiểm thử cũ.
+
 ## Cập nhật kiểm tra Admin và giao diện nội bộ — 23/10/2026
 
 - Trạng thái Atlas của tài khoản mục tiêu `phong`: database kết nối được, tài khoản tồn tại, đang active và có role Admin. Chạy lệnh status không reset mật khẩu.

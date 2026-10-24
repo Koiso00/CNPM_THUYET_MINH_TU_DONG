@@ -1,12 +1,16 @@
-> **Cập nhật người dùng ngày 24/10/2026:** Stadia/GPS hoạt động trên điện thoại, 10 tọa độ đã kiểm chứng thực địa và chạm địa điểm phát audio được. Người dùng cho phép để nghiệm thu GPS/geofence thực tế sau; ưu tiên hoàn thiện dashboard thống kê Admin trước QR. Ngưỡng geofence vẫn cần xác nhận trước demo chính thức.
+> **Cập nhật người dùng ngày 24/10/2026:** Stadia/GPS hoạt động trên điện thoại, 10 tọa độ đã kiểm chứng thực địa và chạm địa điểm phát audio được. Dashboard Admin có lọc ngày và lượt nghe theo địa điểm; người dùng xác nhận bản deploy hoạt động. Giao diện khách VI/EN/KO và nội dung/audio English cho 10 POI đã hoàn tất; QR là bước phát triển kế tiếp. Ngưỡng GPS/geofence và tự phát trên iPhone/Safari vẫn cần nghiệm thu trước demo chính thức.
 
-> **Trạng thái demo 23/10/2026:** khách không đăng nhập; welcome, ID khách/hành trình, nội dung/audio công khai, Admin và thống kê visit/journey/audio đã triển khai. QR vẫn hoãn. Chi tiết tại [kế hoạch khách/QR](DEMO_GUEST_QR_PLAN.md) và [báo cáo khách](test-reports/DEMO_GUEST_PROGRESS_2026_10_23.md).
+> **Tiến độ 24/10:** giao diện khách VI/EN/KO giữ lựa chọn xuyên hành trình; 10 POI English và 10 MP3 đã được người dùng duyệt và công bố trong Atlas release `09d43a32-43d1-4f2b-85d0-cdae2ad29981`. Audio Việt vẫn giữ riêng. Workspace có code hỗ trợ localization/audio theo ngôn ngữ. Render báo service `sgu-campus-guide-demo` đang “Suspended by you”, nên code mới chưa deploy lên đó. Xem [báo cáo đa ngôn ngữ](test-reports/MULTILINGUAL_UI_PROGRESS_2026_10_24.md).
+
+> **Cập nhật Admin đa ngôn ngữ 24/10:** `#/admin` có bộ chọn Tiếng Việt/English/한국어; các trường tên địa điểm, thuyết minh và nguồn tư liệu được chỉnh theo ngôn ngữ. Danh sách/nghe thử/tải MP3 cũng đổi theo lựa chọn. Bản dịch phải đủ trường và khớp checksum nội dung Việt trước khi xuất hiện trong release. Tên tour hiện vẫn dùng chung. Kiểm tra: frontend 61 test, build/typecheck đạt; backend 181 test đạt, 16 integration test skip theo mặc định. Chi tiết tại [nhật ký Admin đa ngôn ngữ](test-reports/ADMIN_MULTILINGUAL_CONTENT_2026_10_24.md).
+
+> **Ảnh chụp trạng thái ngày 23/10/2026 — lịch sử:** khách không đăng nhập; welcome, hành trình, nội dung/audio và dashboard đã có; QR còn hoãn tại thời điểm đó. Trạng thái hiện hành được cập nhật trong phần 24/10 bên dưới.
 
 # Bối cảnh dự án
 
 ## Trạng thái demo hiện hành — 24/10/2026
 
-Đối với demo, người nghe dùng welcome và không đăng nhập; ID khách được giữ trong trình duyệt, mỗi lần bấm bắt đầu tạo hành trình mới. Creator/Admin gộp thành một vai trò vận hành Admin; Creator UI/API đã được gỡ khỏi demo. Trang Nội dung (`#/admin`) và Quản trị (`#/management`) dành cho Admin. Nội dung/audio công khai chỉ đọc release đã công bố; dashboard có visit, journey và audio theo ngày ICT. Bản đồ Stadia và GPS hoạt động trên điện thoại; 10 tọa độ đã kiểm chứng thực địa. Người dùng xác nhận chạm địa điểm phát audio được trên điện thoại. Ưu tiên hiện tại là hoàn thiện dashboard với bộ lọc ngày và lượt phát audio theo địa điểm trước QR. Nghiệm thu GPS tự nhận diện điểm/tự phát và ngưỡng geofence 30/45 m được dời lại nhưng cần xong trước demo chính thức. Ngày 24/10, người dùng xác nhận 10 MP3 demo đúng; các tài khoản legacy `123`, `AGT`, `phong11` và đề xuất `pending` gắn với Creator đã được xóa theo phạm vi người dùng chốt; hiện Atlas có 1 Admin active (`phong`), không còn User/Creator legacy. Xem [kế hoạch khách/QR](DEMO_GUEST_QR_PLAN.md), [báo cáo khách](test-reports/DEMO_GUEST_PROGRESS_2026_10_23.md) và [báo cáo Admin/audio](test-reports/DEMO_CONTENT_AUDIO_ADMIN.md).
+Đối với demo, người nghe dùng welcome và không đăng nhập; ID khách được giữ trong trình duyệt, mỗi lần bấm bắt đầu tạo hành trình mới. Creator/Admin gộp thành một vai trò vận hành Admin; Creator UI/API đã được gỡ khỏi demo. Trang Nội dung (`#/admin`) và Quản trị (`#/management`) dành cho Admin. Nội dung/audio công khai chỉ đọc release đã công bố; dashboard có visit, journey và audio theo ngày ICT. Bản đồ Stadia và GPS hoạt động trên điện thoại; 10 tọa độ đã kiểm chứng thực địa. Người dùng xác nhận chạm địa điểm phát audio được trên điện thoại. Dashboard có bộ lọc ngày ICT và lượt phát audio theo địa điểm; người dùng xác nhận bản deploy hoạt động. Nội dung POI English và audio English cho 10 điểm đã được người dùng duyệt và công bố cùng tiếng Việt trong release song ngữ ngày 24/10. Nghiệm thu GPS tự nhận diện điểm/tự phát và ngưỡng geofence 30/45 m được dời lại nhưng cần xong trước demo chính thức. Các tài khoản legacy `123`, `AGT`, `phong11` và đề xuất `pending` gắn với Creator đã được xóa theo phạm vi người dùng chốt; hiện Atlas có 1 Admin active (`phong`), không còn User/Creator legacy. Xem [kế hoạch khách/QR](DEMO_GUEST_QR_PLAN.md), [báo cáo khách](test-reports/DEMO_GUEST_PROGRESS_2026_10_23.md), [báo cáo Admin/audio](test-reports/DEMO_CONTENT_AUDIO_ADMIN.md) và [báo cáo audio English](test-reports/DEMO_AUDIO_EN_DRAFT_2026_10_24.md).
 
 Các phần mô tả ba vai trò và Creator ở dưới là quyết định của kế hoạch gốc dài hạn hoặc lịch sử trước khi cập nhật demo; không mô tả luồng demo hiện hành.
 
@@ -37,7 +41,7 @@ Giọng xác nhận từ dịch vụ: vi-VN-NamMinhNeural, dùng tốc độ/âm
 | AI | Gemini theo cấu hình; chỉ gợi ý bản nháp |
 | Chi phí | Ưu tiên hạ tầng miễn phí; bản chạy trên máy để dự phòng |
 | Tiến độ | Lộ trình dự kiến 10 tuần; không phải cam kết hoàn thành |
-| Dữ liệu thật | Chưa có bộ dữ liệu được khảo sát và duyệt |
+| Dữ liệu thật | Có nội dung nguồn người dùng cung cấp, 10 tọa độ đã kiểm chứng thực địa, và nội dung/audio English đã được người dùng duyệt. Không suy rộng xác nhận này thành kiểm duyệt lịch sử của nhà trường. |
 
 ## Các phương án không còn là phạm vi hiện hành
 
@@ -63,8 +67,7 @@ tài khoản, tài khoản hoạt động, địa điểm nháp/công bố, tour
 Cho phép Admin thay MP3 theo nội dung đang lưu, tối đa 10 MiB (10 × 1024 × 1024 byte)/file;
 công bố lại mới áp dụng cho người nghe. Admin đang hoạt động được bảo vệ khỏi khóa/hạ quyền
 trên web để tránh mất toàn bộ quyền quản trị khi hai Admin thao tác đồng thời.
-Sau khi hoàn tất demo, người dùng chọn Creator đề xuất thay đổi toàn tour; triển khai tại
-[báo cáo workflow](test-reports/CREATOR_REVIEW.md). Bản dịch và TTS tự động vẫn hoãn; GPS/geofence được ưu tiên theo cập nhật 24/10 ở phần đầu tài liệu.
+Ở một mốc trung gian, Creator từng có luồng đề xuất toàn tour (xem [báo cáo workflow](test-reports/CREATOR_REVIEW.md)); luồng đó đã gỡ khỏi demo hiện hành khi gộp Creator vào Admin. Bản dịch POI English/audio đã được duyệt và công bố thủ công; dịch/TTS tự động có jobs vẫn hoãn. Ưu tiên hiện tại là QR sau hoàn thành dashboard và đa ngôn ngữ.
 
 Các đoạn bên dưới mô tả các mốc đã đạt trước cập nhật này; trạng thái mới ở trên thay thế
 các ghi chú “chưa tích hợp” của nội dung/audio/quản trị.
@@ -72,13 +75,11 @@ các ghi chú “chưa tích hợp” của nội dung/audio/quản trị.
 Đã tạo khung backend/frontend, cấu hình môi trường mẫu, cơ sở Docker và tài liệu.
 P1.1 đã có MongoDB connection pool theo lifespan, liveness/readiness và test nền tảng.
 Atlas đã được tạo và P1.1 đã kiểm chứng ping thật thành công.
-P1.2 đã có model/repository User/session và index thật trên Atlas; chưa có GridFS.
+P1.2 đã có model/repository User/session và index thật trên Atlas. Ghi chú “chưa có GridFS” ở đây chỉ thuộc mốc P1.2; GridFS audio được tích hợp trong demo ngày 22/10.
 P1.3 đã có API xác thực và dependency RBAC, kiểm thử HTTP với Atlas thật trên collection tạm.
 P1.4 có UI đăng ký/đăng nhập, gia hạn phiên, đăng xuất và khung trang theo role;
 18 test frontend và 4 test Edge desktop/mobile viewport với Atlas tạm đạt.
-Ở mốc P1.4 ban đầu, explore còn tĩnh và audio chưa tích hợp. Trạng thái đã thay đổi trong demo hiện hành:
-10 địa điểm và 10 MP3 có trong Atlas/GridFS; khách chỉ đọc release công bố và phát audio thủ công.
-Vẫn cần người quản trị nghe duyệt từng file; vùng bản đồ chưa có dữ liệu tọa độ/GPS.
+Ở mốc P1.4 ban đầu, explore còn tĩnh và audio chưa tích hợp. Trạng thái hiện hành: 10 địa điểm và audio có trong Atlas/GridFS; release Việt–Anh đã được duyệt; khách đọc release công bố và phát audio thủ công hoặc qua geofence khi trình duyệt cho phép. Stadia/GPS/geofence đã tích hợp; tọa độ 10 điểm đã kiểm chứng thực địa. Nghiệm thu tự phát trên Safari và ngưỡng geofence vẫn còn.
 
 ## Cập nhật cách thực hiện
 

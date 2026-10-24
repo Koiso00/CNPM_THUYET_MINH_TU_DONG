@@ -3,17 +3,20 @@ import { ApiError, AuthClient } from "../auth/client";
 import { ExplorePage } from "./ExplorePage";
 import type { PublishedCampus } from "./content";
 import type { GuestSession } from "../guest/session";
+import { translate, type AppLanguage } from "../../shared/i18n";
 
 export function ExploreScreen({
   client,
   username,
   notice,
   guest,
+  language = "vi",
 }: {
   client: AuthClient;
   username: string;
   notice?: string;
   guest?: GuestSession;
+  language?: AppLanguage;
 }) {
   const [content, setContent] = useState<PublishedCampus | null>(null);
   const [error, setError] = useState("");
@@ -30,31 +33,31 @@ export function ExploreScreen({
         if (active)
           setError(
             cause instanceof ApiError && cause.status === 404
-              ? "Chưa có nội dung được công bố. Vui lòng quay lại sau."
-              : "Chưa tải được nội dung. Kiểm tra kết nối và thử lại.",
+              ? translate(language, "noPublished")
+              : translate(language, "loadError"),
           );
       });
     return () => {
       active = false;
     };
-  }, [client, attempt]);
+  }, [client, attempt, language]);
   if (error)
     return (
       <div className="state-panel">
         <p role="alert">{error}</p>
         <button className="primary" onClick={() => setAttempt(attempt + 1)}>
-          Thử lại
+          {translate(language, "retry")}
         </button>
       </div>
     );
   if (!content)
     return (
       <div className="state-panel" role="status">
-        Đang tải địa điểm…
+        {translate(language, "loading")}
       </div>
     );
   if (!content.places.length)
-    return <div className="state-panel">Chưa có địa điểm.</div>;
+    return <div className="state-panel">{translate(language, "noPlaces")}</div>;
   return (
     <ExplorePage
       username={username}
@@ -62,6 +65,7 @@ export function ExploreScreen({
       places={content.places}
       releaseId={content.release_id}
       guest={guest}
+      language={language}
     />
   );
 }

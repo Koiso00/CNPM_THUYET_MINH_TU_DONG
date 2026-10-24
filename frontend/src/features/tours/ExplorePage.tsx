@@ -8,6 +8,8 @@ import { campusPoiMarkerSymbol, withCampusPoiLocations } from "../map/campusPoiL
 import { LocationControls } from "../map/LocationControls";
 import { useCampusLocation } from "../map/useCampusLocation";
 import type { LocationFix } from "../map/geofence";
+import { translate, type AppLanguage } from "../../shared/i18n";
+import { getCampusEnglishDraft } from "./campusEnglishDraft";
 
 function scrollToSection(id: string) {
   document.getElementById(id)?.scrollIntoView?.({ behavior: "smooth" });
@@ -19,23 +21,26 @@ function CampusMapPreview({
   selectedPlaceId,
   onSelectPlace,
   currentFix,
+  language,
 }: {
   title?: string;
   places: Place[];
   selectedPlaceId: string | null;
   onSelectPlace: (placeId: string) => void;
   currentFix: LocationFix | null;
+  language: AppLanguage;
 }) {
+  const t = (key: Parameters<typeof translate>[1]) => translate(language, key);
   return (
     <section
       className="campus-map-stage"
-      aria-label="Bản đồ khuôn viên"
+      aria-label={t("mapNav")}
     >
       <div className="map-stage-topline">
         <span className="map-stage-label">
-          <Icon name="pin" size={15} /> BẢN ĐỒ KHUÔN VIÊN
+          <Icon name="pin" size={15} /> {t("mapLabel")}
         </span>
-        <span className="map-stage-status">Nền Stadia Maps · cần Internet</span>
+        <span className="map-stage-status">{t("mapStatus")}</span>
       </div>
       <CampusMap
         places={places}
@@ -45,9 +50,9 @@ function CampusMapPreview({
       />
       <div className="map-stage-footer">
         <span>
-          <i /> 10 tọa độ do người dùng cung cấp · đã kiểm chứng thực địa
+          <i /> 10 {t("manualPoints")}
         </span>
-        <span>{title ? `Đang chọn: ${title}` : "Chọn biểu tượng trên bản đồ để xem mô tả"}</span>
+        <span>{title ? `${t("selected")}: ${title}` : t("selectMap")}</span>
       </div>
     </section>
   );
@@ -59,32 +64,52 @@ export function ExplorePage({
   places: campusPlaces,
   releaseId,
   guest,
+  language = "vi",
 }: {
   username: string;
   notice?: string;
   places: Place[];
   releaseId: string;
   guest?: GuestSession;
+  language?: AppLanguage;
 }) {
+  const t = (key: Parameters<typeof translate>[1]) => translate(language, key);
   const mappedPlaces = withCampusPoiLocations(campusPlaces);
+  const translationFor = (place: Place) =>
+    language === "en" ? place.translations?.en : language === "ko" ? place.translations?.ko : undefined;
+  const localized = (place: Place) => {
+    const persisted = translationFor(place);
+    const fallback = language === "en" ? getCampusEnglishDraft(place.id, place.title) : undefined;
+    return persisted ?? fallback ?? place;
+  };
+  const audioLanguage = (place: Place): "vi" | "en" | "ko" | null => {
+    if (language !== "vi" && place.audio_by_language?.[language]) return language;
+    if (place.audio_id) return "vi";
+    return null;
+  };
+  const audioUrl = (place: Place, targetLanguage: "vi" | "en" | "ko") =>
+    `/api/v1/audio/${releaseId}/${place.id}?language=${targetLanguage}`;
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [autoPlayRequest, setAutoPlayRequest] = useState<{ placeId: string; id: number } | null>(null);
   const audioPlayerRef = useRef<AudioPlayerHandle>(null);
   const selectedIdRef = useRef<string | null>(null);
   const selected =
     mappedPlaces.find((place) => place.id === selectedId) ?? null;
-  const audioPlace = selected?.audio_id ? selected : mappedPlaces.find((place) => place.audio_id) ?? null;
+  const audioPlace = selected && audioLanguage(selected)
+    ? selected
+    : mappedPlaces.find((place) => audioLanguage(place)) ?? null;
 
   const selectPlace = useCallback((id: string, shouldScroll = false) => {
     const place = mappedPlaces.find((item) => item.id === id);
     selectedIdRef.current = id;
     setSelectedId(id);
     setAutoPlayRequest(null);
-    if (place?.audio_id) {
-      audioPlayerRef.current?.playFromUserGesture(`/api/v1/audio/${releaseId}/${place.id}`);
+    const targetLanguage = place ? audioLanguage(place) : null;
+    if (place && targetLanguage) {
+      audioPlayerRef.current?.playFromUserGesture(audioUrl(place, targetLanguage));
     }
     if (shouldScroll) scrollToSection("campus-map");
-  }, [mappedPlaces, releaseId]);
+  }, [mappedPlaces, releaseId, language]);
   const handlePlaceDetected = useCallback((id: string) => {
     selectedIdRef.current = id;
     setSelectedId(id);
@@ -104,27 +129,26 @@ export function ExplorePage({
         <section className="explore-hero" aria-labelledby="explore-title">
           <div className="explore-hero-copy">
             <p className="explore-eyebrow">
-              <span /> KHÁM PHÁ CƠ SỞ CHÍNH · ĐẠI HỌC SÀI GÒN
+              <span /> {language === "vi" ? "KHÁM PHÁ CƠ SỞ CHÍNH · ĐẠI HỌC SÀI GÒN" : language === "en" ? "EXPLORE THE MAIN CAMPUS · SAIGON UNIVERSITY" : "본 캠퍼스 둘러보기 · 사이공대학교"}
             </p>
-            <h1 id="explore-title">
-              {username ? <>Xin chào, <em>{username}</em></> : "Xin chào"}
+          <h1 id="explore-title">
+              {username ? <>{t("hello")}, <em>{username}</em></> : t("hello")}
             </h1>
             <p className="explore-lead">
-              Xem nội dung giới thiệu các địa điểm trong khuôn viên, chọn nơi
-              bạn muốn tìm hiểu và mở vị trí trên bản đồ.
+              {t("exploreLead")}
             </p>
             <div
               className="explore-facts"
-              aria-label="Thông tin nội dung hiện có"
+              aria-label={language === "vi" ? "Thông tin nội dung hiện có" : language === "en" ? "Available content" : "이용 가능한 콘텐츠 정보"}
             >
               <span>
-                <i /> {campusPlaces.length} mô tả địa điểm từ nguồn
+                <i /> {language === "ko" ? `출처 설명 ${campusPlaces.length}개` : `${campusPlaces.length} ${t("descriptions")}`}
               </span>
               <span>
-                <Icon name="audio" size={15} /> Tiếng Việt
+                <Icon name="audio" size={15} /> {t("contentLanguage")}
               </span>
               <span>
-                <Icon name="pin" size={15} /> 10 vị trí trên bản đồ
+                <Icon name="pin" size={15} /> {language === "ko" ? "지도 위치 10개" : `10 ${t("mapPlaces")}`}
               </span>
             </div>
             <div className="explore-actions">
@@ -133,28 +157,28 @@ export function ExplorePage({
                 onClick={() => scrollToSection("audio-tours")}
               >
                 <Icon name="headphones" size={17} />
-                Xem các địa điểm
+                {t("viewPlaces")}
               </button>
               <button
                 className="explore-secondary"
                 onClick={() => scrollToSection("campus-map")}
               >
                 <Icon name="pin" size={17} />
-                Sơ đồ khuôn viên
+                {t("campusMap")}
               </button>
             </div>
           </div>
-          <div className="explore-hero-art" aria-label="Ảnh khuôn viên">
+          <div className="explore-hero-art" aria-label={language === "en" ? "Campus photo" : language === "ko" ? "캠퍼스 사진" : "Ảnh khuôn viên"}>
             <img
               src="/images/sgu-campus-wide.jpg"
-              alt="Ảnh khuôn viên do người dùng cung cấp"
+              alt={language === "en" ? "Campus photo provided by the user" : language === "ko" ? "사용자가 제공한 캠퍼스 사진" : "Ảnh khuôn viên do người dùng cung cấp"}
             />
             <div className="hero-audio-badge">
               <span className="hero-audio-symbol">
                 <Icon name="headphones" size={36} />
               </span>
               <strong>SGU Campus Guide</strong>
-              <span>Khám phá theo nhịp riêng của bạn</span>
+              <span>{t("footer")}</span>
             </div>
           </div>
         </section>
@@ -163,19 +187,20 @@ export function ExplorePage({
           <div className="explore-section-heading map-section-heading">
             <div>
               <p className="section-kicker">
-                <Icon name="pin" size={15} /> BẢN ĐỒ KHUÔN VIÊN
+                <Icon name="pin" size={15} /> {t("mapLabel")}
               </p>
-              <h2>Bản đồ khuôn viên & các điểm thuyết minh</h2>
+              <h2>{t("mapTitle")}</h2>
             </div>
-            <span className="source-state">10 vị trí do người dùng cung cấp</span>
+              <span className="source-state">10 {t("mapSource")}</span>
           </div>
           <div className="campus-explorer">
             <CampusMapPreview
-              title={selected?.title}
+              title={selected ? localized(selected).title : undefined}
               places={mappedPlaces}
               selectedPlaceId={selectedId}
               onSelectPlace={selectPlace}
               currentFix={location.fix}
+              language={language}
             />
             <LocationControls
               places={mappedPlaces}
@@ -193,18 +218,19 @@ export function ExplorePage({
                 location.startSimulation();
               }}
               onStop={() => location.stop()}
+              language={language}
             />
             <aside className="place-detail" aria-live="polite" hidden={!selected}>
               {selected && <>
               <div className="detail-cover">
                 <img
                   src="/images/sgu-campus-wide.jpg"
-                  alt="Ảnh tham khảo khuôn viên, không gắn với vị trí cụ thể"
+                  alt={language === "en" ? "Reference campus photo, not tied to a specific place" : language === "ko" ? "특정 장소와 연결되지 않은 참고 캠퍼스 사진" : "Ảnh tham khảo khuôn viên, không gắn với vị trí cụ thể"}
                 />
-                <span>ẢNH THAM KHẢO · KHÔNG GẮN ĐỊA ĐIỂM</span>
-                <strong>Khuôn viên SGU</strong>
+                <span>{language === "en" ? "REFERENCE PHOTO · NO SPECIFIC PLACE" : language === "ko" ? "참고 사진 · 특정 장소 아님" : "ẢNH THAM KHẢO · KHÔNG GẮN ĐỊA ĐIỂM"}</span>
+                <strong>{language === "en" ? "SGU Campus" : language === "ko" ? "SGU 캠퍼스" : "Khuôn viên SGU"}</strong>
               </div>
-              <h3 className="detail-place-title">{selected.title}</h3>
+              <h3 className="detail-place-title">{localized(selected).title}</h3>
                 <button
                   className="detail-dismiss"
                   type="button"
@@ -214,23 +240,25 @@ export function ExplorePage({
                     setAutoPlayRequest(null);
                   }}
                 >
-                Đóng mô tả
+                {t("close")}
               </button>
               <div className="detail-meta">
-                <span>Nội dung</span>
-                <strong>Tiếng Việt</strong>
+                <span>{language === "en" ? "Content" : language === "ko" ? "콘텐츠" : "Nội dung"}</span>
+                <strong>{translationFor(selected) ? (language === "en" ? "English" : "한국어") : t("contentLanguage")}</strong>
               </div>
               <p className="detail-source-note">
-                Mô tả nguồn · tọa độ đã kiểm chứng thực địa
+                {t("sourceNote")}
               </p>
-              <p className="detail-description">{selected.description}</p>
+              <p className="detail-description">{localized(selected).description}</p>
+              {language === "en" && !translationFor(selected) && <p className="audio-hint">{t("englishAudioNote")}</p>}
               </>}
-              {audioPlace && <div hidden={!!selected && !selected.audio_id}>
+              {audioPlace && <div hidden={!!selected && !audioLanguage(selected)}>
                 <AudioPlayer
                   ref={audioPlayerRef}
-                  src={`/api/v1/audio/${releaseId}/${audioPlace.id}`}
-                  title={audioPlace.title}
-                  autoPlayRequestId={selected?.audio_id && autoPlayRequest?.placeId === selected.id ? autoPlayRequest.id : null}
+                  src={audioUrl(audioPlace, audioLanguage(audioPlace) ?? "vi")}
+                  title={localized(audioPlace).title}
+                  autoPlayRequestId={selected && audioLanguage(selected) && autoPlayRequest?.placeId === selected.id ? autoPlayRequest.id : null}
+                  language={language}
                   onPlay={(trigger) => {
                     const playingPlaceId = selectedIdRef.current;
                     if (!playingPlaceId) return;
@@ -240,9 +268,9 @@ export function ExplorePage({
                   }}
                 />
               </div>}
-              {selected && !selected.audio_id && (
+              {selected && !audioLanguage(selected) && (
                 <p className="audio-hint">
-                  Địa điểm này chưa có audio được công bố.
+                  {t("noAudio")}
                 </p>
               )}
             </aside>
@@ -252,16 +280,15 @@ export function ExplorePage({
         <section className="poi-section" id="audio-tours">
           <div className="explore-section-heading poi-section-heading">
             <div>
-              <p className="section-kicker">NỘI DUNG THUYẾT MINH</p>
-              <h2>Các khu và nội dung thuyết minh</h2>
+              <p className="section-kicker">{t("narration")}</p>
+              <h2>{t("placesTitle")}</h2>
             </div>
-            <span className="source-state">
-              {campusPlaces.length} mô tả · Tiếng Việt
+              <span className="source-state">
+              {campusPlaces.length} · {t("contentLanguage")}
             </span>
           </div>
           <p className="source-disclaimer">
-            Nội dung lấy từ tài liệu bạn cung cấp; tọa độ marker đã được bạn kiểm chứng
-            tại thực địa.
+            {t("disclaimer")}
           </p>
           <div className="poi-grid">
             {campusPlaces.map((place) => (
@@ -277,10 +304,10 @@ export function ExplorePage({
                   >
                     {campusPoiMarkerSymbol(place.title)}
                   </span>
-                  <span className="poi-language">VI · Nội dung</span>
+                  <span className="poi-language">{translationFor(place) ? (language === "en" ? "EN · Approved" : "KO · 승인됨") : `VI · ${language === "en" ? "Content" : language === "ko" ? "콘텐츠" : "Nội dung"}`}</span>
                 </div>
-                <h3 id={`poi-title-${place.id}`}>{place.title}</h3>
-                <p className="poi-card-description">{place.description}</p>
+                <h3 id={`poi-title-${place.id}`}>{localized(place).title}</h3>
+                <p className="poi-card-description">{localized(place).description}</p>
                 <button
                   className="poi-select-button"
                   type="button"
@@ -288,8 +315,8 @@ export function ExplorePage({
                   onClick={() => selectPlace(place.id, true)}
                 >
                   {selectedId === place.id
-                    ? "Đang chọn địa điểm"
-                    : place.audio_id ? "Nghe thuyết minh" : "Xem nội dung"}
+                    ? t("chosen")
+                    : audioLanguage(place) ? t("listen") : t("view")}
                   <Icon name="arrow" size={15} />
                 </button>
               </article>
@@ -302,9 +329,9 @@ export function ExplorePage({
             <Icon name="check" size={19} />
           </span>
           <span>
-            <strong>GPS và mô phỏng đều dùng cùng geofence</strong>
+            <strong>{t("geofenceTitle")}</strong>
             <small>
-              GPS chỉ bắt đầu khi bạn nhấn bật; vị trí không gửi lên máy chủ. Mô phỏng được gắn nhãn và không ghi thống kê thật. Geofence thử tự phát audio; nếu trình duyệt chặn, bạn có thể phát thủ công.
+              {t("geofenceText")}
             </small>
           </span>
         </aside>

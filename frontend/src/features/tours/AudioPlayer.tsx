@@ -1,4 +1,5 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
+import { translate, type AppLanguage } from "../../shared/i18n";
 
 export type AudioPlayerHandle = {
   prepareForAutomaticPlayback: () => void;
@@ -10,11 +11,13 @@ export const AudioPlayer = forwardRef<AudioPlayerHandle, {
   title: string;
   onPlay?: (trigger: "automatic" | "manual") => void;
   autoPlayRequestId?: number | null;
+  language?: AppLanguage;
 }>(function AudioPlayer({
   src,
   title,
   onPlay,
   autoPlayRequestId,
+  language = "vi",
 }, playerRef) {
   const ref = useRef<HTMLAudioElement>(null);
   const automaticPlayRef = useRef(false);
@@ -87,13 +90,13 @@ export const AudioPlayer = forwardRef<AudioPlayerHandle, {
         }}
         preload="none"
         src={src}
-        aria-label={`Nghe ${title}`}
+        aria-label={language === "en" ? `Play audio for ${title}` : language === "ko" ? `${title} 오디오 듣기` : `Nghe ${title}`}
         onError={() => setFailed(true)}
         onCanPlay={() => setFailed(false)}
       />
       {failed && (
         <div>
-          <p role="alert">Chưa phát được audio. Kiểm tra kết nối và thử lại.</p>
+          <p role="alert">{language === "en" ? "Could not play audio. Check your connection and try again." : language === "ko" ? "오디오를 재생할 수 없습니다. 연결을 확인하고 다시 시도하세요." : "Chưa phát được audio. Kiểm tra kết nối và thử lại."}</p>
           <button
             type="button"
             onClick={() => {
@@ -101,13 +104,13 @@ export const AudioPlayer = forwardRef<AudioPlayerHandle, {
               ref.current?.load();
             }}
           >
-            Tải lại audio
+            {language === "en" ? "Reload audio" : language === "ko" ? "오디오 다시 불러오기" : "Tải lại audio"}
           </button>
         </div>
       )}
       {autoPlayBlocked && !failed && (
         <p className="audio-autoplay-fallback" role="status">
-          Trình duyệt đã chặn tự phát. Nhấn nút phát trên trình nghe để tiếp tục.
+          {translate(language, "blocked")}
         </p>
       )}
     </div>

@@ -1,19 +1,17 @@
 # Hướng dẫn nội dung
 
-Hiện chưa có danh sách 8–10 POI đã được xác minh. Không tự tạo tên tòa nhà, lịch sử
-hoặc tọa độ rồi gọi đó là dữ liệu chính thức.
+Demo có 10 POI từ nguồn tiếng Việt người dùng cung cấp và 10 tọa độ đã được người dùng kiểm chứng thực địa. Việc kiểm chứng tọa độ không đồng nghĩa mọi chi tiết lịch sử đã được nhà trường xác minh. Không tự tạo tên tòa nhà, lịch sử hoặc tọa độ rồi gọi đó là dữ liệu chính thức.
 
 ## Nguồn đã được người dùng chọn cho demo
 
 Ngày 21/10/2026, người dùng cung cấp nội dung tiếng Việt cho 10 địa điểm và yêu cầu dùng làm nguồn.
 Lưu nguyên văn tại [nguồn tiếng Việt](../data/sources/campus-vi-user-2026-10-21.md).
-Dùng văn bản này làm đầu vào hiển thị/thuyết minh khi xây dựng tính năng nội dung/audio.
-Chưa nhập MongoDB hoặc có tọa độ; không đánh dấu đã đối chiếu thực địa/nhà trường duyệt.
+Dùng văn bản này làm nguồn tiếng Việt cho nội dung/audio. Nội dung demo đã được nhập vào hệ thống; 10 tọa độ đã được người dùng kiểm chứng thực địa. Không đánh dấu nội dung lịch sử là đã được nhà trường duyệt nếu chưa có bằng chứng riêng.
 Người dùng chọn Edge-TTS giọng nam tiếng Việt. Đã tạo 10 MP3 vi-VN-NamMinhNeural từ nguyên văn mô tả,
 không đọc tiêu đề/metadata; tổng 211.008 giây, 1,266,048 byte. File ở data/generated/audio/vi-male,
 đã kiểm tra kỹ thuật, chưa nghe duyệt phát âm. Xem [báo cáo](test-reports/DEMO_AUDIO_VI_MALE.md).
 Các chỉ dẫn trên/dưới/trái/phải tham chiếu sơ đồ chưa được gửi kèm, không tự đổi thành hướng địa lý.
-Chưa có bản dịch tiếng Anh; không tự thêm chức năng, tên đầy đủ của KLF hoặc thông tin lịch sử.
+Người dùng đã rà soát và duyệt bản dịch English/audio English cho 10 POI vào 24/10/2026; xem [bản dịch](../data/sources/campus-en-translation-draft-2026-10-24.md) và [báo cáo](test-reports/DEMO_AUDIO_EN_DRAFT_2026_10_24.md). Tiếng Hàn chưa có nội dung/audio POI. Không tự thêm tên đầy đủ của KLF hoặc thông tin lịch sử.
 
 ## Hồ sơ mỗi điểm
 
@@ -31,9 +29,9 @@ Chưa có bản dịch tiếng Anh; không tự thêm chức năng, tên đầy 
 1. Lập danh sách điểm có thể tiếp cận ngoài trời trong cơ sở chính.
 2. Thu thập tư liệu nhà trường/nguồn phù hợp, ảnh và tọa độ thực địa.
 3. Viết bản Việt có dẫn nguồn; nội dung chưa xác minh phải giữ ở nháp.
-4. Dịch sang Anh, kiểm tra nghĩa và tên riêng; bản dịch tự động chưa được coi là đã duyệt.
+4. Với English hiện có, dùng bản dịch đã được người dùng duyệt; bản dịch tự động mới trong tương lai vẫn phải được con người kiểm tra.
 5. Tạo MP3, nghe thử cả hai ngôn ngữ; có thể tải file thay thế.
-6. Creator xem trước, gửi duyệt; Admin kiểm tra trước công bố.
+6. Admin kiểm tra nội dung/audio trước khi công bố. Workflow Creator đã được gỡ khỏi demo hiện hành.
 
 AI chỉ hỗ trợ tóm tắt/viết lại tài liệu đã cung cấp, không dùng làm nguồn lịch sử.
 Ghi rõ nội dung do AI gợi ý và phần được con người kiểm tra.

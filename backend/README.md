@@ -2,7 +2,7 @@
 
 Python 3.12, FastAPI và PyMongo Async. Phần P1.1 đã có vòng đời kết nối MongoDB,
 liveness/readiness. P1.2 bổ sung model/repository User/session và index thật trên Atlas.
-P1.3 đã có API auth, JWT cookie/CSRF và dependency RBAC. Nội dung công bố/audio GridFS và sự kiện khách demo đã có; Admin vẫn dùng auth.
+P1.3 đã có API auth, JWT cookie/CSRF và dependency RBAC. Demo hiện có API nội dung công bố, audio GridFS/Range, sự kiện khách, dashboard và API quản trị. Nội dung/audio tiếng Việt và English được gắn theo locale; Creator API đã gỡ khỏi demo. Kết quả hiện hành xem tại [báo cáo demo](../docs/test-reports/DEMO_CONTENT_AUDIO_ADMIN.md), [đa ngôn ngữ](../docs/test-reports/MULTILINGUAL_UI_PROGRESS_2026_10_24.md) và [dashboard](../docs/test-reports/ADMIN_DASHBOARD_PROGRESS_2026_10_24.md).
 
 ## Chạy
 
@@ -61,11 +61,9 @@ Lệnh tạo unique index username_key/refresh_token_hash, TTL expires_at và in
 Có thể chạy lại; không tạo tài khoản, không xóa dữ liệu/index khi gặp xung đột.
 Không tự thực hiện bước này lúc API startup. Trên Atlas phát triển hiện tại đã chạy thành công.
 
-## Chuẩn bị audio cho demo
+## Tạo lại audio demo
 
-Đã có lệnh tạo MP3 từ 10 nội dung tiếng Việt người dùng cung cấp, dùng Edge-TTS
-giọng nam vi-VN-NamMinhNeural. Xem [hướng dẫn dữ liệu](../data/README.md).
-Đây là chuẩn bị file cục bộ, chưa phải API TTS/jobs, GridFS hoặc trình phát trong giao diện.
+Lệnh trên tạo lại 10 MP3 tiếng Việt từ nguồn người dùng cung cấp, dùng Edge-TTS giọng nam vi-VN-NamMinhNeural. Xem [hướng dẫn dữ liệu](../data/README.md). Mười MP3 Việt và mười MP3 English đã được nhập GridFS và có trong release Atlas. Tạo file audio cục bộ không tự nhập GridFS hoặc công bố; các bước nhập/công bố được thực hiện bằng lệnh chuyên biệt và cần kiểm tra checksum.
 
 ## Kiểm tra chất lượng
 

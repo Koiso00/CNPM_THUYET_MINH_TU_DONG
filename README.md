@@ -1,85 +1,27 @@
-> **Cập nhật người dùng ngày 24/10/2026:** Stadia/GPS hoạt động trên điện thoại; 10 tọa độ đã kiểm chứng thực địa và chạm địa điểm phát audio được. Nghiệm thu GPS/geofence thực tế có thể để sau. Ưu tiên phát triển kế tiếp là hoàn thiện dashboard thống kê Admin; QR làm sau dashboard. Cần nghiệm thu GPS tự nhận diện và ngưỡng geofence trước buổi demo chính thức.
-
-> **Trạng thái demo 23/10/2026:** khách không đăng nhập; welcome, ID khách/hành trình, nội dung/audio công khai, Admin và thống kê visit/journey/audio đã triển khai. QR vẫn hoãn. Chi tiết tại [kế hoạch khách/QR](docs/DEMO_GUEST_QR_PLAN.md) và [báo cáo khách](docs/test-reports/DEMO_GUEST_PROGRESS_2026_10_23.md).
-
-> **Cập nhật 24/10/2026:** người dùng xác nhận 10 MP3 demo đúng; tài khoản User/Creator legacy và đề xuất Creator được chỉ định đã dọn theo kế hoạch. Atlas hiện còn Admin `phong`; tour, release và audio được giữ nguyên. GPS/geofence/autoplay frontend có 54 test đạt, build/typecheck đạt; autoplay/GPS trên điện thoại và khảo sát ngưỡng chưa nghiệm thu. QR vẫn hoãn.
+> **Trạng thái — 24/10/2026:** Stadia Maps và GPS đã được thử trên điện thoại; 10 tọa độ được kiểm chứng thực địa, chạm địa điểm phát audio hoạt động. Tự phát khi geofence kích hoạt trên iPhone/Safari và ngưỡng GPS chưa nghiệm thu. Dashboard Admin có lọc ngày và lượt nghe theo địa điểm; người dùng xác nhận bản deploy hoạt động.
+>
+> Giao diện khách hỗ trợ VI/EN/KO. Nội dung POI và audio tiếng Việt/English cho 10 điểm đã được người dùng duyệt và có trong Atlas release song ngữ; nội dung/audio Hàn chưa có. QR là bước kế tiếp sau dashboard và đa ngôn ngữ. Render báo `sgu-campus-guide-demo` “Suspended by you”, nên code mới trong workspace chưa được deploy lên Render. Xem [báo cáo đa ngôn ngữ](docs/test-reports/MULTILINGUAL_UI_PROGRESS_2026_10_24.md).
 
 # Website thuyết minh cơ sở chính Đại học Sài Gòn
 
-Website dành cho điện thoại và máy tính; demo hiện tại dùng tiếng Việt.
-**Hiện tại: khách có thể xem nội dung công bố và nghe MP3/GridFS không cần đăng nhập; Admin quản trị nội dung/audio/user và dashboard có thống kê khách cơ bản cho demo tiếng Việt.**
+Website React dành cho điện thoại và máy tính. Khách vào trang chào, bắt đầu hành trình không cần tài khoản, xem các điểm trên bản đồ và nghe nội dung đã công bố. Admin đăng nhập để biên tập nội dung/audio và xem dashboard/quản lý tài khoản.
 
-Kế hoạch gốc 10 tuần vẫn là hướng dài hạn. Demo hiện hành theo [kế hoạch khách/QR](docs/DEMO_GUEST_QR_PLAN.md): Admin, địa điểm/audio và khách không đăng nhập; QR, offline, AI và dịch tự động tạm hoãn. GPS/geofence đang ở giai đoạn thử nghiệm trên trình duyệt.
-Thiết kế offline dài hạn đã chốt: tải tùy chọn theo ngôn ngữ, thêm ngôn ngữ sau,
-bản đồ/ảnh dùng chung; không yêu cầu khách tải tất cả ngôn ngữ.
+## Trạng thái tính năng
 
-Hướng dẫn triển khai/cập nhật demo trên Render và kết nối Atlas: [DEPLOY_RENDER](docs/DEPLOY_RENDER.md).
-
-## Phạm vi được chốt
-
-Nguồn chuẩn là [bản kế hoạch gốc](docs/PROJECT_PLAN.md), được giữ nguyên từ bản người dùng chọn:
-lộ trình dự kiến 10 tuần, ba vai trò **User / Creator / Admin**, 8–10 điểm ngoài trời,
-MapLibre/PMTiles, dịch/TTS, offline pack, Gemini và dashboard.
-Demo hiện tại gộp Creator vào Admin theo cập nhật 23/10; kế hoạch gốc ba vai trò vẫn là hướng dài hạn.
-
-| Thành phần | Trạng thái hiện tại |
+| Khu vực | Hiện trạng |
 | --- | --- |
-| React 19.2 + TypeScript + Vite 7 | Welcome khách, explore, đăng nhập Admin; Admin có nội dung/audio/dashboard/user |
-| FastAPI | Có application factory, liveness/readiness và OpenAPI |
-| Auth | Đăng nhập/gia hạn/khôi phục phiên/đăng xuất dành cho Admin; người nghe không cần tài khoản |
-| MongoDB | P1.1 hoàn tất: connection pool/readiness, 34 test cục bộ và ping Atlas thật đạt |
-| User/session | Có model, repository, unique/TTL index trên Atlas; 69 test cục bộ và 12 test Atlas đạt |
-| GridFS / audio demo | Đã nhập 10 MP3; có API GET/HEAD/Range, phát thủ công và thay MP3 ≤10 MB từ Admin |
-| Nội dung / quản trị | Nhập 10 mô tả thành nháp; sửa/thêm/xóa điểm, lưu, công bố/gỡ công bố; snapshot độc lập |
-| Creator / duyệt | Workflow Creator đã gỡ khỏi demo; vai trò vẫn thuộc kế hoạch dài hạn |
-| Guest / dashboard | ID khách và hành trình lưu trong browser; lượt truy cập/hành trình/audio theo ngày ICT |
-| User / dashboard | Danh sách, đổi vai trò, khóa/mở khóa; số tài khoản/địa điểm/tour công bố/audio từ database |
-| Bản đồ/GPS/geofence | Stadia Maps đã chạy trên điện thoại; 10 tọa độ đã được người dùng kiểm chứng thực địa; GPS thật/mô phỏng dùng chung geofence, còn thử lại tự phát Safari và xác nhận ngưỡng |
-| Offline, AI | Chưa triển khai; tiếp tục hoãn |
-| Docker/Compose | Có cấu hình, chưa chạy xác minh trên máy hiện tại |
-| Nội dung tour và tài khoản | Có nháp từ nguồn người dùng; Admin được cấp tường minh cho tài khoản có sẵn; không có mật khẩu mặc định |
+| Giao diện khách | Welcome, khám phá, bản đồ và thông báo hỗ trợ Tiếng Việt, English, 한국어; lựa chọn ngôn ngữ được giữ xuyên các trang. |
+| Nội dung/audio công khai | 10 POI tiếng Việt và English trong release Atlas; audio MP3/GridFS được chọn theo ngôn ngữ hỗ trợ. Tiếng Hàn chưa có nội dung/audio. |
+| Admin Nội dung (`/#/admin`) | Thêm/sửa/xóa POI trong bản nháp; sửa trường dịch; quản lý/nghe thử MP3; lưu và công bố release. |
+| Admin Quản trị (`/#/management`) | Dashboard theo ngày ICT, tổng khách/hành trình/audio, lượt nghe theo địa điểm và quản lý tài khoản. Người dùng xác nhận dashboard chạy trên deploy. |
+| Bản đồ/GPS | Stadia Maps; 10 tọa độ do người dùng cung cấp đã kiểm chứng thực địa. GPS opt-in/mô phỏng/geofence có trong frontend. Tự phát khi vào vùng và ngưỡng thực địa còn chờ nghiệm thu. |
+| QR, offline, AI | QR chưa triển khai; là bước phát triển tiếp theo. Offline và AI vẫn hoãn. |
 
-## Cấu trúc
+Kế hoạch gốc 10 tuần và vai trò User/Creator/Admin được giữ làm hướng dài hạn. Trong demo hiện tại, Creator được gộp vào Admin. Chi tiết tại [kế hoạch khách/QR](docs/DEMO_GUEST_QR_PLAN.md), [bối cảnh](docs/PROJECT_CONTEXT.md) và [lộ trình](docs/IMPLEMENTATION_PLAN.md).
 
-```text
-.
-├── AGENTS.md
-├── docs/                    # Bối cảnh, kiến trúc, dữ liệu/API, runtime, kiểm thử
-├── backend/
-│   ├── app/
-│   │   ├── api/v1/endpoints/ # Health/auth; router tính năng khác giữ chỗ
-│   │   ├── core/            # Cấu hình, chính sách phiên, JWT/Argon2/CSRF
-│   │   ├── db/              # Mongo lifecycle/readiness và User/session index
-│   │   ├── commands/        # Khởi tạo index tường minh
-│   │   ├── models/          # Mô hình lưu trữ
-│   │   ├── schemas/         # Request/response nghiệp vụ
-│   │   ├── repositories/    # MongoDB và GridFS
-│   │   ├── services/        # Nghiệp vụ và provider bên ngoài
-│   │   ├── workers/         # Xử lý công việc nền
-│   │   ├── application.py   # Application factory để kiểm thử độc lập
-│   │   └── main.py          # Entrypoint Uvicorn
-│   ├── tests/               # Unit test dữ liệu; integration MongoDB chạy có chủ đích
-│   ├── pyproject.toml
-│   └── uv.lock
-├── frontend/
-│   ├── src/
-│   │   ├── app/             # App shell, hash routing và trang theo role
-│   │   ├── features/        # auth, tours, map, playback, offline, creator, admin
-│   │   ├── shared/
-│   │   └── styles/
-│   ├── public/
-│   ├── tests/               # Auth client/UI và e2e trình duyệt
-│   └── package-lock.json
-├── infra/                   # Dockerfile và ghi chú triển khai
-├── compose.yaml
-├── data/                    # Mẫu, dữ liệu khảo sát và file sinh ra
-└── scripts/                 # Chỗ đặt script ở các mốc sau
-```
+## Chạy local
 
-## Chạy khung dự án
-
-Yêu cầu: Node.js 22.12 trở lên, Python 3.12 và uv.
-Hai hướng dẫn bên dưới mở trong **hai terminal riêng**, bắt đầu từ thư mục gốc kho mã.
+Yêu cầu: Node.js 22.12 trở lên, Python 3.12 và `uv`. Backend và frontend chạy trong hai terminal riêng, từ thư mục gốc repository.
 
 Backend:
 
@@ -89,12 +31,10 @@ uv sync --locked
 uv run --frozen uvicorn app.main:app --reload
 ```
 
-- Health: [http://127.0.0.1:8000/api/v1/health](http://127.0.0.1:8000/api/v1/health)
-- API docs: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
-- Health chỉ kiểm tra tiến trình; readiness tại /api/v1/health/ready ping MongoDB thật.
-- Chưa điền URI: health vẫn 200, readiness trả 503/not_configured.
-- Cấu hình Atlas theo [ATLAS_SETUP](docs/ATLAS_SETUP.md). Nếu cần tạo file riêng, sao chép
-  [backend/.env.example](backend/.env.example) thành backend/.env khi chưa có file riêng.
+- Liveness: <http://127.0.0.1:8000/api/v1/health>
+- Readiness: <http://127.0.0.1:8000/api/v1/health/ready>
+- API docs: <http://127.0.0.1:8000/docs>
+- Readiness ping MongoDB; cần cấu hình `MONGODB_URI` trong `backend/.env` theo [Atlas setup](docs/ATLAS_SETUP.md).
 
 Frontend:
 
@@ -104,15 +44,11 @@ npm ci
 npm run dev
 ```
 
-Mở địa chỉ Vite in trong terminal, mặc định [http://localhost:5173](http://localhost:5173).
-Khách bắt đầu tại `/#/welcome`; đăng nhập nội bộ ở `/#/login`. Đăng ký đã bỏ khỏi UI demo.
-Không có mật khẩu Admin mặc định; xem lệnh thiết lập bên dưới.
-Vite proxy /api tới backend để tránh tách nguồn trong quá trình phát triển.
-Không đặt khóa API vào frontend.
+Mở địa chỉ Vite, thường là <http://localhost:5173/#/welcome>. Vite proxy `/api` tới backend. Không đặt khóa bí mật trong `VITE_*` hoặc `frontend/public`.
 
-### Chuẩn bị demo nội dung/audio
+## Chuẩn bị nội dung/audio demo
 
-Từ backend, sau khi cấu hình Atlas; lệnh thiết lập Admin dùng tài khoản `phong`:
+Các lệnh bên dưới cần Atlas đã cấu hình. Chạy từ thư mục `backend`:
 
 ```powershell
 uv run --frozen python -m app.commands.seed_demo_content
@@ -120,74 +56,49 @@ uv run --frozen python -m app.commands.import_demo_audio
 uv run --frozen python -m app.commands.setup_admin phong
 ```
 
-Nếu `phong` chưa tồn tại, lệnh hỏi mật khẩu khởi tạo khi chạy tương tác; có thể truyền qua `INITIAL_ADMIN_PASSWORD` trong phiên lệnh. Nếu tài khoản đã tồn tại và đang active, lệnh giữ nguyên mật khẩu; tài khoản inactive không tự được mở khóa.
+Để tái tạo và công bố asset English đã duyệt:
 
-`uv run --frozen python -m app.commands.init_database` tạo/cập nhật index ứng dụng.
+```powershell
+uv run --frozen python -m app.commands.generate_demo_audio_en
+uv run --frozen python -m app.commands.publish_demo_english
+```
 
-Lệnh seed chỉ tạo bản nháp khi chưa có, không ghi đè. Lệnh import cần bộ MP3/manifest
-ở `data/generated/audio/vi-male` (đã có trên máy hiện tại, không commit); kiểm tra checksum
-trước khi nhập GridFS. Chạy lại không nhân đôi các file đã nhập.
-Đăng nhập Admin → **Nội dung** → kiểm tra/nghe thử → **Công bố phiên bản đã lưu**.
-Người nghe chỉ thấy bản đã công bố; sửa nháp không thay bản đang nghe.
-Khách mở trang mặc định để bắt đầu hành trình; Admin mở **Quản trị** (`/#/management`) để xem dashboard, đổi vai trò hoặc khóa/mở khóa
-tài khoản; **Nội dung** (`/#/admin`) giữ các chức năng địa điểm và audio.
-Demo dùng tiếng Việt, công bố nội dung chưa có tọa độ được phép; chưa phải release
-Việt–Anh/offline của kế hoạch dài hạn. Xem [báo cáo demo](docs/test-reports/DEMO_CONTENT_AUDIO_ADMIN.md).
+Lệnh publish kiểm tra manifest/checksum, nhập audio vào GridFS và tạo release mới; giữ nguyên audio Việt. Không commit MP3 hoặc thông tin đăng nhập. Xem [báo cáo English](docs/test-reports/DEMO_AUDIO_EN_DRAFT_2026_10_24.md) và [báo cáo nội dung/audio](docs/test-reports/DEMO_CONTENT_AUDIO_ADMIN.md).
 
-### Thử frontend đã build cùng FastAPI
+Admin kiểm tra nội dung/audio trong `/#/admin`, rồi thao tác **Lưu nháp** hoặc **Công bố phiên bản đã lưu**. Khách chỉ đọc release được công bố. `/#/management` dành cho dashboard và tài khoản.
 
-Build từ thư mục frontend:
+## Kiểm tra
+
+Frontend, từ thư mục `frontend`:
 
 ```powershell
 npm run build
+npm test
 ```
 
-Trong terminal đang ở backend, dừng tiến trình cũ nếu có rồi chạy:
+Backend, từ thư mục `backend`:
 
 ```powershell
-$env:FRONTEND_DIST = (Resolve-Path ../frontend/dist).Path
-uv run --frozen uvicorn app.main:app
-```
-
-Mở http://127.0.0.1:8000/#/login. Hash routing hỗ trợ tải lại mà không cần fallback route tại server.
-Khi dùng địa chỉ origin khác, cập nhật AUTH_ALLOWED_ORIGINS ở backend.
-
-### Kiểm tra chất lượng
-
-Trong frontend:
-
-```powershell
-npm run build
-```
-
-Lệnh build gồm kiểm tra TypeScript. Trong backend:
-
-```powershell
-uv run --frozen ruff check app
-uv run --frozen ruff format --check app
+uv run --frozen ruff check app tests
+uv run --frozen ruff format --check app tests
 uv run --frozen python -m compileall -q app
 uv run --frozen pytest -q
 ```
 
-Test mặc định không dùng Atlas. Cờ --run-mongodb-integration chỉ bật ping;
---run-mongodb-write-integration bật ghi/xóa collection tạm biệt lập. Xem hướng dẫn trong
-[backend/tests](backend/tests/README.md). P1.3 đạt 124 test cục bộ và 14 test Atlas.
-P1.4 đạt 18 test frontend (`npm test`) và 4 test trình duyệt với Atlas tạm;
-xem [báo cáo UI auth](docs/test-reports/P1_4_AUTH_UI.md). GPS/offline chưa kiểm thử.
+Test mặc định không ghi lên Atlas ứng dụng. Chỉ chạy integration theo hướng dẫn tại [backend/tests](backend/tests/README.md). Theo hồi quy ngày 24/10: backend 181 đạt/16 integration skip mặc định; frontend 61 đạt; typecheck/build/Ruff đạt. Xem [WORK_BREAKDOWN](docs/WORK_BREAKDOWN.md) và [TEST_AND_DEMO](docs/TEST_AND_DEMO.md) để biết giới hạn và kết quả theo từng phần.
 
-## Tài liệu cho người phát triển và AI
+## Tài liệu
 
-1. [AGENTS.md](AGENTS.md): cách làm việc trong kho mã.
-2. [PROJECT_CONTEXT](docs/PROJECT_CONTEXT.md): yêu cầu hiện hành và trạng thái.
-3. [ARCHITECTURE](docs/ARCHITECTURE.md): thành phần và ranh giới trách nhiệm.
-4. [DATA_AND_API](docs/DATA_AND_API.md): dữ liệu, hợp đồng đã có và nhóm API mục tiêu.
-5. [TOUR_RUNTIME](docs/TOUR_RUNTIME.md): GPS, audio và ngoại tuyến.
-6. [IMPLEMENTATION_PLAN](docs/IMPLEMENTATION_PLAN.md): mốc thực hiện tiếp theo.
-7. [TEST_AND_DEMO](docs/TEST_AND_DEMO.md): ma trận nghiệm thu và trình diễn.
-8. [CONTENT_GUIDE](docs/CONTENT_GUIDE.md): khảo sát, nguồn và kiểm tra nội dung.
-9. [Infrastructure](infra/README.md): Docker và giới hạn cấu hình hiện tại.
-10. [WORK_BREAKDOWN](docs/WORK_BREAKDOWN.md): công việc nhỏ và trạng thái kiểm thử.
-11. [ATLAS_SETUP](docs/ATLAS_SETUP.md): tạo cluster và cấu hình môi trường phát triển.
+- [Hướng dẫn đóng góp](AGENTS.md)
+- [Bối cảnh dự án](docs/PROJECT_CONTEXT.md)
+- [Kiến trúc](docs/ARCHITECTURE.md)
+- [Kế hoạch gốc](docs/PROJECT_PLAN.md)
+- [Kế hoạch demo khách/QR](docs/DEMO_GUEST_QR_PLAN.md)
+- [Lộ trình triển khai](docs/IMPLEMENTATION_PLAN.md)
+- [Dữ liệu và API](docs/DATA_AND_API.md)
+- [Runtime tour](docs/TOUR_RUNTIME.md)
+- [Kiểm thử và demo](docs/TEST_AND_DEMO.md)
+- [Công việc triển khai](docs/WORK_BREAKDOWN.md)
+- [Hướng dẫn deploy Render](docs/DEPLOY_RENDER.md)
 
-Không commit .env, dữ liệu tài khoản, MP3 hoặc PMTiles lớn. Dependency lockfile được commit
-để các thành viên cài cùng phiên bản; thư viện cho tính năng tương lai chỉ thêm khi bắt đầu tích hợp.
+Không commit `.env`, mật khẩu, URI chứa credential, dữ liệu tài khoản, MP3 hoặc PMTiles lớn.

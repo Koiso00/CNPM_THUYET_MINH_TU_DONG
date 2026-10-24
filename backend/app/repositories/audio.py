@@ -12,25 +12,32 @@ class AudioRepository:
     async def find(self, asset_id):
         return await self.assets.find_one({"_id": asset_id, "status": "ready"})
 
-    async def for_text(self, text_sha256):
-        selection = await self.selections.find_one({"_id": text_sha256})
+    async def for_text(self, text_sha256, *, language="vi"):
+        selection_id = text_sha256 if language == "vi" else f"{language}:{text_sha256}"
+        selection = await self.selections.find_one({"_id": selection_id})
         if selection:
             return await self.find(selection["asset_id"])
         return await self.assets.find_one(
-            {"text_sha256": text_sha256, "status": "ready", "language": "vi"},
+            {"text_sha256": text_sha256, "status": "ready", "language": language},
             sort=[("_id", 1)],
         )
 
-    async def select(self, text_sha256, asset_id, *, replace=False):
+    async def select(self, text_sha256, asset_id, *, language="vi", replace=False):
+        selection_id = text_sha256 if language == "vi" else f"{language}:{text_sha256}"
         await self.selections.update_one(
-            {"_id": text_sha256},
+            {"_id": selection_id},
             {"$set" if replace else "$setOnInsert": {"asset_id": asset_id}},
             upsert=True,
         )
 
     async def store(self, asset, data, *, replace=False):
         if await self.find(asset["_id"]):
-            await self.select(asset["text_sha256"], asset["_id"], replace=replace)
+            await self.select(
+                asset["text_sha256"],
+                asset["_id"],
+                language=asset.get("language", "vi"),
+                replace=replace,
+            )
             return False
         # A random GridFS id keeps concurrent imports independent. Only the winning
         # metadata upsert remains referenced; failed/losing uploads are removed.
@@ -46,7 +53,12 @@ class AudioRepository:
             raise
         if result.upserted_id is None:
             await self.bucket.delete(file_id)
-        await self.select(asset["text_sha256"], asset["_id"], replace=replace)
+        await self.select(
+            asset["text_sha256"],
+            asset["_id"],
+            language=asset.get("language", "vi"),
+            replace=replace,
+        )
         return result.upserted_id is not None
 
     async def read(self, asset, start, length):

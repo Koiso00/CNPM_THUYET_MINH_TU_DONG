@@ -1,6 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { ApiError, AuthClient } from "../auth/client";
-import type { CampusDraft, ManagedCampus } from "../tours/content";
+import type {
+  CampusDraft,
+  LocalizedPlace,
+  ManagedCampus,
+  Place,
+} from "../tours/content";
 import { AudioPlayer } from "../tours/AudioPlayer";
 import { WorkspaceNav } from "../../shared/WorkspaceNav";
 
@@ -9,7 +14,42 @@ type AudioStatus = {
   title: string;
   audio_id: string | null;
   duration_seconds: number | null;
+  language: ContentLanguage;
+  content_available: boolean;
 };
+type ContentLanguage = "vi" | "en" | "ko";
+const languageNames: Record<ContentLanguage, string> = {
+  vi: "Tiếng Việt",
+  en: "English",
+  ko: "한국어",
+};
+
+function completeTranslation(value: LocalizedPlace | undefined) {
+  return Boolean(
+    value?.title.trim() && value.description.trim() && value.source.trim(),
+  );
+}
+
+async function sourceChecksum(value: string) {
+  const bytes = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(value),
+  );
+  return Array.from(new Uint8Array(bytes), (byte) =>
+    byte.toString(16).padStart(2, "0"),
+  ).join("");
+}
+
+function translationFor(place: Place, language: ContentLanguage) {
+  return language === "vi"
+    ? place
+    : place.translations?.[language] ?? {
+        title: "",
+        description: "",
+        source: "",
+        source_text_sha256: "",
+      };
+}
 function message(error: unknown) {
   if (error instanceof ApiError) {
     if (error.status === 409)
@@ -34,7 +74,9 @@ export function ContentPage({ client }: { client: AuthClient }) {
   const [audio, setAudio] = useState<AudioStatus[]>([]);
   const [preview, setPreview] = useState<AudioStatus | null>(null);
   const [selected, setSelected] = useState(0);
+  const [contentLanguage, setContentLanguage] = useState<ContentLanguage>("vi");
   const revisionRef = useRef<number | null>(null);
+  const editedTranslationsRef = useRef(new Set<string>());
 
   useEffect(() => {
     let active = true;
@@ -50,21 +92,29 @@ export function ContentPage({ client }: { client: AuthClient }) {
       .catch((cause) => {
         if (active) setError(message(cause));
       });
-    void client
-      .get<AudioStatus[]>("/admin/audio")
-      .then((data) => {
-        if (active) setAudio(data);
-      })
-      .catch(() => {
-        /* An uninitialized draft is already explained by the editor. */
-      });
     return () => {
       active = false;
     };
   }, [client]);
-  async function refreshSummary() {
+  useEffect(() => {
+    let active = true;
+    void client
+      .get<AudioStatus[]>(`/admin/audio?language=${contentLanguage}`)
+      .then((data) => {
+        if (active) setAudio(data);
+      })
+      .catch(() => {
+        if (active) setAudio([]);
+      });
+    return () => {
+      active = false;
+    };
+  }, [client, contentLanguage]);
+  async function refreshSummary(language = contentLanguage) {
     try {
-      setAudio(await client.get<AudioStatus[]>("/admin/audio"));
+      setAudio(
+        await client.get<AudioStatus[]>(`/admin/audio?language=${language}`),
+      );
     } catch {
       setError(
         "Thao tác đã hoàn tất nhưng chưa cập nhật được audio. Tải lại bản nháp để kiểm tra.",
@@ -78,20 +128,55 @@ export function ContentPage({ client }: { client: AuthClient }) {
     setNotice("");
     try {
       const revision = revisionRef.current ?? campus.revision;
+      const outgoingDraft = structuredClone(draft);
+      const incompleteTranslations = new Set<string>();
+      for (const place of outgoingDraft.places) {
+        for (const language of ["en", "ko"] as const) {
+          const localized = place.translations?.[language];
+          if (!localized) continue;
+          const key = `${place.id}:${language}`;
+          if (!completeTranslation(localized)) {
+            incompleteTranslations.add(key);
+            delete place.translations?.[language];
+          } else if (editedTranslationsRef.current.has(key)) {
+            localized.source_text_sha256 = await sourceChecksum(
+              place.description,
+            );
+          }
+        }
+      }
       const data = await client.mutate<ManagedCampus>(
         kind === "save" ? "/admin/campus" : `/admin/campus/${kind}`,
         kind === "save"
-          ? { revision, draft }
+          ? { revision, draft: outgoingDraft }
           : { revision },
         kind === "save" ? "PUT" : "POST",
       );
       revisionRef.current = data.revision;
       setCampus(data);
-      setDraft(data.draft);
-      setDirty(false);
+      const returnedDraft = structuredClone(data.draft);
+      for (const oldPlace of draft.places) {
+        const returnedPlace = returnedDraft.places.find(
+          (item) => item.id === oldPlace.id,
+        );
+        if (!returnedPlace) continue;
+        for (const language of ["en", "ko"] as const) {
+          const key = `${oldPlace.id}:${language}`;
+          const pending = oldPlace.translations?.[language];
+          if (incompleteTranslations.has(key) && pending) {
+            returnedPlace.translations ??= {};
+            returnedPlace.translations[language] = pending;
+          }
+        }
+      }
+      setDraft(returnedDraft);
+      setDirty(incompleteTranslations.size > 0);
+      editedTranslationsRef.current.clear();
       setNotice(
         kind === "save"
-          ? "Đã lưu bản nháp. Bản công bố vẫn giữ nguyên."
+          ? incompleteTranslations.size
+            ? "Đã lưu các nội dung hợp lệ. Bản dịch đang nhập dở vẫn được giữ trên màn hình; hãy hoàn tất rồi lưu tiếp."
+            : "Đã lưu bản nháp. Bản công bố vẫn giữ nguyên."
           : kind === "publish"
             ? "Đã công bố phiên bản mới cho người tham quan."
             : "Đã gỡ công bố.",
@@ -110,9 +195,19 @@ export function ContentPage({ client }: { client: AuthClient }) {
     if (!draft) return;
     setDraft({
       ...draft,
-      places: draft.places.map((place, index) =>
-        index === selected ? { ...place, [field]: value } : place,
-      ),
+      places: draft.places.map((place, index) => {
+        if (index !== selected) return place;
+        if (contentLanguage === "vi") return { ...place, [field]: value };
+        const localized = translationFor(place, contentLanguage);
+        editedTranslationsRef.current.add(`${place.id}:${contentLanguage}`);
+        return {
+          ...place,
+          translations: {
+            ...place.translations,
+            [contentLanguage]: { ...localized, [field]: value },
+          },
+        };
+      }),
     });
     setDirty(true);
   }
@@ -126,6 +221,7 @@ export function ContentPage({ client }: { client: AuthClient }) {
       setCampus(data);
       setDraft(data.draft);
       setDirty(false);
+      editedTranslationsRef.current.clear();
       setSelected(0);
       await refreshSummary();
     } catch (cause) {
@@ -145,7 +241,7 @@ export function ContentPage({ client }: { client: AuthClient }) {
     setNotice("");
     try {
       await client.mutate(
-        `/admin/campus/places/${placeId}/audio?revision=${revisionRef.current ?? campus.revision}`,
+        `/admin/campus/places/${placeId}/audio?revision=${revisionRef.current ?? campus.revision}&language=${contentLanguage}`,
         new Blob([file], { type: "audio/mpeg" }),
         "PUT",
       );
@@ -161,6 +257,14 @@ export function ContentPage({ client }: { client: AuthClient }) {
     }
   }
   const place = draft?.places[selected];
+  const localizedPlace = place
+    ? translationFor(place, contentLanguage)
+    : null;
+  const hasTranslation = Boolean(
+    place &&
+      contentLanguage !== "vi" &&
+      completeTranslation(place.translations?.[contentLanguage]),
+  );
   return (
     <div className="workspace admin-page">
       <WorkspaceNav role="admin" route="#/admin" />
@@ -176,10 +280,10 @@ export function ContentPage({ client }: { client: AuthClient }) {
         </p>
       )}
       <section className="admin-section" aria-label="Địa điểm và nội dung">
-        <h2>Địa điểm và nội dung tiếng Việt</h2>
+        <h2>Địa điểm và nội dung</h2>
         <p>
-          Chỉnh sửa bản nháp, lưu rồi công bố. Vị trí có thể để trống đến khi
-          khảo sát.
+          Chọn ngôn ngữ để biên tập tên, nội dung thuyết minh và nguồn tư liệu
+          riêng cho từng địa điểm. Lưu bản nháp rồi công bố để áp dụng.
         </p>
         <div className="admin-actions">
           <button
@@ -205,18 +309,41 @@ export function ContentPage({ client }: { client: AuthClient }) {
                 ? "Đang có bản công bố"
                 : "Chưa công bố"}
             </p>
-            <label>
-              Tên tour
-              <input
-                value={draft.title}
-                maxLength={200}
+            <label className="admin-language-picker">
+              Ngôn ngữ nội dung
+              <select
+                value={contentLanguage}
                 disabled={busy}
                 onChange={(event) => {
-                  setDraft({ ...draft, title: event.target.value });
-                  setDirty(true);
+                  setContentLanguage(event.target.value as ContentLanguage);
+                  setPreview(null);
                 }}
-              />
+              >
+                {(Object.keys(languageNames) as ContentLanguage[]).map(
+                  (language) => (
+                    <option key={language} value={language}>
+                      {languageNames[language]}
+                    </option>
+                  ),
+                )}
+              </select>
             </label>
+            {contentLanguage === "vi" ? (
+              <label>
+                Tên tour
+                <input
+                  value={draft.title}
+                  maxLength={200}
+                  disabled={busy}
+                  onChange={(event) => {
+                    setDraft({ ...draft, title: event.target.value });
+                    setDirty(true);
+                  }}
+                />
+              </label>
+            ) : (
+              <p>Tên tour hiện dùng chung; các trường bên dưới được biên tập riêng theo ngôn ngữ.</p>
+            )}
             <div className="admin-editor">
               <div className="admin-place-list">
                 {draft.places.map((item, index) => (
@@ -226,7 +353,7 @@ export function ContentPage({ client }: { client: AuthClient }) {
                     aria-pressed={selected === index}
                     onClick={() => setSelected(index)}
                   >
-                    {index + 1}. {item.title}
+                    {index + 1}. {translationFor(item, contentLanguage).title || item.title}
                   </button>
                 ))}
                 <button
@@ -254,10 +381,17 @@ export function ContentPage({ client }: { client: AuthClient }) {
               </div>
               {place && (
                 <div className="admin-place-fields">
+                  {contentLanguage !== "vi" && (
+                    <p className="message" role="status">
+                      {hasTranslation
+                        ? `Đang sửa bản ${languageNames[contentLanguage]}. Khi lưu, bản dịch được gắn với nội dung tiếng Việt hiện tại.`
+                        : `Chưa có bản ${languageNames[contentLanguage]} cho địa điểm này. Nhập đủ ba trường để lưu bản dịch.`}
+                    </p>
+                  )}
                   <label>
                     Tên địa điểm
                     <input
-                      value={place.title}
+                      value={localizedPlace?.title ?? ""}
                       maxLength={200}
                       disabled={busy}
                       onChange={(event) =>
@@ -269,7 +403,7 @@ export function ContentPage({ client }: { client: AuthClient }) {
                     Nội dung thuyết minh
                     <textarea
                       rows={9}
-                      value={place.description}
+                      value={localizedPlace?.description ?? ""}
                       maxLength={20000}
                       disabled={busy}
                       onChange={(event) =>
@@ -281,7 +415,7 @@ export function ContentPage({ client }: { client: AuthClient }) {
                     Nguồn tư liệu
                     <textarea
                       rows={2}
-                      value={place.source}
+                      value={localizedPlace?.source ?? ""}
                       maxLength={2000}
                       disabled={busy}
                       onChange={(event) =>
@@ -339,10 +473,10 @@ export function ContentPage({ client }: { client: AuthClient }) {
         )}
       </section>
       <section className="admin-section" aria-label="Thư viện audio">
-        <h2>Audio theo nội dung đã lưu</h2>
+        <h2>Audio · {languageNames[contentLanguage]}</h2>
         <p>
-          Audio chỉ dùng khi khớp chính xác văn bản. Sau khi nhập audio, công bố
-          lại để người tham quan nghe được.
+          Danh sách và tải MP3 áp dụng cho ngôn ngữ đang chọn. Audio chỉ dùng khi
+          khớp chính xác nội dung; hãy công bố lại để người tham quan nghe được.
         </p>
         <div className="admin-audio-list">
           {audio.map((item) => (
@@ -351,7 +485,9 @@ export function ContentPage({ client }: { client: AuthClient }) {
                 {item.title} ·{" "}
                 {item.audio_id
                   ? `${item.duration_seconds} giây`
-                  : "Chưa có audio khớp nội dung"}
+                  : item.content_available
+                    ? "Chưa có audio khớp nội dung"
+                    : "Hãy lưu bản dịch trước khi thêm audio"}
               </span>
               {item.audio_id && (
                 <button onClick={() => setPreview(item)}>
@@ -359,11 +495,11 @@ export function ContentPage({ client }: { client: AuthClient }) {
                 </button>
               )}
               <label>
-                Thay MP3 {item.title}
+                Tải MP3 {item.title} · {languageNames[contentLanguage]}
                 <input
                   type="file"
                   accept=".mp3,audio/mpeg"
-                  disabled={busy || dirty}
+                disabled={busy || dirty || !item.content_available}
                   onChange={(event) => {
                     const file = event.target.files?.[0];
                     if (file) void uploadAudio(item.place_id, file);

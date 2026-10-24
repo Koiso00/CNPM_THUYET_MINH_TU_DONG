@@ -1,84 +1,51 @@
-> **Cập nhật người dùng ngày 24/10/2026:** Stadia/GPS đã hoạt động trên điện thoại, 10 tọa độ đã kiểm chứng thực địa và chạm điểm phát audio được. Người dùng cho phép để nghiệm thu GPS/geofence thực tế sau; ưu tiên hoàn thiện dashboard thống kê Admin trước QR. Ngưỡng geofence vẫn cần xác nhận trước demo nghiệm thu.
+> **Trạng thái hiện hành — 24/10/2026:** khách không cần đăng nhập; Admin quản lý nội dung/audio tại `#/admin` và dashboard/tài khoản tại `#/management`. Stadia Maps, 10 tọa độ đã kiểm chứng thực địa, GPS opt-in/mô phỏng/geofence frontend và phát audio khi chạm điểm đã được người dùng thử. iPhone/Safari vẫn có thể chặn tự phát theo geofence; nghiệm thu ngưỡng GPS/geofence được để sau. Dashboard thống kê đã hoạt động trên bản deploy theo xác nhận người dùng. QR là bước phát triển kế tiếp sau dashboard và đa ngôn ngữ.
 
-> **Trạng thái demo 23/10/2026:** khách không đăng nhập; welcome, ID khách/hành trình, nội dung/audio công khai, Admin và thống kê visit/journey/audio đã triển khai. QR vẫn hoãn. Chi tiết tại [kế hoạch khách/QR](docs/DEMO_GUEST_QR_PLAN.md) và [báo cáo tiến độ](docs/test-reports/DEMO_GUEST_PROGRESS_2026_10_23.md).
+> **Đa ngôn ngữ — 24/10/2026:** giao diện khách VI/EN/KO; lựa chọn ngôn ngữ được giữ qua các trang. Admin biên tập POI/audio theo ngôn ngữ. Người dùng đã duyệt 10 bản dịch POI English và 10 MP3 English; Atlas có release song ngữ `09d43a32-43d1-4f2b-85d0-cdae2ad29981`, audio Việt được giữ nguyên. Nội dung/audio POI tiếng Hàn chưa có. Frontend 61 test, backend 181 test (16 integration skip mặc định), typecheck/build/Ruff đạt theo đợt hồi quy tương ứng. Render báo `sgu-campus-guide-demo` “Suspended by you”; code mới trong workspace chưa được deploy lên Render.
 
-> **Cập nhật 24/10/2026:** người dùng đã nghe và duyệt 10 MP3 demo; Atlas đã dọn các tài khoản User/Creator legacy và đề xuất Creator được chỉ định. Còn `phong` là Admin active; giữ nguyên tour/release/audio. Hồi quy mới nhất: backend 173, frontend 39, build đạt, E2E 12/12; chi tiết và giới hạn ở các báo cáo liên kết phía trên.
+> **Atlas ứng dụng — 24/10/2026:** `phong` là Admin active; không còn tài khoản User/Creator legacy. Giữ nguyên tour, release và audio.
 
-# Hướng dẫn dành cho AI và người đóng góp
+# Hướng dẫn cho AI và người đóng góp
 
 ## Đọc trước khi làm việc
 
-1. Đọc [README](README.md) để biết trạng thái thực tế và lệnh chạy.
-2. Đọc [bối cảnh](docs/PROJECT_CONTEXT.md) và [kiến trúc](docs/ARCHITECTURE.md).
-3. Tra [kế hoạch gốc được chốt](docs/PROJECT_PLAN.md) khi cần xác định phạm vi.
-4. Chỉ đọc thêm tài liệu dữ liệu/API, runtime, nội dung hoặc kiểm thử liên quan đến nhiệm vụ.
+1. Đọc [README](README.md), [bối cảnh](docs/PROJECT_CONTEXT.md) và [kiến trúc](docs/ARCHITECTURE.md).
+2. Tra [kế hoạch gốc](docs/PROJECT_PLAN.md) để xác định phạm vi dài hạn.
+3. Đọc thêm tài liệu dữ liệu/API, runtime, nội dung hoặc kiểm thử liên quan trực tiếp đến nhiệm vụ.
 
-## Nguồn quyết định
+## Nguồn quyết định và ưu tiên
 
-- Kế hoạch gốc dài hạn dự kiến 10 tuần, ba vai trò **User / Creator / Admin** vẫn được giữ.
-  Demo hiện tại gộp Creator vào Admin theo yêu cầu mới; xem kế hoạch demo 23/10.
-- Chưa đưa thống kê hiện diện tại POI, báo cáo CSV hoặc phương án chỉ dùng OSM trực tuyến
-  vào phạm vi mặc định. Các thay đổi đó đã được thay thế khi người dùng chọn giữ nguyên kế hoạch gốc.
-- Yêu cầu mới trực tiếp từ người dùng có thể thay đổi phạm vi. Khi có thay đổi, cập nhật bối cảnh và tài liệu liên quan.
-- Cập nhật 21/10/2026: người dùng ưu tiên demo 2 ngày theo [DEMO_2_DAYS](docs/DEMO_2_DAYS.md):
-  đăng nhập, nghe audio, quản lý địa điểm/nội dung/audio/user, dashboard dữ liệu thật.
-  Tạm hoãn GPS, offline, AI và dịch tự động; kế hoạch gốc vẫn là hướng phát triển dài hạn.
-- Người dùng đã chốt offline theo ngôn ngữ tự chọn: tải thêm ngôn ngữ sau,
-  dùng chung bản đồ/ảnh, không bắt tải toàn bộ ngôn ngữ. Xem docs/TOUR_RUNTIME.md.
-  Quyết định này thay yêu cầu đóng gói bắt buộc Việt–Anh trong kế hoạch gốc; offline vẫn hoãn trong demo 2 ngày.
-- Nếu thiếu quyết định nghiệp vụ ảnh hưởng đến thiết kế, hỏi người dùng; không ghi đề xuất thành quyết định đã chốt.
+- Kế hoạch gốc 10 tuần và ba vai trò User / Creator / Admin vẫn là hướng dài hạn. Demo hiện tại gộp Creator vào Admin; xem [kế hoạch demo khách/QR](docs/DEMO_GUEST_QR_PLAN.md).
+- Dashboard Admin đã hoàn thiện phần thống kê nền và người dùng đã xác nhận bản deploy hoạt động. Nội dung POI English và audio English cho 10 điểm đã được duyệt/công bố; QR là bước kế tiếp.
+- Nghiệm thu GPS tự nhận diện, tự phát theo geofence và hiệu chỉnh ngưỡng thực địa được để sau; hoàn tất trước khi nghiệm thu demo chính thức. QR/camera, offline và AI chưa triển khai.
+- Offline dài hạn đã chốt theo ngôn ngữ tự chọn, tải thêm ngôn ngữ sau và dùng chung bản đồ/ảnh; offline tiếp tục hoãn trong demo hiện tại.
+- Yêu cầu mới trực tiếp từ người dùng có thể thay đổi phạm vi. Cập nhật bối cảnh và tài liệu liên quan; không ghi đề xuất thành quyết định đã chốt.
 
 ## Quy tắc triển khai
 
-- Backend: router xử lý HTTP; service xử lý nghiệp vụ; repository truy cập MongoDB/GridFS.
-- Frontend chia theo feature; chỉ đưa thành phần dùng chung thực tế vào shared.
-- JWT dự kiến đặt trong HttpOnly cookie, không localStorage; triển khai CSRF và kiểm tra RBAC tại backend.
+- Backend: router xử lý HTTP, service xử lý nghiệp vụ, repository truy cập MongoDB/GridFS.
+- Frontend chia theo feature; chỉ đưa thành phần dùng chung thực tế vào `shared`.
+- JWT nằm trong HttpOnly cookie; không lưu token/CSRF trong localStorage. Giữ CSRF và RBAC ở backend.
 - Không để người nghe lấy bản nháp hoặc asset chưa được phép; không sửa trực tiếp snapshot đã công bố.
-- GPS thật và mô phỏng phải dùng chung luồng geofence/audio; số liệu mô phỏng tách khỏi thực tế.
-- Không bịa lịch sử, tọa độ, bản dịch đã kiểm duyệt hoặc kết quả kiểm thử. Dữ liệu mô phỏng phải được gắn nhãn.
+- GPS thật và mô phỏng dùng chung luồng geofence/audio; số liệu mô phỏng không tính vào thống kê thật.
+- Không bịa lịch sử, tọa độ, bản dịch đã duyệt hoặc kết quả kiểm thử. Gắn nhãn dữ liệu mô phỏng.
 - Không commit secrets, dữ liệu tài khoản, MP3 hoặc PMTiles lớn. Dùng biến môi trường và GridFS khi triển khai.
 - Không cài thư viện cho tính năng chưa thực hiện chỉ để làm đầy danh sách công nghệ.
 
-## Trạng thái và kiểm tra
+## Trạng thái demo và kiểm thử
 
-Trạng thái demo 23/10: Nội dung tại `#/admin` quản lý địa điểm/văn bản/audio;
-Quản trị tại `#/management` có dashboard/tài khoản, cả hai dành cho Admin. Creator UI/API
-và quy trình gửi/duyệt đã gỡ khỏi demo. Admin biên soạn trực tiếp rồi lưu nháp/công bố.
+- `#/welcome`: khách chọn ngôn ngữ và bắt đầu hành trình; `#/explore`: bản đồ, nội dung và audio công khai.
+- `#/admin`: Admin biên tập địa điểm, nội dung và audio theo ngôn ngữ, lưu nháp/công bố.
+- `#/management`: dashboard theo ngày ICT và quản lý tài khoản. Creator UI/API và quy trình gửi/duyệt đã gỡ khỏi demo.
+- Bản đồ Stadia, GPS opt-in/mô phỏng/geofence đã tích hợp. Tọa độ 10 điểm đã kiểm chứng thực địa; chạm điểm và phát audio thủ công đã hoạt động trên điện thoại. Safari tự phát khi vào vùng và ngưỡng 30/45 m chưa nghiệm thu.
+- Nội dung English và audio English đã công bố cùng tiếng Việt. Giao diện tiếng Hàn có; nội dung/audio tiếng Hàn chưa có.
+- Theo dõi phần việc tại [WORK_BREAKDOWN](docs/WORK_BREAKDOWN.md), chọn kiểm tra phù hợp theo [TEST_AND_DEMO](docs/TEST_AND_DEMO.md), ghi kết quả mới tại `docs/test-reports/`.
+- Báo rõ kiểm tra nào đã chạy/chưa chạy và giới hạn. Test double không chứng minh Atlas thật đã hoạt động. Không đưa nội dung `.env` vào chat/log.
 
-Cập nhật 22/10/2026: đã có demo dữ liệu MongoDB/snapshot, audio GridFS/Range/trình phát,
-Admin sửa/thêm/xóa điểm, công bố/gỡ, upload MP3 ≤10 MiB, quản lý user và dashboard đếm thật.
-Đã nhập 10 mô tả thành nháp và 10 MP3 vào Atlas; công bố cần Admin kiểm tra rồi thao tác trên UI.
-User không đọc nháp/preview audio. Khóa user thu hồi phiên. Admin đang hoạt động được bảo vệ
-khỏi khóa/hạ quyền trên web. Không có mật khẩu/tài khoản mặc định; lệnh bootstrap chỉ nâng
-tài khoản có sẵn. Xem docs/test-reports/DEMO_CONTENT_AUDIO_ADMIN.md cho test/giới hạn hiện hành.
-Các ghi chú “chưa có” về nội dung/audio/quản trị ở các mốc cũ bên dưới đã được thay bởi cập nhật này.
+## Tài liệu chính
 
-Đã có trang mở đầu React, liveness/readiness FastAPI, MongoDB lifecycle và test nền tảng dữ liệu.
-P1.2 đã có model/repository User/session và index thật trên Atlas: 69 test cục bộ,
-12 test Atlas đạt. Username không phân biệt hoa/thường; token truy cập 15 phút,
-tự gia hạn trong phiên có hạn tuyệt đối 7 ngày. Chưa có GridFS.
-P1.3 đã có API đăng ký/đăng nhập/me/refresh/logout/logout-all, Argon2id, JWT cookie,
-CSRF ký gắn phiên và dependency RBAC: 124 test cục bộ, 14 test Atlas đạt.
-Đăng ký chỉ tạo User; mật khẩu 15–128 ký tự, cho phép Unicode/dấu cách, không tự trim mật khẩu.
-P1.4 có giao diện đăng ký/đăng nhập, AuthClient gia hạn, khôi phục phiên, đăng xuất và khung trang theo role.
-Giao diện đăng nhập đã cập nhật theo ảnh khuôn viên/bảng màu người dùng gửi; 18 test frontend đạt,
-Edge đã rà bố cục desktop/mobile và ảnh nền; xem docs/test-reports/P1_4_AUTH_UI_REDESIGN.md.
-Trang khám phá sau đăng nhập đã có giao diện theo mẫu: nội dung nguồn 10 điểm, thẻ chọn nội dung,
-vùng bản đồ giữ chỗ để thay bằng ảnh sơ đồ sau này. 22 test frontend đạt; chưa có map/GPS/audio playback thật.
-Xem docs/test-reports/P1_4_1_EXPLORE_UI.md.
-AuthClient chỉ giữ dữ liệu công khai trong RAM; cookie HttpOnly thuộc browser. Không lưu JWT/CSRF vào storage.
-Hash routing không cần SPA fallback; Creator/Admin có workflow đề xuất, duyệt và công bố nội dung.
-Bản đồ thật, TTS trên web, offline, AI và dashboard chưa tích hợp. Không thêm route thử quyền vào ứng dụng thật.
-Người dùng đã chọn [nguồn tiếng Việt 10 địa điểm](data/sources/campus-vi-user-2026-10-21.md)
-cho demo; giữ nguyên văn, chưa có tọa độ hoặc đối chiếu sơ đồ. Không tự bổ sung sự kiện lịch sử.
-Đã tạo 10 MP3 cục bộ bằng Edge-TTS vi-VN-NamMinhNeural theo lựa chọn giọng nam của người dùng;
-xem [báo cáo audio](docs/test-reports/DEMO_AUDIO_VI_MALE.md). Chưa tích hợp API/GridFS/trình phát.
-
-Theo dõi các phần tại [WORK_BREAKDOWN](docs/WORK_BREAKDOWN.md). Sau mỗi phần phải chạy test,
-ghi lỗi đã sửa/test chưa chạy và đối chiếu kế hoạch trong docs/test-reports/.
-Không coi test double là bằng chứng Atlas thật đã hoạt động; không đưa nội dung .env vào chat/log.
-
-Dùng lệnh trong README; build/typecheck không thay thế kiểm thử nghiệp vụ.
-Khi sửa chức năng, chọn kiểm thử phù hợp theo [TEST_AND_DEMO](docs/TEST_AND_DEMO.md).
-Báo rõ kiểm tra nào đã chạy, kiểm tra nào chưa chạy và lý do.
-Cập nhật tài liệu cùng thay đổi API, dữ liệu hoặc hành vi. Không công bố lệnh chưa tồn tại như lệnh đã hoạt động.
+- [PROJECT_CONTEXT](docs/PROJECT_CONTEXT.md): yêu cầu và trạng thái hiện hành.
+- [ARCHITECTURE](docs/ARCHITECTURE.md): thành phần và ranh giới trách nhiệm.
+- [DATA_AND_API](docs/DATA_AND_API.md): dữ liệu và hợp đồng API.
+- [TOUR_RUNTIME](docs/TOUR_RUNTIME.md): GPS, audio và kế hoạch offline.
+- [WORK_BREAKDOWN](docs/WORK_BREAKDOWN.md): đầu việc và trạng thái kiểm thử.
+- [TEST_AND_DEMO](docs/TEST_AND_DEMO.md): ma trận nghiệm thu.
