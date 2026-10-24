@@ -1,6 +1,6 @@
 # Runtime tham quan
 
-Trạng thái 24/10/2026: bản đồ OSM, GPS trình duyệt bật theo thao tác người dùng, mô phỏng vị trí, geofence và thử tự phát audio khi vào vùng đã có ở frontend. Trình duyệt có thể chặn autoplay; UI giữ nút phát thủ công. Chưa có hàng đợi audio hoặc GPS thực địa nghiệm thu.
+Trạng thái 24/10/2026: bản đồ Stadia Maps và GPS đã được người dùng thử trên điện thoại; 10 tọa độ đã kiểm chứng thực địa. Mô phỏng/geofence dùng chung luồng với GPS. iPhone/Safari đã chặn lần thử tự phát khi vào vùng; trình phát hiện giữ cùng một thẻ audio và chuẩn bị thẻ ngay trong thao tác bật GPS/mô phỏng. Cần thử lại trên iPhone, đồng thời xác nhận riêng ngưỡng geofence 30/45 m. Chưa có hàng đợi audio.
 
 ## Vị trí và geofence
 
@@ -24,7 +24,7 @@ GPS trên điện thoại cần HTTPS; localhost được trình duyệt coi là
 
 ## Audio
 
-Hiện dùng một audio player trong panel của POI; đổi điểm/rời trang dừng audio cũ.
+Hiện dùng một thẻ audio tồn tại xuyên suốt trang Explore, hiển thị trong panel POI khi chọn điểm. Chạm marker hoặc nút “Nghe thuyết minh” gọi play ngay trong thao tác chạm để đáp ứng yêu cầu tương tác của Safari; đổi điểm thay nguồn audio trên cùng thẻ. Rời trang dừng audio.
 Khi geofence xác nhận POI mới, thử tự phát audio; promise rejection/autoplay policy chuyển sang hướng dẫn nhấn phát. Nghe lại thủ công vẫn được. Hàng đợi audio chưa có.
 Sự kiện audio chỉ được ghi khi trình phát phát thành công; lần tự phát do mô phỏng không gửi sự kiện thật lên dashboard. Phát thủ công là hành động nghe thật và vẫn được tính.
 

@@ -1,7 +1,7 @@
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Icon } from "../../shared/Icons";
 import type { Place } from "./content";
-import { AudioPlayer } from "./AudioPlayer";
+import { AudioPlayer, type AudioPlayerHandle } from "./AudioPlayer";
 import type { GuestSession } from "../guest/session";
 import { CampusMap } from "../map/CampusMap";
 import { campusPoiMarkerSymbol, withCampusPoiLocations } from "../map/campusPoiLocations";
@@ -45,7 +45,7 @@ function CampusMapPreview({
       />
       <div className="map-stage-footer">
         <span>
-          <i /> Tọa độ do người dùng cung cấp · chưa xác minh thực địa
+          <i /> 10 tọa độ do người dùng cung cấp · đã kiểm chứng thực địa
         </span>
         <span>{title ? `Đang chọn: ${title}` : "Chọn biểu tượng trên bản đồ để xem mô tả"}</span>
       </div>
@@ -69,15 +69,24 @@ export function ExplorePage({
   const mappedPlaces = withCampusPoiLocations(campusPlaces);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [autoPlayRequest, setAutoPlayRequest] = useState<{ placeId: string; id: number } | null>(null);
+  const audioPlayerRef = useRef<AudioPlayerHandle>(null);
+  const selectedIdRef = useRef<string | null>(null);
   const selected =
     mappedPlaces.find((place) => place.id === selectedId) ?? null;
+  const audioPlace = selected?.audio_id ? selected : mappedPlaces.find((place) => place.audio_id) ?? null;
 
   const selectPlace = useCallback((id: string, shouldScroll = false) => {
+    const place = mappedPlaces.find((item) => item.id === id);
+    selectedIdRef.current = id;
     setSelectedId(id);
     setAutoPlayRequest(null);
+    if (place?.audio_id) {
+      audioPlayerRef.current?.playFromUserGesture(`/api/v1/audio/${releaseId}/${place.id}`);
+    }
     if (shouldScroll) scrollToSection("campus-map");
-  }, []);
+  }, [mappedPlaces, releaseId]);
   const handlePlaceDetected = useCallback((id: string) => {
+    selectedIdRef.current = id;
     setSelectedId(id);
     setAutoPlayRequest((request) => ({ placeId: id, id: (request?.id ?? 0) + 1 }));
   }, []);
@@ -175,11 +184,18 @@ export function ExplorePage({
               simulationPlaceId={location.simulationPlaceId}
               fix={location.fix}
               onSimulationPlaceChange={location.setSimulationPlaceId}
-              onStartGps={location.startGps}
-              onStartSimulation={location.startSimulation}
+              onStartGps={() => {
+                audioPlayerRef.current?.prepareForAutomaticPlayback();
+                location.startGps();
+              }}
+              onStartSimulation={() => {
+                audioPlayerRef.current?.prepareForAutomaticPlayback();
+                location.startSimulation();
+              }}
               onStop={() => location.stop()}
             />
-            {selected && <aside className="place-detail" aria-live="polite">
+            <aside className="place-detail" aria-live="polite" hidden={!selected}>
+              {selected && <>
               <div className="detail-cover">
                 <img
                   src="/images/sgu-campus-wide.jpg"
@@ -193,6 +209,7 @@ export function ExplorePage({
                   className="detail-dismiss"
                   type="button"
                   onClick={() => {
+                    selectedIdRef.current = null;
                     setSelectedId(null);
                     setAutoPlayRequest(null);
                   }}
@@ -204,27 +221,31 @@ export function ExplorePage({
                 <strong>Tiếng Việt</strong>
               </div>
               <p className="detail-source-note">
-                Mô tả nguồn · chưa đối chiếu tọa độ thực địa
+                Mô tả nguồn · tọa độ đã kiểm chứng thực địa
               </p>
               <p className="detail-description">{selected.description}</p>
-              {selected.audio_id ? (
+              </>}
+              {audioPlace && <div hidden={!!selected && !selected.audio_id}>
                 <AudioPlayer
-                  key={`${releaseId}/${selected.id}`}
-                  src={`/api/v1/audio/${releaseId}/${selected.id}`}
-                  title={selected.title}
-                  autoPlayRequestId={autoPlayRequest?.placeId === selected.id ? autoPlayRequest.id : null}
+                  ref={audioPlayerRef}
+                  src={`/api/v1/audio/${releaseId}/${audioPlace.id}`}
+                  title={audioPlace.title}
+                  autoPlayRequestId={selected?.audio_id && autoPlayRequest?.placeId === selected.id ? autoPlayRequest.id : null}
                   onPlay={(trigger) => {
+                    const playingPlaceId = selectedIdRef.current;
+                    if (!playingPlaceId) return;
                     if (trigger === "manual" || location.fix?.source === "gps") {
-                      void guest?.recordAudio(selected.id, releaseId);
+                      void guest?.recordAudio(playingPlaceId, releaseId);
                     }
                   }}
                 />
-              ) : (
+              </div>}
+              {selected && !selected.audio_id && (
                 <p className="audio-hint">
                   Địa điểm này chưa có audio được công bố.
                 </p>
               )}
-            </aside>}
+            </aside>
           </div>
         </section>
 
@@ -239,7 +260,7 @@ export function ExplorePage({
             </span>
           </div>
           <p className="source-disclaimer">
-            Nội dung lấy từ tài liệu bạn cung cấp; tọa độ marker chưa được xác minh
+            Nội dung lấy từ tài liệu bạn cung cấp; tọa độ marker đã được bạn kiểm chứng
             tại thực địa.
           </p>
           <div className="poi-grid">
@@ -267,8 +288,8 @@ export function ExplorePage({
                   onClick={() => selectPlace(place.id, true)}
                 >
                   {selectedId === place.id
-                    ? "Đang xem địa điểm"
-                    : "Xem nội dung"}
+                    ? "Đang chọn địa điểm"
+                    : place.audio_id ? "Nghe thuyết minh" : "Xem nội dung"}
                   <Icon name="arrow" size={15} />
                 </button>
               </article>
