@@ -2033,6 +2033,9 @@ fieldset {
   border-radius: 15px;
   background: #fbfbfa;
 }
+.place-detail[hidden] {
+  display: none;
+}
 .detail-cover {
   position: relative;
   display: flex;

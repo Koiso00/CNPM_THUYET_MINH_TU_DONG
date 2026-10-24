@@ -71,7 +71,7 @@ export function LocationControls({
         </p>
       )}
       <p className="location-threshold-note">
-        Ngưỡng khởi đầu để thử nghiệm, cần xác nhận thực địa: vào 30 m, ra 45 m, sai số tối đa 25 m. Nếu trình duyệt chặn autoplay, nhấn phát thủ công.
+        Ngưỡng geofence đang dùng: vào 30 m, ra 45 m, sai số tối đa 25 m. Trên một số điện thoại, trình duyệt có thể yêu cầu bạn nhấn Phát.
       </p>
     </section>
   );

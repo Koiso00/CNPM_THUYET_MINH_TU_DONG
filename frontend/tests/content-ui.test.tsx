@@ -164,29 +164,39 @@ it("sends selected user role and lock state without password fields", async () =
   );
 });
 
-it("unmounts the previous audio source when the selected place changes", async () => {
-  const pause = vi
-    .spyOn(HTMLMediaElement.prototype, "pause")
-    .mockImplementation(() => {});
+it("reuses the audio element and starts the newly selected place from the visitor tap", async () => {
+  const play = vi.spyOn(HTMLMediaElement.prototype, "play").mockImplementation(function (this: HTMLMediaElement) {
+    fireEvent.play(this);
+    return Promise.resolve();
+  });
+  const load = vi.spyOn(HTMLMediaElement.prototype, "load").mockImplementation(() => {});
+  const pause = vi.spyOn(HTMLMediaElement.prototype, "pause").mockImplementation(() => {});
   const places = [
     { ...place, audio_id: "audio-1" },
     { ...place, id: "place-2", title: "Khu B", audio_id: "audio-2" },
   ];
-  render(
+  const view = render(
     <ExplorePage username="phong" places={places} releaseId="release-1" />,
   );
-  await userEvent.click(screen.getAllByRole("button", { name: "Xem nội dung" })[0]);
+  const audioBeforeSelection = screen.getByLabelText("Nghe Khu A");
+  await userEvent.click(screen.getAllByRole("button", { name: "Nghe thuyết minh" })[0]);
+  expect(play).toHaveBeenCalledOnce();
   expect(screen.getByLabelText("Nghe Khu A")).toHaveAttribute(
     "src",
     "/api/v1/audio/release-1/place-1",
   );
-  await userEvent.click(screen.getByRole("button", { name: "Xem nội dung" }));
-  expect(pause).toHaveBeenCalled();
-  expect(screen.queryByLabelText("Nghe Khu A")).not.toBeInTheDocument();
+  await userEvent.click(screen.getByRole("button", { name: "Nghe thuyết minh" }));
+  expect(play).toHaveBeenCalledTimes(2);
+  expect(pause).not.toHaveBeenCalled();
+  expect(screen.getByLabelText("Nghe Khu B")).toBe(audioBeforeSelection);
   expect(screen.getByLabelText("Nghe Khu B")).toHaveAttribute(
     "src",
     "/api/v1/audio/release-1/place-2",
   );
+  view.unmount();
+  play.mockRestore();
+  load.mockRestore();
+  pause.mockRestore();
 });
 
 it("loads dashboard and accounts independently from campus content", async () => {

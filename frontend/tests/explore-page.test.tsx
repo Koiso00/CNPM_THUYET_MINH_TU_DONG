@@ -30,7 +30,7 @@ it("shows all ten supplied locations with GPS off until the visitor opts in", ()
     screen.getByRole("heading", { name: "Xin chào, phong" }),
   ).toBeInTheDocument();
   expect(screen.getAllByRole("article")).toHaveLength(10);
-  expect(screen.getByText(/Tọa độ do người dùng cung cấp · chưa xác minh thực địa/)).toBeInTheDocument();
+  expect(screen.getByText(/10 tọa độ do người dùng cung cấp · đã kiểm chứng thực địa/)).toBeInTheDocument();
   expect(screen.getByRole("button", { name: "Bật GPS & tự phát" })).toBeInTheDocument();
   expect(screen.getByRole("button", { name: "Mô phỏng & tự phát" })).toBeInTheDocument();
   expect(screen.getByText(/Chọn biểu tượng trên bản đồ để xem mô tả/)).toBeInTheDocument();
@@ -64,7 +64,7 @@ it("updates the selected place from the supplied descriptions", async () => {
     screen.getByText("Đang chọn: Căng tin"),
   ).toBeInTheDocument();
   expect(
-    within(canteen).getByRole("button", { name: "Đang xem địa điểm" }),
+    within(canteen).getByRole("button", { name: "Đang chọn địa điểm" }),
   ).toHaveAttribute("aria-pressed", "true");
 });
 
@@ -104,6 +104,8 @@ it("uses the simulation controls to confirm a place through the shared geofence 
     fireEvent.play(this);
     return Promise.resolve();
   });
+  const load = vi.spyOn(HTMLMediaElement.prototype, "load").mockImplementation(() => {});
+  const pause = vi.spyOn(HTMLMediaElement.prototype, "pause").mockImplementation(() => {});
   const playablePlaces = places.map((place) => ({ ...place, audio_id: "audio-test" }));
   const view = render(
     <ExplorePage
@@ -114,7 +116,9 @@ it("uses the simulation controls to confirm a place through the shared geofence 
     />,
   );
   try {
+    const audioBeforeTracking = screen.getByLabelText("Nghe Khu A");
     fireEvent.click(screen.getByRole("button", { name: "Mô phỏng & tự phát" }));
+    expect(load).toHaveBeenCalledOnce();
     expect(screen.getByRole("status")).toHaveTextContent(/Đang chờ hai mẫu vị trí hợp lệ/);
 
     await act(async () => {
@@ -123,14 +127,53 @@ it("uses the simulation controls to confirm a place through the shared geofence 
 
     expect(screen.getByRole("status")).toHaveTextContent(/Đã xác nhận gần Khu A/);
     expect(document.querySelector(".detail-place-title")).toHaveTextContent("Khu A");
+    expect(screen.getByLabelText("Nghe Khu A")).toBe(audioBeforeTracking);
     expect(screen.getByRole("button", { name: "Dừng định vị" })).toBeInTheDocument();
     expect(play).toHaveBeenCalledOnce();
     expect(recordAudio).not.toHaveBeenCalled();
   } finally {
     view.unmount();
     play.mockRestore();
+    load.mockRestore();
+    pause.mockRestore();
     vi.useRealTimers();
   }
+});
+
+it("starts audio directly from a visitor tap on a place with published audio", async () => {
+  const user = userEvent.setup();
+  const play = vi.spyOn(HTMLMediaElement.prototype, "play").mockImplementation(function (this: HTMLMediaElement) {
+    fireEvent.play(this);
+    return Promise.resolve();
+  });
+  const load = vi.spyOn(HTMLMediaElement.prototype, "load").mockImplementation(() => {});
+  const pause = vi.spyOn(HTMLMediaElement.prototype, "pause").mockImplementation(() => {});
+  const recordAudio = vi.fn();
+  const playablePlaces = places.map((place) => ({ ...place, audio_id: "audio-test" }));
+  const view = render(
+    <ExplorePage
+      username="guest"
+      places={playablePlaces}
+      releaseId="release"
+      guest={{ recordAudio } as unknown as GuestSession}
+    />,
+  );
+
+  await user.click(
+    within(screen.getByRole("article", { name: "Khu A" })).getByRole("button", { name: "Nghe thuyết minh" }),
+  );
+
+  expect(play).toHaveBeenCalledOnce();
+  expect(load).toHaveBeenCalledOnce();
+  expect(screen.getByLabelText("Nghe Khu A")).toHaveAttribute(
+    "src",
+    "/api/v1/audio/release/khu-a",
+  );
+  expect(recordAudio).toHaveBeenCalledWith("khu-a", "release");
+  view.unmount();
+  play.mockRestore();
+  load.mockRestore();
+  pause.mockRestore();
 });
 
 it("lets the header actions scroll without changing the hash route", async () => {

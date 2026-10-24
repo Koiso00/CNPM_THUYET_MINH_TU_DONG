@@ -1,4 +1,4 @@
-> **Ưu tiên cập nhật ngày 24/10/2026:** bản đồ MapLibre đang thử chuyển nền tile sang Stadia Maps do OSM không truy cập được trên điện thoại của người dùng; cần cấu hình xác thực domain trên Stadia và xác minh tải tile trên thiết bị. 10 tọa độ do người dùng cung cấp đã có; GPS thật bật chủ động, mô phỏng và geofence cùng luồng frontend đã triển khai. Cần xác minh GPS/tọa độ thực địa; QR chỉ làm sau khi nghiệm thu các phần này.
+> **Cập nhật người dùng ngày 24/10/2026:** domain Stadia đã cấu hình, bản đồ và GPS hoạt động khi thử trên điện thoại; 10 tọa độ đã được người dùng kiểm chứng thực địa. iPhone/Safari chặn lần tự phát audio sau khi geofence xác nhận, vẫn phát được khi nhấn Phát. Đã điều chỉnh trình phát để chuẩn bị thẻ audio từ thao tác bật GPS/mô phỏng; cần thử lại trên iPhone trước khi coi tự phát đạt. Chưa có xác nhận riêng về ngưỡng geofence 30/45 m. QR vẫn chờ nghiệm thu luồng này.
 
 > **Trạng thái demo 23/10/2026:** khách không đăng nhập; welcome, ID khách/hành trình, nội dung/audio công khai, Admin và thống kê visit/journey/audio đã triển khai. QR vẫn hoãn. Chi tiết tại [kế hoạch khách/QR](docs/DEMO_GUEST_QR_PLAN.md) và [báo cáo khách](docs/test-reports/DEMO_GUEST_PROGRESS_2026_10_23.md).
 
@@ -34,7 +34,7 @@ Demo hiện tại gộp Creator vào Admin theo cập nhật 23/10; kế hoạch
 | Creator / duyệt | Workflow Creator đã gỡ khỏi demo; vai trò vẫn thuộc kế hoạch dài hạn |
 | Guest / dashboard | ID khách và hành trình lưu trong browser; lượt truy cập/hành trình/audio theo ngày ICT |
 | User / dashboard | Danh sách, đổi vai trò, khóa/mở khóa; số tài khoản/địa điểm/tour công bố/audio từ database |
-| Bản đồ/GPS/geofence | OSM + 10 tọa độ người dùng cung cấp; GPS thật bật chủ động và mô phỏng cùng geofence phía frontend; chưa nghiệm thu thực địa/thiết bị |
+| Bản đồ/GPS/geofence | Stadia Maps đã chạy trên điện thoại; 10 tọa độ đã được người dùng kiểm chứng thực địa; GPS thật/mô phỏng dùng chung geofence, còn thử lại tự phát Safari và xác nhận ngưỡng |
 | Offline, AI | Chưa triển khai; tiếp tục hoãn |
 | Docker/Compose | Có cấu hình, chưa chạy xác minh trên máy hiện tại |
 | Nội dung tour và tài khoản | Có nháp từ nguồn người dùng; Admin được cấp tường minh cho tài khoản có sẵn; không có mật khẩu mặc định |

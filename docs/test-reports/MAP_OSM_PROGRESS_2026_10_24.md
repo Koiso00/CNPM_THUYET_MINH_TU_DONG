@@ -60,3 +60,25 @@
 5. Chỉ chuyển sang QR sau khi bản đồ và luồng GPS/geofence được người dùng nghiệm thu.
 
 Không có thao tác ghi/xóa dữ liệu Atlas trong phần việc này.
+
+## Phản hồi thực địa và sửa luồng audio — 24/10/2026
+
+- Người dùng xác nhận đã cấu hình domain Stadia, bản đồ và GPS hoạt động trên điện thoại, và đã kiểm chứng 10 tọa độ tại thực địa. Các mục “chưa xác minh” ở trên là nhật ký của thời điểm triển khai trước phản hồi này.
+- Trên iPhone/Safari, khi geofence xác nhận điểm, audio không tự phát và giao diện báo trình duyệt chặn; bấm Phát thủ công thì nghe được. Đây là kết quả người dùng quan sát, không phải kết quả kiểm thử thiết bị do nhóm phát triển thực hiện.
+- Nguyên nhân khả dĩ từ mã: thẻ `<audio>` trước đây chỉ được tạo sau khi nhận điểm, nằm ngoài thao tác người dùng. Safari yêu cầu lần tải/phát đầu tiên của thẻ media gắn với thao tác người dùng. Đã giữ một thẻ audio xuyên suốt trang và gọi `load()` ngay trong thao tác bật GPS/mô phỏng; đổi điểm vẫn dùng thẻ đó. Đây là thay đổi cần người dùng thử lại trên iPhone, chưa thể coi là sửa xong trên thiết bị.
+- Chưa nhận xác nhận riêng rằng ngưỡng vào 30 m, ra 45 m và sai số 25 m phù hợp với mọi điểm. QR vẫn chờ nghiệm thu tự phát và ngưỡng.
+- Kiểm tra mã sau sửa: 10/10 test tập trung `AudioPlayer` và `ExplorePage` đạt; typecheck/production build đạt; `git diff --check` đạt. Build vẫn cảnh báo bundle MapLibre lớn. Chưa chạy E2E hoặc kiểm tra iPhone/Safari trong phiên sửa này; kết quả trên thiết bị chỉ có thể xác nhận khi người dùng mở bản cập nhật.
+
+### Chạy thử trực tiếp sau sửa
+
+- Chạy lại toàn bộ frontend: **56/56 test đạt**; typecheck và production build đạt. Cảnh báo dung lượng chunk MapLibre vẫn còn.
+- Backend kết nối Atlas sau khi chạy trong môi trường có quyền mạng: readiness **200**, database `connected`; API nội dung công khai **200**, trả 10 địa điểm với 10 audio ID. Lượt khởi động đầu trong sandbox bị chặn mạng và trả readiness 503; sau đó khởi động lại với quyền mạng và đạt.
+- Trình duyệt Edge với viewport điện thoại 390×844: luồng mô phỏng xác nhận Khu A sau hai mẫu, dùng MP3 công bố thật qua HTTP **206**, thẻ audio ở trạng thái đang phát và thời gian phát tăng từ 0 lên khoảng 1,94 giây; không có thông báo chặn tự phát. Trình duyệt thử dùng ID hành trình đặt cục bộ để vào thẳng Explore; không dùng tài khoản Admin hay sửa dữ liệu tour.
+- Đây là kết quả trên Edge có kích thước điện thoại, chưa phải Safari chạy trên iPhone. Safari vẫn cần người dùng thử lại bản cập nhật để xác nhận hành vi tự phát.
+
+### Phát audio khi chạm điểm — 24/10/2026
+
+- Phản hồi người dùng: chạm một điểm trên màn hình không tự phát audio. Hành vi cũ chỉ chọn địa điểm; tự phát chỉ được gọi khi geofence xác nhận.
+- Đã đổi marker và nút thẻ có audio để gọi `play()` đồng bộ ngay trong thao tác chạm; thẻ audio được giữ lại và thay nguồn khi chuyển điểm. Nút danh sách đổi thành “Nghe thuyết minh”; điểm chưa có audio vẫn chỉ mở nội dung.
+- Kiểm tra hồi quy: **57/57 frontend test đạt**. Trên Edge viewport 390×844 với MP3 công bố từ Atlas, chạm “Nghe thuyết minh” chọn Khu A và audio phát (currentTime tăng ~2,54 giây, readyState 4). Đây chưa phải kiểm tra iPhone/Safari.
+- Một sự kiện audio thử đã được gửi nhầm vào Atlas do chạy thử với ID hành trình giả; đã xóa đúng một bản ghi khớp đồng thời visitor ID, journey ID, release ID và place ID của bài thử. Không có dữ liệu tour/audio nào thay đổi.
