@@ -182,7 +182,7 @@ it.each(["user", "creator", "admin"])(
       if (path.endsWith("/dashboard"))
         return reply({
           users: 0,
-          active_users: 0,
+          online_visitors: 0,
           audio_assets: 0,
           draft_places: 0,
           published_places: 0,

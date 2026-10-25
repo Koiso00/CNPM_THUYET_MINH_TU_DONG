@@ -26,6 +26,7 @@ async def isolated_content(users, sessions):
         temporary_collection("audio_selections") as selections,
         temporary_collection("content_submissions") as submissions,
         temporary_collection("usage_events") as usage_events,
+        temporary_collection("visitor_presence") as visitor_presence,
     ):
         database = tours.database
         bucket_name = "__test_demo_audio_" + uuid4().hex
@@ -38,7 +39,13 @@ async def isolated_content(users, sessions):
         audio_repository.bucket = AsyncGridFSBucket(database, bucket_name=bucket_name)
         content = ContentService(content_repository, audio_repository)
         admin_repository = AdminRepository(
-            {"users": users, "assets": assets, "sessions": sessions, "usage_events": usage_events}
+            {
+                "users": users,
+                "assets": assets,
+                "sessions": sessions,
+                "usage_events": usage_events,
+                "visitor_presence": visitor_presence,
+            }
         )
         try:
             yield SimpleNamespace(
@@ -47,6 +54,7 @@ async def isolated_content(users, sessions):
                 admin=AdminService(admin_repository, content),
                 submissions=SubmissionService(submission_repository, content),
                 usage_events=usage_events,
+                visitor_presence=visitor_presence,
             )
         finally:
             for name in names:

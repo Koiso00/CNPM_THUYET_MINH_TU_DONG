@@ -88,6 +88,22 @@ export function App({ client = authClient }: { client?: AuthClient }) {
     return () => window.removeEventListener("hashchange", changed);
   }, []);
   useEffect(() => {
+    if (route !== "#/welcome" && route !== "#/explore") return;
+    let timer: number | undefined;
+    const heartbeat = () => {
+      if (document.visibilityState === "visible") {
+        void guestSession.recordPresence().catch(() => undefined);
+      }
+    };
+    heartbeat();
+    timer = window.setInterval(heartbeat, 30_000);
+    document.addEventListener("visibilitychange", heartbeat);
+    return () => {
+      if (timer !== undefined) window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", heartbeat);
+    };
+  }, [route]);
+  useEffect(() => {
     if (route === "#/register") {
       window.location.hash = "/login";
       return;

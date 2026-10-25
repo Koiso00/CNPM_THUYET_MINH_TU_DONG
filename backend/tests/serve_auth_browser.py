@@ -61,7 +61,12 @@ def browser_test_app():
                 app.dependency_overrides[get_content_service] = lambda: features.content
                 app.dependency_overrides[get_audio_service] = lambda: features.audio
                 app.dependency_overrides[get_admin_service] = lambda: features.admin
-                events = EventRepository({"usage_events": features.usage_events})
+                events = EventRepository(
+                    {
+                        "usage_events": features.usage_events,
+                        "visitor_presence": features.visitor_presence,
+                    }
+                )
                 app.dependency_overrides[get_event_repository] = lambda: events
                 app.dependency_overrides[get_submission_service] = lambda: features.submissions
                 async with original_lifespan(app):

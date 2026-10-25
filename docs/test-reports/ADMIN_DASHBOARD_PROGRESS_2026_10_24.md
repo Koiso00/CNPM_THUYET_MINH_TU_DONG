@@ -25,3 +25,7 @@ Chưa chạy kiểm thử integration với Atlas sau sửa lỗi. Lần chạy 
 ## Hồi quy sau đó — 24/10/2026
 
 Đợt hồi quy đa ngôn ngữ chạy sau các sửa đổi tiếp theo đạt 181 backend test, 16 integration test được bỏ qua theo cấu hình mặc định, 61 frontend test, Ruff, typecheck và build. Đây là unit/build regression; không thay đổi ghi nhận rằng integration Atlas sau riêng bản sửa aggregate chưa chạy lại. Người dùng xác nhận dashboard chạy được trên deploy. Render hiện “Suspended by you”; chưa xác nhận code workspace mới đã deploy.
+
+## Bổ sung chỉ số hiện diện — 26/10/2026
+
+Theo yêu cầu người dùng, thẻ được đặt tên “User đang hoạt động”. Chỉ số đếm ID trình duyệt khách gửi heartbeat mỗi 30 giây khi trang Welcome/Explore đang hiển thị; backend tính ID có tín hiệu trong 90 giây gần nhất. “Khách trong ngày” vẫn là số khách riêng biệt đã ghi nhận visit theo ngày ICT. Chỉ số hiện diện chưa được kiểm thử hoặc deploy; cần triển khai backend/frontend cùng nhau và khởi tạo TTL index cho collection `visitor_presence` bằng lệnh khởi tạo database.

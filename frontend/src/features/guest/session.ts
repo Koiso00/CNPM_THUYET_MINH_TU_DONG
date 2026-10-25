@@ -52,6 +52,16 @@ export class GuestSession {
     write(VISIT_DAY_KEY, day);
   }
 
+  async recordPresence() {
+    const response = await fetch("/api/v1/events/presence", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify({ visitor_id: this.visitorId }),
+    });
+    if (!response.ok) throw new ApiError(response.status, await response.text());
+  }
+
   async startJourney() {
     const journeyId = newId();
     await post({

@@ -12,6 +12,7 @@ from app.db.indexes import (
     ensure_submission_indexes,
     ensure_usage_event_indexes,
     ensure_user_indexes,
+    ensure_visitor_presence_indexes,
 )
 from app.db.mongodb import MongoConnection
 
@@ -29,6 +30,7 @@ async def initialize_database(settings: Settings) -> None:
         await ensure_session_indexes(database["sessions"])
         await ensure_submission_indexes(database["content_submissions"])
         await ensure_usage_event_indexes(database["usage_events"])
+        await ensure_visitor_presence_indexes(database["visitor_presence"])
     finally:
         await connection.close()
 
@@ -44,7 +46,7 @@ def main() -> int:
         )
         return 1
     print(
-        "User/session/content-submission/usage-event indexes are ready. "
+        "User/session/content-submission/usage-event/visitor-presence indexes are ready. "
         "No user accounts were created."
     )
     return 0

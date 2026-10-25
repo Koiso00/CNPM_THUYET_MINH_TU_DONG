@@ -30,7 +30,7 @@ Triển khai phần tiếp theo của demo 2 ngày theo yêu cầu người dùn
   Không trả hash mật khẩu/token. Khóa thu hồi phiên, mở khóa không khôi phục phiên đã thu hồi.
   Chặn tự sửa tài khoản và bảo vệ Admin đang hoạt động khỏi khóa/hạ quyền trên web,
   tránh hai Admin đồng thời làm mất toàn bộ quyền quản trị.
-- Dashboard đếm users/active_users/audio_assets/draft_places/published_places/published_tours
+- Dashboard đếm users, trình duyệt đang hiện diện, audio_assets/draft_places/published_places/published_tours
   từ database. Không tạo số lượt nghe/lượt đến. Audio count gồm các phiên bản file đã nhập.
 
 Lệnh `seed_demo_content` chỉ tạo nháp khi chưa có; không thay công việc cũ. Lệnh

@@ -87,7 +87,7 @@ async def test_demo_http_atlas(settings_factory, user_test_collection, session_t
             assert counts == {
                 "day": counts["day"],
                 "users": 1,
-                "active_users": 1,
+                "online_visitors": 0,
                 "audio_assets": 1,
                 "guest_visitors": 0,
                 "guest_journeys": 0,

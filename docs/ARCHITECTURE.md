@@ -32,7 +32,8 @@ Trình phát duy nhất được dừng khi đổi địa điểm hoặc rời t
 
 Admin API dùng RBAC/CSRF hiện có. Khóa user thu hồi phiên; mở khóa không hồi sinh phiên cũ.
 Admin đang hoạt động được bảo vệ khỏi khóa/hạ quyền trên web. Dashboard dùng count database,
-snapshot hiện hành và event visit/journey/audio theo ngày. QR, Dịch/TTS tự động, bản đồ,
+snapshot hiện hành, event visit/journey/audio theo ngày và presence của trình duyệt khách
+được cập nhật mỗi 30 giây; online tính theo tín hiệu trong 90 giây gần nhất. QR, Dịch/TTS tự động, bản đồ,
 QR/camera, offline và AI chưa triển khai. GPS tự nhận diện/tự phát theo geofence và ngưỡng thực địa còn chờ nghiệm thu. Các phần dài hạn bên dưới giữ vai trò thiết kế mục tiêu.
 P1.1 đã bổ sung connection pool MongoDB theo lifespan và endpoint readiness.
 P1.2 có model/repository User/session và unique/TTL index thật trên Atlas.

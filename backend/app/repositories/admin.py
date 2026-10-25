@@ -3,6 +3,7 @@
 from pymongo import ReturnDocument
 
 from app.models.common import utc_now
+from app.repositories.events import EventRepository
 
 USER_FIELDS = {"_id": 1, "username": 1, "role": 1, "is_active": 1, "updated_at": 1}
 
@@ -34,9 +35,7 @@ class AdminRepository:
     async def counts(self):
         return {
             "users": await self.users.count_documents({}),
-            "active_users": await self.users.count_documents(
-                {"role": "user", "is_active": True}
-            ),
+            "online_visitors": await EventRepository(self.database).online_visitors(),
             "audio_assets": await self.database["assets"].count_documents({"status": "ready"}),
         }
 
