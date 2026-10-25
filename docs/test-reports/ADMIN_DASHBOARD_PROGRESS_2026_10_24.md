@@ -29,3 +29,7 @@ Chưa chạy kiểm thử integration với Atlas sau sửa lỗi. Lần chạy 
 ## Bổ sung chỉ số hiện diện — 26/10/2026
 
 Theo yêu cầu người dùng, thẻ được đặt tên “User đang hoạt động”. Chỉ số đếm ID trình duyệt khách gửi heartbeat mỗi 30 giây khi trang Welcome/Explore đang hiển thị; backend tính ID có tín hiệu trong 90 giây gần nhất. “Khách trong ngày” vẫn là số khách riêng biệt đã ghi nhận visit theo ngày ICT. Chỉ số hiện diện chưa được kiểm thử hoặc deploy; cần triển khai backend/frontend cùng nhau và khởi tạo TTL index cho collection `visitor_presence` bằng lệnh khởi tạo database.
+
+## Sửa lỗi không ghi nhận heartbeat — 26/10/2026
+
+Điều tra phản hồi “không hoạt động” phát hiện middleware CSRF chỉ cho phép `POST /events/guest` công khai; endpoint mới `/events/presence` bị trả 403 vì khách chưa đăng nhập. Đã cho phép chính xác endpoint presence theo cùng chính sách sự kiện khách và thêm kiểm thử HTTP xác nhận không cần CSRF. Kiểm tra backend liên quan: 4 đạt. Frontend test/build chưa chạy được vì dependencies npm chưa có trong workspace. Bản đã sửa vẫn cần deploy lên service đang chạy; Render hiện được ghi nhận tạm ngưng.

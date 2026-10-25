@@ -12,7 +12,10 @@ from app.models.common import utc_now
 async def protect_api(request: Request, call_next) -> Response:
     if not request.url.path.startswith("/api/"):
         return await call_next(request)
-    anonymous_event = request.url.path.startswith("/api/v1/events/guest")
+    anonymous_event = request.url.path in {
+        "/api/v1/events/guest",
+        "/api/v1/events/presence",
+    }
     if request.method not in {"GET", "HEAD", "OPTIONS"}:
         settings = request.app.state.settings
         if settings.jwt_secret is None:
