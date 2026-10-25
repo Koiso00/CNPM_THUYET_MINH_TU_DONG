@@ -4,7 +4,7 @@ const VISITOR_KEY = "sgu.guest.visitor_id";
 const JOURNEY_KEY = "sgu.guest.journey_id";
 const VISIT_DAY_KEY = "sgu.guest.visit_day";
 
-function newId() {
+function newId(): string {
   return crypto.randomUUID();
 }
 
@@ -73,6 +73,18 @@ export class GuestSession {
       place_id: placeId,
       release_id: releaseId,
       event_type: "audio_played",
+    });
+  }
+
+  async recordQr(placeId: string, releaseId: string, eventId = newId()) {
+    if (!this.journeyId) return;
+    await post({
+      event_id: eventId,
+      visitor_id: this.visitorId,
+      journey_id: this.journeyId,
+      place_id: placeId,
+      release_id: releaseId,
+      event_type: "qr_scanned",
     });
   }
 }

@@ -52,13 +52,14 @@ class AdminService:
             place["id"]: place["title"]
             for place in (published["draft"]["places"] if published else [])
         }
-        guest_counts["guest_audio_by_place"] = [
-            {
-                **item,
-                "title": place_titles.get(item["place_id"], "Địa điểm đã gỡ"),
-            }
-            for item in guest_counts["guest_audio_by_place"]
-        ]
+        for field in ("guest_audio_by_place", "guest_qr_by_place"):
+            guest_counts[field] = [
+                {
+                    **item,
+                    "title": place_titles.get(item["place_id"], "Địa điểm đã gỡ"),
+                }
+                for item in guest_counts[field]
+            ]
         return {
             **counts,
             "day": day,

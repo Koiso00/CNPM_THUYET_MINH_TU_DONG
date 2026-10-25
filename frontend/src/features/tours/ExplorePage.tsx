@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Icon } from "../../shared/Icons";
 import type { Place } from "./content";
 import { AudioPlayer, type AudioPlayerHandle } from "./AudioPlayer";
@@ -10,6 +10,8 @@ import { useCampusLocation } from "../map/useCampusLocation";
 import type { LocationFix } from "../map/geofence";
 import { translate, type AppLanguage } from "../../shared/i18n";
 import { getCampusEnglishDraft } from "./campusEnglishDraft";
+import { QrScanner } from "../qr/QrScanner";
+import { parsePlaceQrCode } from "../qr/qr";
 
 function scrollToSection(id: string) {
   document.getElementById(id)?.scrollIntoView?.({ behavior: "smooth" });
@@ -65,6 +67,8 @@ export function ExplorePage({
   releaseId,
   guest,
   language = "vi",
+  initialPlaceId,
+  initialQrEventId,
 }: {
   username: string;
   notice?: string;
@@ -72,9 +76,14 @@ export function ExplorePage({
   releaseId: string;
   guest?: GuestSession;
   language?: AppLanguage;
+  initialPlaceId?: string | null;
+  initialQrEventId?: string | null;
 }) {
   const t = (key: Parameters<typeof translate>[1]) => translate(language, key);
-  const mappedPlaces = withCampusPoiLocations(campusPlaces);
+  const mappedPlaces = useMemo(
+    () => withCampusPoiLocations(campusPlaces),
+    [campusPlaces],
+  );
   const translationFor = (place: Place) =>
     language === "en" ? place.translations?.en : language === "ko" ? place.translations?.ko : undefined;
   const localized = (place: Place) => {
@@ -83,6 +92,10 @@ export function ExplorePage({
     return persisted ?? fallback ?? place;
   };
   const audioLanguage = (place: Place): "vi" | "en" | "ko" | null => {
+    if (place.id === qrSelectedId) {
+      if (place.audio_by_language?.[language]) return language;
+      return language === "vi" && place.audio_id ? "vi" : null;
+    }
     if (language !== "vi" && place.audio_by_language?.[language]) return language;
     if (place.audio_id) return "vi";
     return null;
@@ -90,21 +103,38 @@ export function ExplorePage({
   const audioUrl = (place: Place, targetLanguage: "vi" | "en" | "ko") =>
     `/api/v1/audio/${releaseId}/${place.id}?language=${targetLanguage}`;
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [qrSelectedId, setQrSelectedId] = useState<string | null>(null);
+  const [scannerOpen, setScannerOpen] = useState(false);
+  const [qrNotice, setQrNotice] = useState("");
   const [autoPlayRequest, setAutoPlayRequest] = useState<{ placeId: string; id: number } | null>(null);
   const audioPlayerRef = useRef<AudioPlayerHandle>(null);
   const selectedIdRef = useRef<string | null>(null);
+  const initialQrHandledRef = useRef<string | null>(null);
   const selected =
     mappedPlaces.find((place) => place.id === selectedId) ?? null;
   const audioPlace = selected && audioLanguage(selected)
     ? selected
     : mappedPlaces.find((place) => audioLanguage(place)) ?? null;
 
-  const selectPlace = useCallback((id: string, shouldScroll = false) => {
+  const selectPlace = useCallback((id: string, shouldScroll = false, fromQr = false) => {
     const place = mappedPlaces.find((item) => item.id === id);
     selectedIdRef.current = id;
+    setQrSelectedId(fromQr ? id : null);
     setSelectedId(id);
     setAutoPlayRequest(null);
-    const targetLanguage = place ? audioLanguage(place) : null;
+    const targetLanguage = place
+      ? fromQr
+        ? place.audio_by_language?.[language]
+          ? language
+          : language === "vi" && place.audio_id
+            ? "vi"
+            : null
+        : language !== "vi" && place.audio_by_language?.[language]
+          ? language
+          : place.audio_id
+            ? "vi"
+            : null
+      : null;
     if (place && targetLanguage) {
       audioPlayerRef.current?.playFromUserGesture(audioUrl(place, targetLanguage));
     }
@@ -112,10 +142,67 @@ export function ExplorePage({
   }, [mappedPlaces, releaseId, language]);
   const handlePlaceDetected = useCallback((id: string) => {
     selectedIdRef.current = id;
+    setQrSelectedId(null);
     setSelectedId(id);
     setAutoPlayRequest((request) => ({ placeId: id, id: (request?.id ?? 0) + 1 }));
   }, []);
+  const handleQrDetected = useCallback((value: string) => {
+    const placeId = parsePlaceQrCode(
+      value,
+      new Set(mappedPlaces.map((place) => place.id)),
+      window.location.href,
+    );
+    setScannerOpen(false);
+    if (!placeId) {
+      setQrNotice(t("qrInvalid"));
+      return;
+    }
+    setQrNotice("");
+    selectPlace(placeId, false, true);
+    if (guest)
+      void guest.recordQr(placeId, releaseId).catch(() => {
+        setQrNotice(t("qrTrackingError"));
+      });
+  }, [guest, language, mappedPlaces, releaseId, selectPlace]);
   const location = useCampusLocation(mappedPlaces, handlePlaceDetected);
+
+  useEffect(() => {
+    if (!initialPlaceId) return;
+    const place = mappedPlaces.find((item) => item.id === initialPlaceId);
+    const requestKey = `${initialQrEventId ?? "untracked"}:${initialPlaceId}`;
+    if (initialQrHandledRef.current === requestKey) return;
+    initialQrHandledRef.current = requestKey;
+    if (!place) {
+      setQrNotice(t("qrInvalid"));
+      return;
+    }
+
+    selectedIdRef.current = place.id;
+    setQrSelectedId(place.id);
+    setSelectedId(place.id);
+    setAutoPlayRequest((request) => ({
+      placeId: place.id,
+      id: (request?.id ?? 0) + 1,
+    }));
+    if (guest && initialQrEventId) {
+      void guest
+        .recordQr(place.id, releaseId, initialQrEventId)
+        .then(() => {
+          window.history.replaceState(
+            window.history.state,
+            "",
+            `${window.location.pathname}${window.location.search}#/explore`,
+          );
+        })
+        .catch(() => setQrNotice(t("qrTrackingError")));
+    } else {
+      window.history.replaceState(
+        window.history.state,
+        "",
+        `${window.location.pathname}${window.location.search}#/explore`,
+      );
+    }
+  }, [guest, initialPlaceId, initialQrEventId, language, mappedPlaces, releaseId]);
 
   return (
     <div className="explore-page" id="explore-top">
@@ -152,6 +239,18 @@ export function ExplorePage({
               </span>
             </div>
             <div className="explore-actions">
+              {guest && (
+                <button
+                  className="explore-secondary"
+                  type="button"
+                  onClick={() => {
+                    setQrNotice("");
+                    setScannerOpen(true);
+                  }}
+                >
+                  {t("qrScan")}
+                </button>
+              )}
               <button
                 className="explore-primary"
                 onClick={() => scrollToSection("audio-tours")}
@@ -182,6 +281,18 @@ export function ExplorePage({
             </div>
           </div>
         </section>
+        {qrNotice && (
+          <p className="message error qr-notice" role="alert">
+            {qrNotice}
+          </p>
+        )}
+        {scannerOpen && (
+          <QrScanner
+            language={language}
+            onDetected={handleQrDetected}
+            onClose={() => setScannerOpen(false)}
+          />
+        )}
 
         <section className="map-section" id="campus-map">
           <div className="explore-section-heading map-section-heading">
@@ -262,7 +373,7 @@ export function ExplorePage({
                   onPlay={(trigger) => {
                     const playingPlaceId = selectedIdRef.current;
                     if (!playingPlaceId) return;
-                    if (trigger === "manual" || location.fix?.source === "gps") {
+                    if (trigger === "manual" || location.fix?.source === "gps" || qrSelectedId === playingPlaceId) {
                       void guest?.recordAudio(playingPlaceId, releaseId);
                     }
                   }}
@@ -270,7 +381,9 @@ export function ExplorePage({
               </div>}
               {selected && !audioLanguage(selected) && (
                 <p className="audio-hint">
-                  {t("noAudio")}
+                  {qrSelectedId === selected.id
+                    ? t("qrAudioUnavailable")
+                    : t("noAudio")}
                 </p>
               )}
             </aside>

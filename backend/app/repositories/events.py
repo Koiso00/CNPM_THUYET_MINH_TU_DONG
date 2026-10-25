@@ -26,4 +26,7 @@ class EventRepository:
             "guest_audio_plays": await self.events.count_documents(
                 {**base, "event_type": "audio_played"}
             ),
+            "guest_qr_scans": await self.events.count_documents(
+                {**base, "event_type": "qr_scanned"}
+            ),
         }

@@ -52,3 +52,36 @@ async def test_guest_event_rejects_incomplete_audio(settings_factory):
         )
     assert response.status_code == 200
     assert response.json() == {"accepted": False}
+
+
+async def test_guest_qr_events_require_place_journey_and_release(settings_factory):
+    harness = auth_harness(settings_factory)
+    events = MemoryEvents()
+    harness.app.dependency_overrides[get_event_repository] = lambda: events
+    async with harness.client as client:
+        incomplete = await client.post(
+            "/api/v1/events/guest",
+            json={
+                "event_id": str(uuid4()),
+                "visitor_id": str(uuid4()),
+                "event_type": "qr_scanned",
+            },
+        )
+        payload = {
+            "event_id": str(uuid4()),
+            "visitor_id": str(uuid4()),
+            "journey_id": str(uuid4()),
+            "place_id": str(uuid4()),
+            "release_id": str(uuid4()),
+            "event_type": "qr_scanned",
+        }
+        accepted = await client.post("/api/v1/events/guest", json=payload)
+        duplicate = await client.post("/api/v1/events/guest", json=payload)
+
+    assert incomplete.status_code == 200
+    assert incomplete.json() == {"accepted": False}
+    assert accepted.status_code == 200
+    assert accepted.json() == {"accepted": True}
+    assert duplicate.status_code == 200
+    assert duplicate.json() == {"accepted": False}
+    assert len(events.events) == 1

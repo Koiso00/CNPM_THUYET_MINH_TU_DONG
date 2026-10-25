@@ -2,7 +2,7 @@
 
 Nguồn chuẩn: [kế hoạch gốc](PROJECT_PLAN.md). Các tuần là mốc tương đối, không tự đổi thành
 deadline lịch hoặc cam kết tiến độ. Không áp dụng phương án rút gọn 5 ngày.
-Ưu tiên hiện hành — cập nhật 24/10/2026: dashboard thống kê nền đã hoạt động trên deploy. Giao diện khách VI/EN/KO đã hoàn tất, lựa chọn ngôn ngữ được giữ xuyên hành trình; nội dung POI và audio English cho 10 điểm đã được người dùng duyệt và công bố cùng tiếng Việt. QR là phần phát triển kế tiếp. GPS tự nhận diện/tự phát trên iPhone/Safari và ngưỡng geofence được để sau, cần nghiệm thu trước demo chính thức. Nội dung/audio Hàn, offline, AI và dịch/TTS tự động còn hoãn.
+Ưu tiên hiện hành — cập nhật workspace 25/10/2026: dashboard thống kê nền đã hoạt động trên deploy. Giao diện khách VI/EN/KO và nội dung/audio English cho 10 điểm đã hoàn tất. QR scan/export và thống kê theo POI đã có code; camera thiết bị thật và deploy còn chờ. GPS tự nhận diện/tự phát trên iPhone/Safari và ngưỡng geofence vẫn cần nghiệm thu trước demo chính thức. Nội dung/audio Hàn, offline, AI và dịch/TTS tự động còn hoãn.
 
 **Tiến độ 24/10:** giao diện khách VI/EN/KO, nội dung/audio English và biên tập nội dung/audio theo locale trong Admin đã triển khai. Bộ chọn ngôn ngữ mobile Welcome cũng đã được khôi phục, menu được kiểm tra trực quan; chi tiết và kiểm thử tại [báo cáo đa ngôn ngữ](test-reports/MULTILINGUAL_UI_PROGRESS_2026_10_24.md) và [nhật ký Admin](test-reports/ADMIN_MULTILINGUAL_CONTENT_2026_10_24.md).
 

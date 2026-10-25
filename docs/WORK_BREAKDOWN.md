@@ -1,4 +1,4 @@
-> **Cập nhật người dùng 24/10/2026:** Stadia/GPS hoạt động trên điện thoại; 10 tọa độ đã kiểm chứng thực địa và chạm địa điểm phát audio được. Dashboard thống kê Admin đã hoàn thiện phần nền và người dùng xác nhận bản deploy hoạt động. Giao diện VI/EN/KO cùng nội dung/audio English cho 10 điểm đã hoàn tất. QR là bước phát triển kế tiếp; GPS tự phát trên iPhone/Safari và ngưỡng thực địa vẫn cần nghiệm thu trước demo chính thức.
+> **Ảnh chụp xác nhận người dùng 24/10/2026 — lịch sử:** Stadia/GPS hoạt động trên điện thoại; 10 tọa độ đã kiểm chứng thực địa và chạm địa điểm phát audio được. Dashboard thống kê Admin đã hoàn thiện phần nền và người dùng xác nhận bản deploy hoạt động. Giao diện VI/EN/KO cùng nội dung/audio English cho 10 điểm đã hoàn tất. QR là bước phát triển kế tiếp ở thời điểm đó; GPS tự phát trên iPhone/Safari và ngưỡng thực địa vẫn cần nghiệm thu trước demo chính thức.
 
 Xem [rà tiến độ và thứ tự sửa demo D0–D7](test-reports/DEMO_REVISION_PROGRESS_2026_10_23.md), cập nhật 23/10/2026. Kết quả sau triển khai được ghi trong báo cáo tiến độ khách và Admin/audio.
 
@@ -9,7 +9,9 @@ Xem [rà tiến độ và thứ tự sửa demo D0–D7](test-reports/DEMO_REVIS
 Nguồn phạm vi: [kế hoạch được chọn](PROJECT_PLAN.md).
 Yêu cầu cách làm mới: chia nhỏ công việc, kiểm thử sau mỗi phần, ghi lỗi và đối chiếu kế hoạch.
 Đây là thứ tự kỹ thuật để thực hiện kế hoạch, không thay lộ trình thành cam kết deadline mới.
-Ưu tiên hiện hành: QR sau khi hoàn tất dashboard và đa ngôn ngữ. GPS/geofence thực tế được để sau; giữ các đầu việc dài hạn bên dưới để theo dõi phần còn lại của kế hoạch gốc.
+**Cập nhật workspace 25/10/2026:** QR scan/export và thống kê theo POI đã triển khai trong code; target frontend/backend test đạt. Chưa nghiệm thu camera thiết bị thật hoặc deploy. GPS/geofence thực tế vẫn chờ nghiệm thu; các đầu việc dài hạn bên dưới không tự động trở thành phạm vi demo.
+
+Ưu tiên hiện hành: nghiệm thu luồng QR trên thiết bị thật và triển khai khi môi trường sẵn sàng; tiếp tục giữ GPS/geofence thực địa trong danh sách cần nghiệm thu trước demo chính thức.
 
 ## Quy trình cho mỗi phần
 

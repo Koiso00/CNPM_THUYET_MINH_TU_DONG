@@ -22,9 +22,11 @@ type Dashboard = {
   guest_journeys: number;
   guest_audio_plays: number;
   guest_audio_by_place: { place_id: string; title: string; plays: number }[];
+  guest_qr_scans: number;
+  guest_qr_by_place: { place_id: string; title: string; scans: number }[];
 };
 const metrics: {
-  key: Exclude<keyof Dashboard, "guest_audio_by_place">;
+  key: Exclude<keyof Dashboard, "guest_audio_by_place" | "guest_qr_by_place">;
   label: string;
   icon: "users" | "user" | "audio" | "pin" | "check" | "grid";
 }[] = [
@@ -36,6 +38,7 @@ const metrics: {
   { key: "published_tours", label: "Tour đã công bố", icon: "grid" },
   { key: "guest_visitors", label: "Khách trong ngày", icon: "users" },
   { key: "guest_journeys", label: "Hành trình trong ngày", icon: "pin" },
+  { key: "guest_qr_scans", label: "Lượt quét QR trong ngày", icon: "pin" },
   { key: "guest_audio_plays", label: "Lượt phát audio trong ngày", icon: "audio" },
 ];
 const PAGE_SIZE = 20;
@@ -251,6 +254,23 @@ export function ManagementPage({ client }: { client: AuthClient }) {
               </div>
             ) : (
               <p>Chưa có lượt phát audio trong ngày này.</p>
+            )}
+          </div>
+        )}
+        {stats && (
+          <div className="management-audio-breakdown">
+            <h3>Lượt quét QR theo địa điểm</h3>
+            {stats.guest_qr_by_place?.length ? (
+              <div className="management-audio-breakdown-list">
+                {stats.guest_qr_by_place.map((place) => (
+                  <div key={place.place_id}>
+                    <span>{place.title}</span>
+                    <strong>{place.scans}</strong>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p>Chưa có lượt quét QR trong ngày này.</p>
             )}
           </div>
         )}

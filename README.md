@@ -1,8 +1,10 @@
-> **Trạng thái — 24/10/2026:** Stadia Maps và GPS đã được thử trên điện thoại; 10 tọa độ được kiểm chứng thực địa, chạm địa điểm phát audio hoạt động. Tự phát khi geofence kích hoạt trên iPhone/Safari và ngưỡng GPS chưa nghiệm thu. Dashboard Admin có lọc ngày và lượt nghe theo địa điểm; người dùng xác nhận bản deploy hoạt động.
+> **Ảnh chụp trạng thái 24/10/2026 — lịch sử:** Stadia Maps và GPS đã được thử trên điện thoại; 10 tọa độ được kiểm chứng thực địa, chạm địa điểm phát audio hoạt động. Tự phát khi geofence kích hoạt trên iPhone/Safari và ngưỡng GPS chưa nghiệm thu. Dashboard Admin có lọc ngày và lượt nghe theo địa điểm; người dùng xác nhận bản deploy hoạt động.
 >
-> Giao diện khách hỗ trợ VI/EN/KO. Nội dung POI và audio tiếng Việt/English cho 10 điểm đã được người dùng duyệt và có trong Atlas release song ngữ; nội dung/audio Hàn chưa có. QR là bước kế tiếp sau dashboard và đa ngôn ngữ. Render báo `sgu-campus-guide-demo` “Suspended by you”, nên code mới trong workspace chưa được deploy lên Render. Xem [báo cáo đa ngôn ngữ](docs/test-reports/MULTILINGUAL_UI_PROGRESS_2026_10_24.md).
+> Giao diện khách hỗ trợ VI/EN/KO. Nội dung POI và audio tiếng Việt/English cho 10 điểm đã được người dùng duyệt và có trong Atlas release song ngữ; nội dung/audio Hàn chưa có. Tại ngày 24/10, QR là bước kế tiếp sau dashboard và đa ngôn ngữ. Render báo `sgu-campus-guide-demo` “Suspended by you”, nên code mới trong workspace chưa được deploy lên Render. Xem [báo cáo đa ngôn ngữ](docs/test-reports/MULTILINGUAL_UI_PROGRESS_2026_10_24.md).
 
 # Website thuyết minh cơ sở chính Đại học Sài Gòn
+
+> **Cập nhật workspace 25/10/2026:** đã triển khai mã QR PNG/SVG cho điểm trong bản công bố, quét QR trong trang khám phá và ghi lượt quét theo hành trình/địa điểm lên dashboard. Code mới chưa được kiểm thử camera trên điện thoại thật hoặc deploy; Render vẫn đang tạm dừng.
 
 Website React dành cho điện thoại và máy tính. Khách vào trang chào, bắt đầu hành trình không cần tài khoản, xem các điểm trên bản đồ và nghe nội dung đã công bố. Admin đăng nhập để biên tập nội dung/audio và xem dashboard/quản lý tài khoản.
 
@@ -15,7 +17,8 @@ Website React dành cho điện thoại và máy tính. Khách vào trang chào,
 | Admin Nội dung (`/#/admin`) | Thêm/sửa/xóa POI trong bản nháp; sửa trường dịch; quản lý/nghe thử MP3; lưu và công bố release. |
 | Admin Quản trị (`/#/management`) | Dashboard theo ngày ICT, tổng khách/hành trình/audio, lượt nghe theo địa điểm và quản lý tài khoản. Người dùng xác nhận dashboard chạy trên deploy. |
 | Bản đồ/GPS | Stadia Maps; 10 tọa độ do người dùng cung cấp đã kiểm chứng thực địa. GPS opt-in/mô phỏng/geofence có trong frontend. Tự phát khi vào vùng và ngưỡng thực địa còn chờ nghiệm thu. |
-| QR, offline, AI | QR chưa triển khai; là bước phát triển tiếp theo. Offline và AI vẫn hoãn. |
+| QR | Admin tải PNG/SVG cho điểm đang công bố; QR mở trang chào đúng địa điểm, có scanner trong `/#/explore`, và dashboard đếm lượt theo điểm. Chưa nghiệm thu camera trên thiết bị thật hoặc deploy. |
+| Offline, AI | Vẫn hoãn. |
 
 Kế hoạch gốc 10 tuần và vai trò User/Creator/Admin được giữ làm hướng dài hạn. Trong demo hiện tại, Creator được gộp vào Admin. Chi tiết tại [kế hoạch khách/QR](docs/DEMO_GUEST_QR_PLAN.md), [bối cảnh](docs/PROJECT_CONTEXT.md) và [lộ trình](docs/IMPLEMENTATION_PLAN.md).
 

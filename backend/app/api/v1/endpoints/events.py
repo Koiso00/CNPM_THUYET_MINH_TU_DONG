@@ -21,7 +21,7 @@ async def guest_event(event: GuestEvent, repository=Depends(get_event_repository
         return GuestEventResult(accepted=False)
     if event.event_type == "journey_started" and not event.journey_id:
         return GuestEventResult(accepted=False)
-    if event.event_type == "audio_played" and not (
+    if event.event_type in {"audio_played", "qr_scanned"} and not (
         event.journey_id and event.place_id and event.release_id
     ):
         return GuestEventResult(accepted=False)

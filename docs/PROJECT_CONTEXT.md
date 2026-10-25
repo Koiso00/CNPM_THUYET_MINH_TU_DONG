@@ -1,4 +1,4 @@
-> **Cập nhật người dùng ngày 24/10/2026:** Stadia/GPS hoạt động trên điện thoại, 10 tọa độ đã kiểm chứng thực địa và chạm địa điểm phát audio được. Dashboard Admin có lọc ngày và lượt nghe theo địa điểm; người dùng xác nhận bản deploy hoạt động. Giao diện khách VI/EN/KO và nội dung/audio English cho 10 POI đã hoàn tất; QR là bước phát triển kế tiếp. Ngưỡng GPS/geofence và tự phát trên iPhone/Safari vẫn cần nghiệm thu trước demo chính thức.
+> **Ảnh chụp xác nhận người dùng ngày 24/10/2026 — lịch sử:** Stadia/GPS hoạt động trên điện thoại, 10 tọa độ đã kiểm chứng thực địa và chạm địa điểm phát audio được. Dashboard Admin có lọc ngày và lượt nghe theo địa điểm; người dùng xác nhận bản deploy hoạt động. Giao diện khách VI/EN/KO và nội dung/audio English cho 10 POI đã hoàn tất; QR là bước phát triển kế tiếp ở thời điểm đó. Ngưỡng GPS/geofence và tự phát trên iPhone/Safari vẫn cần nghiệm thu trước demo chính thức.
 
 > **Tiến độ 24/10:** giao diện khách VI/EN/KO giữ lựa chọn xuyên hành trình; 10 POI English và 10 MP3 đã được người dùng duyệt và công bố trong Atlas release `09d43a32-43d1-4f2b-85d0-cdae2ad29981`. Audio Việt vẫn giữ riêng. Workspace có code hỗ trợ localization/audio theo ngôn ngữ. Render báo service `sgu-campus-guide-demo` đang “Suspended by you”, nên code mới chưa deploy lên đó. Xem [báo cáo đa ngôn ngữ](test-reports/MULTILINGUAL_UI_PROGRESS_2026_10_24.md).
 
@@ -6,9 +6,11 @@
 
 > **Ảnh chụp trạng thái ngày 23/10/2026 — lịch sử:** khách không đăng nhập; welcome, hành trình, nội dung/audio và dashboard đã có; QR còn hoãn tại thời điểm đó. Trạng thái hiện hành được cập nhật trong phần 24/10 bên dưới.
 
+> **Cập nhật workspace 25/10/2026:** mã QR PNG/SVG cho các POI thuộc release công bố, mở welcome theo POI, scanner camera trong hành trình và event/dashboard QR đã được triển khai trong code. Chưa nghiệm thu camera điện thoại thật hoặc deploy; Render đang tạm dừng. GPS/geofence thực địa vẫn chờ nghiệm thu; offline và AI tiếp tục hoãn.
+
 # Bối cảnh dự án
 
-## Trạng thái demo hiện hành — 24/10/2026
+## Trạng thái demo đã xác nhận — 24/10/2026
 
 Đối với demo, người nghe dùng welcome và không đăng nhập; ID khách được giữ trong trình duyệt, mỗi lần bấm bắt đầu tạo hành trình mới. Creator/Admin gộp thành một vai trò vận hành Admin; Creator UI/API đã được gỡ khỏi demo. Trang Nội dung (`#/admin`) và Quản trị (`#/management`) dành cho Admin. Nội dung/audio công khai chỉ đọc release đã công bố; dashboard có visit, journey và audio theo ngày ICT. Bản đồ Stadia và GPS hoạt động trên điện thoại; 10 tọa độ đã kiểm chứng thực địa. Người dùng xác nhận chạm địa điểm phát audio được trên điện thoại. Dashboard có bộ lọc ngày ICT và lượt phát audio theo địa điểm; người dùng xác nhận bản deploy hoạt động. Nội dung POI English và audio English cho 10 điểm đã được người dùng duyệt và công bố cùng tiếng Việt trong release song ngữ ngày 24/10. Nghiệm thu GPS tự nhận diện điểm/tự phát và ngưỡng geofence 30/45 m được dời lại nhưng cần xong trước demo chính thức. Các tài khoản legacy `123`, `AGT`, `phong11` và đề xuất `pending` gắn với Creator đã được xóa theo phạm vi người dùng chốt; hiện Atlas có 1 Admin active (`phong`), không còn User/Creator legacy. Xem [kế hoạch khách/QR](DEMO_GUEST_QR_PLAN.md), [báo cáo khách](test-reports/DEMO_GUEST_PROGRESS_2026_10_23.md), [báo cáo Admin/audio](test-reports/DEMO_CONTENT_AUDIO_ADMIN.md) và [báo cáo audio English](test-reports/DEMO_AUDIO_EN_DRAFT_2026_10_24.md).
 

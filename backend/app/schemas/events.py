@@ -14,7 +14,7 @@ class GuestEvent(BaseModel):
     journey_id: UUID | None = None
     place_id: UUID | None = None
     release_id: UUID | None = None
-    event_type: Literal["visit", "journey_started", "audio_played"]
+    event_type: Literal["visit", "journey_started", "audio_played", "qr_scanned"]
 
     def document(self, day: str) -> dict:
         return {
@@ -37,3 +37,4 @@ class GuestDashboard(BaseModel):
     guest_visitors: int = Field(ge=0)
     guest_journeys: int = Field(ge=0)
     guest_audio_plays: int = Field(ge=0)
+    guest_qr_scans: int = Field(ge=0)

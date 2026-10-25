@@ -22,17 +22,24 @@ class AsyncCursor:
 
 class AsyncEvents:
     def __init__(self):
-        self.pipeline = None
+        self.pipelines = []
 
     async def aggregate(self, pipeline):
-        self.pipeline = pipeline
-        return AsyncCursor([{"_id": "place-a", "plays": 3}])
+        self.pipelines.append(pipeline)
+        event_type = pipeline[0]["$match"]["event_type"]
+        if event_type == "audio_played":
+            return AsyncCursor([{"_id": "place-a", "plays": 3}])
+        return AsyncCursor([{"_id": "place-b", "scans": 2}])
 
     async def distinct(self, field, query):
         return ["visitor-a"]
 
     async def count_documents(self, query):
-        return {"journey_started": 2, "audio_played": 3}[query["event_type"]]
+        return {
+            "journey_started": 2,
+            "audio_played": 3,
+            "qr_scanned": 2,
+        }[query["event_type"]]
 
 
 class Database:
@@ -46,7 +53,7 @@ class Database:
 
 
 @pytest.mark.anyio
-async def test_guest_counts_awaits_async_aggregate_and_groups_audio_by_place():
+async def test_guest_counts_awaits_aggregates_and_groups_audio_and_qr_by_place():
     events = AsyncEvents()
     repository = AdminRepository(Database(events))
 
@@ -57,5 +64,10 @@ async def test_guest_counts_awaits_async_aggregate_and_groups_audio_by_place():
         "guest_journeys": 2,
         "guest_audio_plays": 3,
         "guest_audio_by_place": [{"place_id": "place-a", "plays": 3}],
+        "guest_qr_scans": 2,
+        "guest_qr_by_place": [{"place_id": "place-b", "scans": 2}],
     }
-    assert events.pipeline[0]["$match"]["day"] == "2026-10-24"
+    assert [pipeline[0]["$match"]["day"] for pipeline in events.pipelines] == [
+        "2026-10-24",
+        "2026-10-24",
+    ]

@@ -2,18 +2,20 @@
 
 > **Tiến độ đa ngôn ngữ 24/10:** giao diện khách VI/EN/KO được giữ xuyên trang/tải lại; 10 bản dịch POI English và 10 MP3 English đã được người dùng duyệt và công bố trong Atlas cùng nội dung/audio Việt. Admin có thể biên tập nội dung/audio theo locale. Chưa có nội dung/audio POI tiếng Hàn. Xem [báo cáo](test-reports/MULTILINGUAL_UI_PROGRESS_2026_10_24.md).
 
+> **Cập nhật workspace 25/10/2026:** UC05/UC11 đã có code: Admin tải PNG/SVG của POI thuộc bản công bố, khách quét QR trong web hoặc mở link QR ngoài; link ngoài giữ POI và ngôn ngữ tới bước bắt đầu. QR scan được ghi idempotent và dashboard có tổng/phân rã theo địa điểm. Chưa kiểm thử camera điện thoại thật hoặc deploy.
+
 # Điều chỉnh demo: khách không đăng nhập và QR — cập nhật 23/10/2026
 
 Trạng thái: Admin, nội dung/audio công bố, luồng khách, dashboard thống kê nền và hỗ trợ đa ngôn ngữ Việt/Anh đã triển khai. Bản đồ Stadia, GPS và geofence frontend đã có; chạm địa điểm phát audio được trên điện thoại. QR là bước phát triển kế tiếp. Nghiệm thu GPS tự nhận diện/tự phát và ngưỡng thực tế có thể để sau, nhưng cần xong trước demo chính thức.
 Tài liệu này cập nhật phạm vi demo trong DEMO_2_DAYS.md, không ghi đè kế hoạch gốc dài hạn.
 
-### Đối chiếu triển khai hiện tại — cập nhật 24/10/2026
+### Ảnh chụp đối chiếu triển khai — 24/10/2026 (lịch sử)
 
 - Đã có welcome không đăng nhập, ID khách trong browser, ID hành trình khi bắt đầu,
   public content/audio và usage events visit/journey/audio.
 - `#/welcome` và `#/explore` đã tách rõ; UI Admin không còn đăng ký. Admin active vẫn
   vào được `#/management`; khách chọn được VI/EN/KO và lựa chọn theo qua trang khám phá/tải lại.
-- GPS opt-in/mô phỏng/geofence frontend đã có; QR/camera/offline/AI/dịch/TTS tự động chưa triển khai. Dashboard thống kê nền đã hoàn thiện và được xác nhận chạy trên deploy. Giao diện đa ngôn ngữ và nội dung/audio English đã hoàn tất; QR là bước tiếp theo. Nghiệm thu GPS/geofence thực tế được dời sang sau.
+- Ảnh chụp ngày 24/10: GPS opt-in/mô phỏng/geofence frontend đã có; QR/camera/offline/AI/dịch/TTS tự động chưa triển khai. Dashboard thống kê nền đã hoàn thiện và được xác nhận chạy trên deploy. Giao diện đa ngôn ngữ và nội dung/audio English đã hoàn tất. Nghiệm thu GPS/geofence thực tế được dời sang sau.
 
 ### Quy tắc ngôn ngữ cho hành trình — yêu cầu người dùng
 

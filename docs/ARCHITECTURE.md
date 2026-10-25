@@ -1,8 +1,10 @@
-> **Ưu tiên 24/10/2026:** dashboard thống kê Admin và đa ngôn ngữ đã hoàn tất phần demo; QR là bước phát triển kế tiếp. OSM/Stadia và GPS opt-in/mô phỏng/geofence có trong frontend. Nghiệm thu GPS tự phát và ngưỡng thực địa có thể để sau nhưng cần xong trước demo chính thức.
+> **Ảnh chụp ưu tiên 24/10/2026 — lịch sử:** dashboard thống kê Admin và đa ngôn ngữ đã hoàn tất phần demo; QR là bước phát triển kế tiếp ở thời điểm đó. OSM/Stadia và GPS opt-in/mô phỏng/geofence có trong frontend. Nghiệm thu GPS tự phát và ngưỡng thực địa có thể để sau nhưng cần xong trước demo chính thức.
 
 # Kiến trúc
 
-## Trạng thái demo hiện hành — cập nhật 24/10/2026
+> **Cập nhật workspace 25/10/2026:** `features/qr` tạo PNG/SVG từ URL same-origin, scanner giải mã bằng camera và chỉ chấp nhận POI trong release public hiện tại. Sự kiện `qr_scanned` gắn visitor/journey/place/release và event ID chống gửi trùng; Admin dashboard có tổng và phân rã theo POI. Camera chưa được nghiệm thu trên thiết bị thật, code chưa deploy.
+
+## Ảnh chụp trạng thái demo ngày 24/10/2026
 
 Khách dùng `#/welcome` không cần tài khoản; bắt đầu hành trình mới mới mở `#/explore`. Browser giữ ID khách và hành trình trong localStorage. Nội dung/audio công khai lấy từ release đã công bố; giao diện và nội dung/audio POI English/Việt theo locale. Visit/journey/audio được ghi qua API sự kiện công khai có schema giới hạn và đếm theo ngày ICT. Admin biên soạn trực tiếp tại `#/admin`, chọn VI/EN/KO để sửa nội dung từng địa điểm và quản lý MP3 tương ứng; xem dashboard/quản lý tài khoản tại `#/management`. Creator workflow/API đã gỡ khỏi demo. Stadia Maps, 10 tọa độ người dùng cung cấp và GPS opt-in/mô phỏng cùng geofence đã tích hợp phía frontend; người dùng đã kiểm chứng tọa độ thực địa và xác nhận chạm điểm phát audio trên điện thoại. Tự phát theo geofence trên iPhone/Safari và ngưỡng GPS chưa nghiệm thu. Dashboard nền hoạt động trên deploy theo xác nhận người dùng. QR là bước phát triển kế tiếp; offline và AI vẫn hoãn. Các phần dài hạn bên dưới vẫn tham khảo kế hoạch gốc.
 

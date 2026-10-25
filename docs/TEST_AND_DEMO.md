@@ -1,6 +1,10 @@
-> **Ảnh chụp ngày 23/10/2026 — lịch sử:** khách không đăng nhập; welcome, hành trình, nội dung/audio và dashboard đã có; QR còn hoãn tại thời điểm đó. Trạng thái mới nhất xem ở phần cập nhật 24/10 dưới đây và [kế hoạch khách/QR](DEMO_GUEST_QR_PLAN.md).
+> **Ảnh chụp ngày 23/10/2026 — lịch sử:** khách không đăng nhập; welcome, hành trình, nội dung/audio và dashboard đã có; QR còn hoãn tại thời điểm đó. Trạng thái mới nhất xem ở các cập nhật bên dưới và [kế hoạch khách/QR](DEMO_GUEST_QR_PLAN.md).
 
 # Kiểm thử và demo
+
+## Cập nhật QR trong workspace — 25/10/2026
+
+Đã triển khai tạo mã PNG/SVG cho địa điểm trong bản công bố, quét QR trong hành trình, deep link QR ngoài giữ điểm qua bước bắt đầu và dashboard đếm lượt QR theo POI. Hồi quy đầy đủ: frontend **68 test đạt / 10 file**; backend **182 test đạt, 16 integration test bỏ qua theo cấu hình mặc định**. Frontend typecheck và production build đạt. Ruff check/format cho các file backend thay đổi đạt; Ruff trên toàn `app tests` còn báo hai lỗi định dạng có sẵn tại `app/commands/generate_demo_audio_en.py:189` và `tests/serve_auth_browser.py:3`, không thuộc thay đổi QR. Build có cảnh báo chunk MapLibre lớn hơn 500 kB. Chưa kiểm thử camera trên điện thoại thật, chưa chạy E2E và chưa deploy; Render đang tạm dừng. Chi tiết tại [báo cáo QR](test-reports/QR_SCAN_EXPORT_2026_10_25.md).
 
 ## Cập nhật bản song ngữ — 24/10/2026
 

@@ -13,6 +13,7 @@ import { roleLabels as roles } from "../shared/WorkspaceNav";
 import { GuestWelcome } from "../features/guest/GuestWelcome";
 import { GuestSession } from "../features/guest/session";
 import { languageNames, readLanguage, saveLanguage, translate, type AppLanguage } from "../shared/i18n";
+import { parseQrRoute } from "../features/qr/qr";
 
 const guestSession = new GuestSession();
 
@@ -73,6 +74,8 @@ export function App({ client = authClient }: { client?: AuthClient }) {
   const [busy, setBusy] = useState(false);
   const [languageOpen, setLanguageOpen] = useState(false);
   const [language, setLanguage] = useState<AppLanguage>(readLanguage);
+  const routePath = route.split("?")[0];
+  const { placeId: qrPlaceId, eventId: qrEventId } = parseQrRoute(route);
   function changeLanguage(next: AppLanguage) {
     setLanguage(next);
     saveLanguage(next);
@@ -88,18 +91,18 @@ export function App({ client = authClient }: { client?: AuthClient }) {
     return () => window.removeEventListener("hashchange", changed);
   }, []);
   useEffect(() => {
-    if (route === "#/register") {
+    if (routePath === "#/register") {
       window.location.hash = "/login";
       return;
     }
     if (state.status !== "authenticated") return;
-    if (route === "#/creator") {
+    if (routePath === "#/creator") {
       window.location.replace(state.user?.role === "admin" ? "#/admin" : "#/explore");
       return;
     }
-    if (!["#/welcome", "#/explore", "#/login", "#/admin", "#/management", "#/creator"].includes(route))
+    if (!["#/welcome", "#/explore", "#/login", "#/admin", "#/management", "#/creator"].includes(routePath))
       window.location.hash = "/explore";
-  }, [state.status, state.user?.role, route]);
+  }, [state.status, state.user?.role, routePath]);
 
   async function logout() {
     setBusy(true);
@@ -120,14 +123,14 @@ export function App({ client = authClient }: { client?: AuthClient }) {
   const user = state.user;
   const guestJourney = !user && Boolean(guestSession.journeyId);
   const restricted =
-    (["#/admin", "#/management"].includes(route) && user?.role !== "admin") ||
-    (route === "#/creator" && user?.role !== "admin");
-  const management = ["#/admin", "#/management", "#/creator"].includes(route);
-  const authRoute = route === "#/login" || route === "#/register";
-  const explore = (Boolean(user) || guestJourney) && !management && !authRoute && route !== "#/welcome";
-  const guest = !user && !["#/login", "#/register"].includes(route);
+    (["#/admin", "#/management"].includes(routePath) && user?.role !== "admin") ||
+    (routePath === "#/creator" && user?.role !== "admin");
+  const management = ["#/admin", "#/management", "#/creator"].includes(routePath);
+  const authRoute = routePath === "#/login" || routePath === "#/register";
+  const explore = (Boolean(user) || guestJourney) && !management && !authRoute && routePath !== "#/welcome";
+  const guest = !user && !["#/login", "#/register"].includes(routePath);
   return (
-    <div className={`site${state.status === "anonymous" && (route === "#/welcome" || !guestJourney || authRoute) ? " site-auth" : ""}`}>
+    <div className={`site${state.status === "anonymous" && (routePath === "#/welcome" || !guestJourney || authRoute) ? " site-auth" : ""}`}>
       <a className="skip-link" href="#main-content">
         {translate(language, "skip")}
       </a>
@@ -251,20 +254,25 @@ export function App({ client = authClient }: { client?: AuthClient }) {
             />
           </div>
         ) : !user ? (
-          route === "#/explore" && guestSession.journeyId ? (
+          routePath === "#/explore" && guestSession.journeyId ? (
             <ExploreScreen
               client={client}
               username=""
               guest={guestSession}
               notice={state.notice}
               language={language}
+              initialPlaceId={qrPlaceId}
+              initialQrEventId={qrEventId}
             />
           ) : (
             <GuestWelcome
               session={guestSession}
               language={language}
+              qrPlaceId={routePath === "#/welcome" ? qrPlaceId : null}
               onStarted={() => {
-                window.location.hash = "/explore";
+                window.location.hash = qrPlaceId
+                  ? `/explore?poi=${encodeURIComponent(qrPlaceId)}&qrEvent=${crypto.randomUUID()}`
+                  : "/explore";
               }}
             />
           )
@@ -286,7 +294,7 @@ export function App({ client = authClient }: { client?: AuthClient }) {
             notice={logoutError || state.notice}
             language={language}
           />
-        ) : route === "#/admin" ? (
+        ) : routePath === "#/admin" ? (
           <ContentPage client={client} />
         ) : (
           <ManagementPage client={client} />

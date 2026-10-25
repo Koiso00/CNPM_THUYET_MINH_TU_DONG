@@ -48,6 +48,14 @@ class AdminRepository:
             ]
         )
         place_rows = [row async for row in audio_by_place]
+        qr_by_place = await events.aggregate(
+            [
+                {"$match": {"day": day, "event_type": "qr_scanned", "place_id": {"$ne": None}}},
+                {"$group": {"_id": "$place_id", "scans": {"$sum": 1}}},
+                {"$sort": {"scans": -1, "_id": 1}},
+            ]
+        )
+        qr_place_rows = [row async for row in qr_by_place]
         return {
             "guest_visitors": len(
                 await events.distinct("visitor_id", {"day": day, "event_type": "visit"})
@@ -59,8 +67,13 @@ class AdminRepository:
                 {"day": day, "event_type": "audio_played"}
             ),
             "guest_audio_by_place": [
-                {"place_id": row["_id"], "plays": row["plays"]}
-                for row in place_rows
+                {"place_id": row["_id"], "plays": row["plays"]} for row in place_rows
+            ],
+            "guest_qr_scans": await events.count_documents(
+                {"day": day, "event_type": "qr_scanned"}
+            ),
+            "guest_qr_by_place": [
+                {"place_id": row["_id"], "scans": row["scans"]} for row in qr_place_rows
             ],
         }
 

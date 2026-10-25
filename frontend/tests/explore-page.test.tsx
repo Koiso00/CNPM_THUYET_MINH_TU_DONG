@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { expect, it, vi } from "vitest";
 import { ExplorePage } from "../src/features/tours/ExplorePage";
@@ -170,6 +170,52 @@ it("starts audio directly from a visitor tap on a place with published audio", a
     "/api/v1/audio/release/khu-a?language=vi",
   );
   expect(recordAudio).toHaveBeenCalledWith("khu-a", "release");
+  view.unmount();
+  play.mockRestore();
+  load.mockRestore();
+  pause.mockRestore();
+});
+
+it("opens an external QR target, records the scan, and autoplays its selected-language audio", async () => {
+  const play = vi.spyOn(HTMLMediaElement.prototype, "play").mockImplementation(function (this: HTMLMediaElement) {
+    fireEvent.play(this);
+    return Promise.resolve();
+  });
+  const load = vi.spyOn(HTMLMediaElement.prototype, "load").mockImplementation(() => {});
+  const pause = vi.spyOn(HTMLMediaElement.prototype, "pause").mockImplementation(() => {});
+  const recordQr = vi.fn().mockResolvedValue(undefined);
+  const recordAudio = vi.fn();
+  const playablePlaces = places.map((place) => ({
+    ...place,
+    audio_id: "vi-audio",
+    audio_by_language: { vi: "vi-audio", en: "en-audio" },
+  }));
+  const view = render(
+    <ExplorePage
+      username=""
+      places={playablePlaces}
+      releaseId="release"
+      guest={{ recordQr, recordAudio } as unknown as GuestSession}
+      language="en"
+      initialPlaceId="khu-a"
+      initialQrEventId="795fbf48-0c8f-4a83-b3b2-25e42203c7b5"
+    />,
+  );
+
+  await waitFor(() =>
+    expect(recordQr).toHaveBeenCalledWith(
+      "khu-a",
+      "release",
+      "795fbf48-0c8f-4a83-b3b2-25e42203c7b5",
+    ),
+  );
+  await waitFor(() => expect(play).toHaveBeenCalledOnce());
+  expect(document.querySelector(".campus-audio audio")).toHaveAttribute(
+    "src",
+    "/api/v1/audio/release/khu-a?language=en",
+  );
+  expect(recordAudio).toHaveBeenCalledWith("khu-a", "release");
+
   view.unmount();
   play.mockRestore();
   load.mockRestore();

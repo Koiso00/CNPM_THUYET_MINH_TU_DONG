@@ -1,4 +1,4 @@
-> **Trạng thái hiện hành — 24/10/2026:** khách không đăng nhập; Admin biên tập nội dung/audio và quản lý dashboard/tài khoản. API content/audio/Admin/events đã triển khai; audio GridFS hỗ trợ Range. Nội dung/API đa ngôn ngữ hỗ trợ `vi`, `en`, `ko`; release hiện có POI/audio tiếng Việt và English. Workflow Creator/API Creator bên dưới là lịch sử và đã gỡ khỏi demo. QR chưa triển khai. Kế hoạch phạm vi tại [DEMO_GUEST_QR_PLAN](DEMO_GUEST_QR_PLAN.md).
+> **Cập nhật workspace 25/10/2026:** ngoài API dưới đây, `POST /events/guest` nhận `qr_scanned`; dashboard trả tổng lượt quét và lượt theo POI trong ngày ICT. QR code là URL same-origin tới `#/welcome?poi=<id>`; guest quét ngoài bắt đầu journey trước khi ghi lượt, scanner trong web giữ journey hiện tại. Frontend chỉ xuất QR cho POI thuộc release public hiện tại. Camera chưa nghiệm thu thiết bị thật và chưa deploy. Lịch sử quyết định tại [DEMO_GUEST_QR_PLAN](DEMO_GUEST_QR_PLAN.md).
 
 # Dữ liệu và hợp đồng API
 
@@ -32,8 +32,10 @@ P1.2 ban đầu chỉ có collection/index User/session; GridFS được tích h
 | GET/HEAD /admin/audio/{asset_id} | Admin; preview asset đã nhập |
 | GET /admin/users?offset=0&limit=50 | Admin; tối đa 100/trang; id, username, role, is_active, updated_at, is_protected; không trả password_hash/token |
 | PUT /admin/users/{user_id} | Admin + CSRF; `{role,is_active}`; chặn tự sửa và sửa Admin đang hoạt động (409); khóa thu hồi các phiên |
-| GET /admin/dashboard?day=YYYY-MM-DD | Admin; số tổng guest_visitors, guest_journeys, guest_audio_plays và breakdown audio theo địa điểm, theo ngày ICT |
-| POST /events/guest | Công khai; ghi visit, journey_started hoặc audio_played với event_id chống gửi trùng |
+| GET /admin/dashboard?day=YYYY-MM-DD | Admin; tổng guest_visitors, guest_journeys, guest_audio_plays, guest_qr_scans và breakdown audio/QR theo địa điểm, theo ngày ICT |
+| POST /events/guest | Công khai; ghi visit, journey_started, audio_played hoặc qr_scanned với event_id chống gửi trùng |
+
+QR scanner chỉ chấp nhận URL same-origin của ứng dụng và POI có trong nội dung public đã tải; không nhận điều hướng tùy ý từ nội dung QR. QR ngoài giữ `poi` ở `#/welcome` và bắt đầu hành trình mới; sau khi nội dung public xác nhận POI, client gửi `qr_scanned` với `journey_id`, `place_id`, `release_id`. QR trong hành trình gửi cùng hợp đồng sự kiện mà không tạo journey mới.
 
 Các endpoint Creator/submissions đã có trong một mốc trung gian nhưng đã được gỡ khỏi demo theo quyết định gộp Creator vào Admin. Chúng không thuộc OpenAPI/runtime hiện hành.
 

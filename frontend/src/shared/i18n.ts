@@ -41,6 +41,57 @@ const messages = {
   },
 } satisfies Record<AppLanguage, Record<string, string>>;
 
-export type MessageKey = keyof typeof messages.vi;
-export const translate = (language: AppLanguage, key: MessageKey) => messages[language][key];
+const qrMessages = {
+  vi: {
+    qrScan: "Quét mã QR",
+    qrInstructions: "Đưa camera về phía mã QR của một địa điểm đã công bố.",
+    qrCamera: "Camera quét mã QR",
+    qrCameraUnavailable: "Camera không khả dụng. Hãy mở trang bằng HTTPS hoặc dùng camera điện thoại để quét mã.",
+    qrCameraDenied: "Bạn chưa cấp quyền camera. Cho phép truy cập camera rồi thử lại.",
+    qrCameraError: "Không mở được camera. Kiểm tra quyền truy cập và thử lại.",
+    qrScannerLoadError: "Không tải được trình quét QR. Kiểm tra kết nối rồi thử lại.",
+    qrClose: "Đóng",
+    qrReady: "Mã QR đã chọn một địa điểm. Bấm bắt đầu để mở điểm đó trong hành trình.",
+    qrInvalid: "Mã QR không hợp lệ hoặc địa điểm chưa được công bố.",
+    qrTrackingError: "Đã mở địa điểm nhưng chưa ghi nhận được lượt quét QR. Kiểm tra kết nối rồi thử quét lại.",
+    qrAudioUnavailable: "Chưa có audio được công bố bằng ngôn ngữ đang chọn.",
+  },
+  en: {
+    qrScan: "Scan QR code",
+    qrInstructions: "Point your camera at a QR code for a published place.",
+    qrCamera: "QR scanner camera",
+    qrCameraUnavailable: "Camera is unavailable. Open this page over HTTPS or scan the code with your phone camera.",
+    qrCameraDenied: "Camera permission was denied. Allow camera access and try again.",
+    qrCameraError: "Could not open the camera. Check permissions and try again.",
+    qrScannerLoadError: "Could not load the QR scanner. Check your connection and try again.",
+    qrClose: "Close",
+    qrReady: "A place was selected from the QR code. Start your journey to open it.",
+    qrInvalid: "This QR code is invalid or its place is not published.",
+    qrTrackingError: "The place opened, but the QR scan was not recorded. Check your connection and scan again.",
+    qrAudioUnavailable: "No audio is published in the selected language.",
+  },
+  ko: {
+    qrScan: "QR 코드 스캔",
+    qrInstructions: "공개된 장소의 QR 코드에 카메라를 맞추세요.",
+    qrCamera: "QR 스캐너 카메라",
+    qrCameraUnavailable: "카메라를 사용할 수 없습니다. HTTPS로 접속하거나 휴대폰 카메라로 코드를 스캔하세요.",
+    qrCameraDenied: "카메라 권한이 거부되었습니다. 카메라 접근을 허용한 후 다시 시도하세요.",
+    qrCameraError: "카메라를 열 수 없습니다. 권한을 확인한 후 다시 시도하세요.",
+    qrScannerLoadError: "QR 스캐너를 불러올 수 없습니다. 연결을 확인한 후 다시 시도하세요.",
+    qrClose: "닫기",
+    qrReady: "QR 코드에서 장소를 선택했습니다. 여정을 시작해 해당 장소를 여세요.",
+    qrInvalid: "유효하지 않은 QR 코드이거나 공개되지 않은 장소입니다.",
+    qrTrackingError: "장소를 열었지만 QR 스캔을 기록하지 못했습니다. 연결을 확인하고 다시 스캔하세요.",
+    qrAudioUnavailable: "선택한 언어로 공개된 오디오가 없습니다.",
+  },
+} satisfies Record<AppLanguage, Record<string, string>>;
+
+const allMessages = {
+  vi: { ...messages.vi, ...qrMessages.vi },
+  en: { ...messages.en, ...qrMessages.en },
+  ko: { ...messages.ko, ...qrMessages.ko },
+};
+
+export type MessageKey = keyof typeof allMessages.vi;
+export const translate = (language: AppLanguage, key: MessageKey) => allMessages[language][key];
 export const languageNames: Record<AppLanguage, string> = { vi: "Tiếng Việt", en: "English", ko: "한국어" };

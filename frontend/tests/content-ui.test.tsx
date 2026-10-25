@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { expect, it, vi } from "vitest";
 import { AuthClient, ApiError } from "../src/features/auth/client";
@@ -29,14 +29,18 @@ const stats = {
   published_tours: 0,
   guest_visitors: 0,
   guest_journeys: 0,
-  guest_audio_plays: 0,
-  guest_audio_by_place: [],
+  guest_audio_plays: 3,
+  guest_audio_by_place: [{ place_id: "place-1", title: "Khu A", plays: 3 }],
+  guest_qr_scans: 2,
+  guest_qr_by_place: [{ place_id: "place-1", title: "Khu A", scans: 2 }],
 };
 
 function adminClient() {
   const client = new AuthClient();
   vi.spyOn(client, "get").mockImplementation(async (path) => {
     if (path === "/admin/campus") return structuredClone(campus);
+    if (path === "/content/campus")
+      return { release_id: "release-1", ...campus.draft };
     if (path.startsWith("/admin/dashboard")) return stats;
     if (path.startsWith("/admin/audio"))
       return [
@@ -62,6 +66,34 @@ it("authors directly as Admin without loading a Creator review queue", async () 
   expect(screen.getByRole("button", { name: "Thêm địa điểm" })).toBeEnabled();
   expect(screen.queryByRole("button", { name: "Duyệt đề xuất" })).not.toBeInTheDocument();
   expect(client.get).not.toHaveBeenCalledWith("/admin/submissions");
+});
+
+it("offers QR PNG and SVG downloads only for published places", async () => {
+  const client = adminClient();
+  vi.spyOn(client, "get").mockImplementation(async (path) => {
+    if (path === "/admin/campus")
+      return {
+        ...structuredClone(campus),
+        published_release_id: "release-1",
+      };
+    if (path === "/content/campus")
+      return { release_id: "release-1", ...structuredClone(campus.draft) };
+    if (path.startsWith("/admin/audio")) return [];
+    return [];
+  });
+  render(<ContentPage client={client} />);
+
+  expect(
+    await screen.findByRole("img", { name: "Mã QR Khu A" }),
+  ).toHaveAttribute("src", expect.stringMatching(/^data:image\/png;base64,/));
+  expect(screen.getByRole("link", { name: "Tải PNG" })).toHaveAttribute(
+    "download",
+    "sgu-place-1.png",
+  );
+  expect(screen.getByRole("link", { name: "Tải SVG" })).toHaveAttribute(
+    "download",
+    "sgu-place-1.svg",
+  );
 });
 
 it("loads only published API content and shows no static fallback on errors", async () => {
@@ -169,6 +201,21 @@ it("sends selected user role and lock state without password fields", async () =
   );
 });
 
+it("shows QR scans and per-place totals in the admin dashboard", async () => {
+  render(<ManagementPage client={adminClient()} />);
+
+  const qrMetricLabel = await screen.findByText("Lượt quét QR trong ngày");
+  const qrMetric = qrMetricLabel.closest("article");
+  if (!qrMetric) throw new Error("QR metric card is missing.");
+  expect(within(qrMetric).getByText("2")).toBeInTheDocument();
+  const qrBreakdown = screen
+    .getByRole("heading", { name: "Lượt quét QR theo địa điểm" })
+    .closest(".management-audio-breakdown");
+  if (!qrBreakdown) throw new Error("QR breakdown is missing.");
+  expect(within(qrBreakdown).getByText("Khu A")).toBeInTheDocument();
+  expect(within(qrBreakdown).getByText("2")).toBeInTheDocument();
+});
+
 it("reuses the audio element and starts the newly selected place from the visitor tap", async () => {
   const play = vi.spyOn(HTMLMediaElement.prototype, "play").mockImplementation(function (this: HTMLMediaElement) {
     fireEvent.play(this);
@@ -263,7 +310,7 @@ it("shows a dashboard failure and retries without inventing counts", async () =>
     screen.getByRole("button", { name: "Làm mới số liệu" }),
   );
   await waitFor(() =>
-    expect(document.querySelectorAll(".admin-stats article")).toHaveLength(9),
+    expect(document.querySelectorAll(".admin-stats article")).toHaveLength(10),
   );
 });
 

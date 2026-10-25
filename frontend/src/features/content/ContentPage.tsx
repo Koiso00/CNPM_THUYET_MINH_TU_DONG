@@ -5,9 +5,11 @@ import type {
   LocalizedPlace,
   ManagedCampus,
   Place,
+  PublishedCampus,
 } from "../tours/content";
 import { AudioPlayer } from "../tours/AudioPlayer";
 import { WorkspaceNav } from "../../shared/WorkspaceNav";
+import { PlaceQrCode } from "../qr/PlaceQrCode";
 
 type AudioStatus = {
   place_id: string;
@@ -75,6 +77,9 @@ export function ContentPage({ client }: { client: AuthClient }) {
   const [preview, setPreview] = useState<AudioStatus | null>(null);
   const [selected, setSelected] = useState(0);
   const [contentLanguage, setContentLanguage] = useState<ContentLanguage>("vi");
+  const [publishedPlaceIds, setPublishedPlaceIds] = useState<Set<string>>(
+    () => new Set(),
+  );
   const revisionRef = useRef<number | null>(null);
   const editedTranslationsRef = useRef(new Set<string>());
 
@@ -96,6 +101,27 @@ export function ContentPage({ client }: { client: AuthClient }) {
       active = false;
     };
   }, [client]);
+  useEffect(() => {
+    let active = true;
+    if (!campus?.published_release_id) {
+      setPublishedPlaceIds(new Set());
+      return;
+    }
+    void client
+      .get<PublishedCampus>("/content/campus")
+      .then((data) => {
+        if (active) setPublishedPlaceIds(new Set(data.places.map((item) => item.id)));
+      })
+      .catch((cause) => {
+        if (!active) return;
+        setPublishedPlaceIds(new Set());
+        if (!(cause instanceof ApiError && cause.status === 404))
+          setError("Chưa tải được danh sách địa điểm đã công bố để tạo mã QR.");
+      });
+    return () => {
+      active = false;
+    };
+  }, [campus?.published_release_id, client]);
   useEffect(() => {
     let active = true;
     void client
@@ -448,6 +474,14 @@ export function ContentPage({ client }: { client: AuthClient }) {
                 </div>
               )}
             </div>
+            {place &&
+              (publishedPlaceIds.has(place.id) ? (
+                <PlaceQrCode placeId={place.id} title={place.title} />
+              ) : (
+                <p className="message">
+                  Chỉ tạo mã QR cho địa điểm có trong bản công bố hiện tại.
+                </p>
+              ))}
             <div className="admin-actions">
               <button
                 className="primary"

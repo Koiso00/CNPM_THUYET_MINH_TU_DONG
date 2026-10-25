@@ -11,12 +11,16 @@ export function ExploreScreen({
   notice,
   guest,
   language = "vi",
+  initialPlaceId,
+  initialQrEventId,
 }: {
   client: AuthClient;
   username: string;
   notice?: string;
   guest?: GuestSession;
   language?: AppLanguage;
+  initialPlaceId?: string | null;
+  initialQrEventId?: string | null;
 }) {
   const [content, setContent] = useState<PublishedCampus | null>(null);
   const [error, setError] = useState("");
@@ -66,6 +70,8 @@ export function ExploreScreen({
       releaseId={content.release_id}
       guest={guest}
       language={language}
+      initialPlaceId={initialPlaceId}
+      initialQrEventId={initialQrEventId}
     />
   );
 }

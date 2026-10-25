@@ -3,7 +3,7 @@ import { Icon } from "../../shared/Icons";
 import { GuestSession } from "./session";
 import { translate, type AppLanguage } from "../../shared/i18n";
 
-export function GuestWelcome({ session, onStarted, language = "vi" }: { session: GuestSession; onStarted: () => void; language?: AppLanguage }) {
+export function GuestWelcome({ session, onStarted, language = "vi", qrPlaceId }: { session: GuestSession; onStarted: () => void; language?: AppLanguage; qrPlaceId?: string | null }) {
   const t = (key: Parameters<typeof translate>[1]) => translate(language, key);
   const [error, setError] = useState("");
   useEffect(() => {
@@ -48,6 +48,11 @@ export function GuestWelcome({ session, onStarted, language = "vi" }: { session:
         <p className="guest-card-eyebrow"><span /> {t("startEyebrow")}</p>
         <h2 id="guest-start-title">{t("welcomeTitle")}</h2>
         <p className="guest-card-intro">{t("welcomeIntro")}</p>
+        {qrPlaceId && (
+          <p className="message" role="status">
+            {t("qrReady")}
+          </p>
+        )}
         {error && <p role="alert" className="message error">{error}</p>}
         <button className="guest-start-button" aria-label={language === "vi" ? "Bắt đầu tham quan" : t("start")} onClick={() => void start()}>
           <span className="guest-play-icon">▶</span> {t("start")} <Icon name="arrow" />
