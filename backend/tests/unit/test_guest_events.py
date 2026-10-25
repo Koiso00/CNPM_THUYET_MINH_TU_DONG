@@ -11,6 +11,10 @@ from tests.auth_support import auth_harness
 class MemoryEvents:
     def __init__(self):
         self.events = {}
+        self.presence = set()
+
+    async def touch_presence(self, visitor_id):
+        self.presence.add(visitor_id)
 
     async def record(self, event):
         if event["_id"] in self.events:
@@ -35,6 +39,19 @@ async def test_guest_events_are_anonymous_and_idempotent(settings_factory):
     assert first.status_code == 200 and first.json() == {"accepted": True}
     assert second.status_code == 200 and second.json() == {"accepted": False}
     assert len(events.events) == 1
+
+
+async def test_guest_presence_is_public_and_records_browser(settings_factory):
+    harness = auth_harness(settings_factory)
+    events = MemoryEvents()
+    harness.app.dependency_overrides[get_event_repository] = lambda: events
+    visitor = uuid4()
+    async with harness.client as client:
+        response = await client.post(
+            "/api/v1/events/presence", json={"visitor_id": str(visitor)}
+        )
+    assert response.status_code == 204
+    assert str(visitor) in events.presence
 
 
 async def test_guest_event_rejects_incomplete_audio(settings_factory):
