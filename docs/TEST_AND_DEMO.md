@@ -38,7 +38,7 @@ Cập nhật 23/10: khách công khai, ID khách/hành trình và thống kê c�
 [báo cáo demo khách](test-reports/DEMO_GUEST_PROGRESS_2026_10_23.md). QR/camera vẫn hoãn.
 Các số lượng và giới hạn theo từng mốc cũ bên dưới là lịch sử kiểm thử.
 
-Mốc UI 23/10: `#/welcome` tách khỏi `#/explore`, khách không đăng nhập; route đăng ký cũ chuyển về login. Trạng thái mới 24/10: bộ chọn VI/EN/KO hoạt động tại Welcome và giữ lựa chọn trong hành trình; header mobile hiển thị bộ chọn. Nội dung/audio English cho 10 POI có trong release đã duyệt; UI tiếng Hàn có nhưng chưa có nội dung/audio POI tiếng Hàn. Chi tiết tại [báo cáo đa ngôn ngữ](test-reports/MULTILINGUAL_UI_PROGRESS_2026_10_24.md).
+Mốc UI 23/10: `#/welcome` tách khỏi `#/explore`, khách không đăng nhập; route đăng ký cũ chuyển về login. Trạng thái 24/10: bộ chọn VI/EN/KO hoạt động tại Welcome và giữ lựa chọn trong hành trình; header mobile hiển thị bộ chọn. Cập nhật 26/10: release đã duyệt có nội dung/audio POI tiếng Việt, English và Korean cho đủ 10 điểm. Xem [báo cáo đa ngôn ngữ](test-reports/MULTILINGUAL_UI_PROGRESS_2026_10_24.md) và [nhật ký audio Hàn](test-reports/DEMO_AUDIO_KO_DRAFT_2026_10_26.md).
 
 Kết quả từng phần được cập nhật riêng: [P1.1 MongoDB](test-reports/P1_1_MONGODB.md).
 P1.1 đã có 34 test cục bộ đạt và một integration test ping Atlas thật đạt.

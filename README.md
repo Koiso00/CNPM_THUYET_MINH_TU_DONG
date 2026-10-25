@@ -1,6 +1,6 @@
 > **Trạng thái — 24/10/2026:** Stadia Maps và GPS đã được thử trên điện thoại; 10 tọa độ được kiểm chứng thực địa, chạm địa điểm phát audio hoạt động. Tự phát khi geofence kích hoạt trên iPhone/Safari và ngưỡng GPS chưa nghiệm thu. Dashboard Admin có lọc ngày và lượt nghe theo địa điểm; người dùng xác nhận bản deploy hoạt động.
 >
-> Giao diện khách hỗ trợ VI/EN/KO. Nội dung POI và audio tiếng Việt/English cho 10 điểm đã được người dùng duyệt và có trong Atlas release song ngữ; nội dung/audio Hàn chưa có. QR là bước kế tiếp sau dashboard và đa ngôn ngữ. Render báo `sgu-campus-guide-demo` “Suspended by you”, nên code mới trong workspace chưa được deploy lên Render. Xem [báo cáo đa ngôn ngữ](docs/test-reports/MULTILINGUAL_UI_PROGRESS_2026_10_24.md).
+> Giao diện khách hỗ trợ VI/EN/KO. Nội dung/audio cho 10 điểm đã được duyệt bằng cả ba ngôn ngữ. Atlas release `2cebd7fb-7ca8-4719-819b-abb2a2191038` có đủ 10 audio vi/en/ko; tiếng Việt và English được giữ nguyên. Render báo `sgu-campus-guide-demo` “Suspended by you”, cần khởi động service để khách nghe trên web. Xem [nhật ký audio Hàn](docs/test-reports/DEMO_AUDIO_KO_DRAFT_2026_10_26.md).
 
 # Website thuyết minh cơ sở chính Đại học Sài Gòn
 
@@ -11,7 +11,7 @@ Website React dành cho điện thoại và máy tính. Khách vào trang chào,
 | Khu vực | Hiện trạng |
 | --- | --- |
 | Giao diện khách | Welcome, khám phá, bản đồ và thông báo hỗ trợ Tiếng Việt, English, 한국어; lựa chọn ngôn ngữ được giữ xuyên các trang. |
-| Nội dung/audio công khai | 10 POI tiếng Việt và English trong release Atlas; audio MP3/GridFS được chọn theo ngôn ngữ hỗ trợ. Tiếng Hàn chưa có nội dung/audio. |
+| Nội dung/audio công khai | 10 POI có bản dịch và audio tiếng Việt, English, Korean trong release Atlas; MP3/GridFS được chọn theo ngôn ngữ. |
 | Admin Nội dung (`/#/admin`) | Thêm/sửa/xóa POI trong bản nháp; sửa trường dịch; quản lý/nghe thử MP3; lưu và công bố release. |
 | Admin Quản trị (`/#/management`) | Dashboard theo ngày ICT, tổng khách/hành trình/audio, lượt nghe theo địa điểm và quản lý tài khoản. Người dùng xác nhận dashboard chạy trên deploy. |
 | Bản đồ/GPS | Stadia Maps; 10 tọa độ do người dùng cung cấp đã kiểm chứng thực địa. GPS opt-in/mô phỏng/geofence có trong frontend. Tự phát khi vào vùng và ngưỡng thực địa còn chờ nghiệm thu. |

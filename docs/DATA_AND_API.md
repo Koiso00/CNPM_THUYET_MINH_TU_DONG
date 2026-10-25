@@ -1,4 +1,4 @@
-> **Trạng thái hiện hành — 24/10/2026:** khách không đăng nhập; Admin biên tập nội dung/audio và quản lý dashboard/tài khoản. API content/audio/Admin/events đã triển khai; audio GridFS hỗ trợ Range. Nội dung/API đa ngôn ngữ hỗ trợ `vi`, `en`, `ko`; release hiện có POI/audio tiếng Việt và English. Workflow Creator/API Creator bên dưới là lịch sử và đã gỡ khỏi demo. QR chưa triển khai. Kế hoạch phạm vi tại [DEMO_GUEST_QR_PLAN](DEMO_GUEST_QR_PLAN.md).
+> **Trạng thái hiện hành — 26/10/2026:** khách không đăng nhập; Admin biên tập nội dung/audio và quản lý dashboard/tài khoản. API content/audio/Admin/events đã triển khai; audio GridFS hỗ trợ Range. Release hiện hành có bản dịch và audio tiếng Việt, English, Korean cho 10 POI. Workflow Creator/API Creator bên dưới là lịch sử và đã gỡ khỏi demo. QR chưa triển khai. Kế hoạch phạm vi tại [DEMO_GUEST_QR_PLAN](DEMO_GUEST_QR_PLAN.md).
 
 # Dữ liệu và hợp đồng API
 
@@ -45,7 +45,7 @@ Giới hạn kỹ thuật: tối đa 100 điểm, title 200, description 20000, 
 không nhận field lạ. Nguồn và nội dung không được tự trim/viết lại. Snapshot bổ sung audio_id
 nullable cho từng điểm. Draft rỗng được lưu nhưng không được công bố.
 
-Đây là demo một tour, có nội dung/audio Việt–Anh; hỗ trợ trường localization `vi`, `en`, `ko` nhưng chưa có nội dung POI tiếng Hàn. Không tự tạo tọa độ, không tự công bố sau seed, không trả fallback nội dung tĩnh khi API lỗi.
+Đây là demo một tour, có nội dung/audio Việt–Anh–Hàn; hỗ trợ trường localization `vi`, `en`, `ko`. Không tự tạo tọa độ, không tự công bố sau seed, không trả fallback nội dung tĩnh khi API lỗi.
 Toàn bộ phản hồi API vẫn no-store. Audio không phục vụ trực tiếp bằng GridFS ID.
 Import checksum/idempotence và bootstrap Admin ở các lệnh README.
 `audio_assets` đếm tất cả file ready đã nhập, gồm phiên bản cũ; không phải số địa điểm có audio.

@@ -1,6 +1,8 @@
 > **Cập nhật ưu tiên ngày 24/10/2026:** Stadia/GPS hoạt động trên điện thoại, 10 tọa độ đã kiểm chứng thực địa và chạm điểm phát audio được. Dashboard thống kê nền đã triển khai và người dùng xác nhận bản deploy hoạt động. Giao diện khách VI/EN/KO cùng nội dung/audio English cho 10 POI đã hoàn tất. QR là phần phát triển kế tiếp. GPS tự nhận diện/tự phát trên iPhone/Safari và ngưỡng geofence vẫn cần nghiệm thu trước demo chính thức.
 
-> **Tiến độ đa ngôn ngữ 24/10:** giao diện khách VI/EN/KO được giữ xuyên trang/tải lại; 10 bản dịch POI English và 10 MP3 English đã được người dùng duyệt và công bố trong Atlas cùng nội dung/audio Việt. Admin có thể biên tập nội dung/audio theo locale. Chưa có nội dung/audio POI tiếng Hàn. Xem [báo cáo](test-reports/MULTILINGUAL_UI_PROGRESS_2026_10_24.md).
+> **Cập nhật 26/10:** người dùng đã duyệt nội dung/audio tiếng Hàn cho 10 POI; Atlas release `2cebd7fb-7ca8-4719-819b-abb2a2191038` có audio vi/en/ko. Ghi chú 24/10 bên dưới là trạng thái lịch sử. QR là bước phát triển kế tiếp.
+>
+> **Tiến độ đa ngôn ngữ 24/10:** giao diện khách VI/EN/KO được giữ xuyên trang/tải lại; 10 bản dịch POI English và 10 MP3 English đã được người dùng duyệt và công bố trong Atlas cùng nội dung/audio Việt. Admin có thể biên tập nội dung/audio theo locale. Chưa có nội dung/audio POI tiếng Hàn tại thời điểm đó. Xem [báo cáo](test-reports/MULTILINGUAL_UI_PROGRESS_2026_10_24.md).
 
 # Điều chỉnh demo: khách không đăng nhập và QR — cập nhật 23/10/2026
 

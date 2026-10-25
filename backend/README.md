@@ -63,7 +63,7 @@ Không tự thực hiện bước này lúc API startup. Trên Atlas phát tri�
 
 ## Tạo lại audio demo
 
-Lệnh trên tạo lại 10 MP3 tiếng Việt từ nguồn người dùng cung cấp, dùng Edge-TTS giọng nam vi-VN-NamMinhNeural. Xem [hướng dẫn dữ liệu](../data/README.md). Mười MP3 Việt và mười MP3 English đã được nhập GridFS và có trong release Atlas. Tạo file audio cục bộ không tự nhập GridFS hoặc công bố; các bước nhập/công bố được thực hiện bằng lệnh chuyên biệt và cần kiểm tra checksum.
+Lệnh trên tạo lại 10 MP3 tiếng Việt từ nguồn người dùng cung cấp, dùng Edge-TTS giọng nam vi-VN-NamMinhNeural. Xem [hướng dẫn dữ liệu](../data/README.md). Mười MP3 Việt, English và Korean đã được nhập GridFS và có trong release Atlas. Tạo file audio cục bộ không tự nhập GridFS hoặc công bố; nhập/công bố được thực hiện bằng lệnh chuyên biệt và kiểm tra checksum.
 
 ## Kiểm tra chất lượng
 
