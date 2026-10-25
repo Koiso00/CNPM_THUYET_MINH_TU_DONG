@@ -63,7 +63,8 @@ Admin nghe kiểm tra rồi công bố trong giao diện. Xem [báo cáo](test-r
 
 Quyết định người dùng bổ sung ngày 22/10: cấp Admin đầu tiên bằng lệnh nâng tài khoản đã đăng ký;
 quản lý danh sách, khóa/mở khóa và đổi vai trò, không xóa tài khoản. Dashboard trước mắt đếm
-tài khoản, tài khoản hoạt động, địa điểm nháp/công bố, tour công bố và audio đã nhập.
+tổng tài khoản, tài khoản User đang hoạt động (không gồm Admin/Creator), địa điểm nháp/công bố,
+tour công bố và audio đã nhập.
 Cho phép Admin thay MP3 theo nội dung đang lưu, tối đa 10 MiB (10 × 1024 × 1024 byte)/file;
 công bố lại mới áp dụng cho người nghe. Admin đang hoạt động được bảo vệ khỏi khóa/hạ quyền
 trên web để tránh mất toàn bộ quyền quản trị khi hai Admin thao tác đồng thời.

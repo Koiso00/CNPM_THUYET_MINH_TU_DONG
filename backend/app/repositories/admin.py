@@ -34,7 +34,9 @@ class AdminRepository:
     async def counts(self):
         return {
             "users": await self.users.count_documents({}),
-            "active_users": await self.users.count_documents({"is_active": True}),
+            "active_users": await self.users.count_documents(
+                {"role": "user", "is_active": True}
+            ),
             "audio_assets": await self.database["assets"].count_documents({"status": "ready"}),
         }
 
