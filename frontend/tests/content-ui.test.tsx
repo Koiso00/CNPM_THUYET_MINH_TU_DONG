@@ -22,7 +22,7 @@ const campus = {
 const stats = {
   day: "2026-10-24",
   users: 3,
-  active_users: 2,
+  online_visitors: 2,
   audio_assets: 1,
   draft_places: 1,
   published_places: 0,

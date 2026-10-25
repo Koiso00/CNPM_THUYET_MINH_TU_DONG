@@ -13,7 +13,7 @@ type Account = {
 type Dashboard = {
   day: string;
   users: number;
-  active_users: number;
+  online_visitors: number;
   audio_assets: number;
   draft_places: number;
   published_places: number;
@@ -29,7 +29,7 @@ const metrics: {
   icon: "users" | "user" | "audio" | "pin" | "check" | "grid";
 }[] = [
   { key: "users", label: "Tổng tài khoản", icon: "users" },
-  { key: "active_users", label: "Tài khoản User đang hoạt động", icon: "user" },
+  { key: "online_visitors", label: "User đang hoạt động", icon: "user" },
   { key: "draft_places", label: "Địa điểm trong bản nháp", icon: "pin" },
   { key: "published_places", label: "Địa điểm đã công bố", icon: "check" },
   { key: "audio_assets", label: "Audio đã nhập", icon: "audio" },
@@ -91,6 +91,19 @@ export function ManagementPage({ client }: { client: AuthClient }) {
       active = false;
     };
   }, [client, statsVersion, statsDay]);
+
+  useEffect(() => {
+    const refresh = () => {
+      if (document.visibilityState === "visible")
+        setStatsVersion((value) => value + 1);
+    };
+    const timer = window.setInterval(refresh, 30_000);
+    document.addEventListener("visibilitychange", refresh);
+    return () => {
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", refresh);
+    };
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -216,6 +229,9 @@ export function ManagementPage({ client }: { client: AuthClient }) {
         <p>
           Số liệu từ cơ sở dữ liệu. Khách được đếm theo ID trình duyệt trong ngày
           ICT ({stats?.day ?? "đang tải"}); chưa có GPS.
+        </p>
+        <p className="management-note">
+          Người đang trên website được tính theo trình duyệt gửi tín hiệu trong 90 giây gần nhất.
         </p>
         {statsLoading && <p role="status">Đang tải số liệu…</p>}
         {statsError && (

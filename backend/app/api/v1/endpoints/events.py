@@ -5,7 +5,7 @@ from datetime import UTC, datetime, timedelta, timezone
 from fastapi import APIRouter, Depends
 
 from app.api.content_dependencies import get_event_repository
-from app.schemas.events import GuestEvent, GuestEventResult
+from app.schemas.events import GuestEvent, GuestEventResult, GuestPresence
 
 router = APIRouter()
 DEMO_TIMEZONE = timezone(timedelta(hours=7), name="ICT")
@@ -27,3 +27,8 @@ async def guest_event(event: GuestEvent, repository=Depends(get_event_repository
         return GuestEventResult(accepted=False)
     accepted = await repository.record(event.document(demo_day()))
     return GuestEventResult(accepted=accepted)
+
+
+@router.post("/presence", status_code=204)
+async def guest_presence(presence: GuestPresence, repository=Depends(get_event_repository)):
+    await repository.touch_presence(str(presence.visitor_id))

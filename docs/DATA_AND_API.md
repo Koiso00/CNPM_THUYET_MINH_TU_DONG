@@ -32,8 +32,9 @@ P1.2 ban đầu chỉ có collection/index User/session; GridFS được tích h
 | GET/HEAD /admin/audio/{asset_id} | Admin; preview asset đã nhập |
 | GET /admin/users?offset=0&limit=50 | Admin; tối đa 100/trang; id, username, role, is_active, updated_at, is_protected; không trả password_hash/token |
 | PUT /admin/users/{user_id} | Admin + CSRF; `{role,is_active}`; chặn tự sửa và sửa Admin đang hoạt động (409); khóa thu hồi các phiên |
-| GET /admin/dashboard?day=YYYY-MM-DD | Admin; số tổng guest_visitors, guest_journeys, guest_audio_plays và breakdown audio theo địa điểm, theo ngày ICT |
+| GET /admin/dashboard?day=YYYY-MM-DD | Admin; tổng tài khoản, số trình duyệt đang trên website, guest_visitors, guest_journeys, guest_audio_plays và breakdown audio theo địa điểm; khách/hành trình/audio lọc theo ngày ICT |
 | POST /events/guest | Công khai; ghi visit, journey_started hoặc audio_played với event_id chống gửi trùng |
+| POST /events/presence | Công khai; cập nhật lần hoạt động gần nhất của ID trình duyệt khách để dashboard đếm trình duyệt đang trên web trong 90 giây gần nhất |
 
 Các endpoint Creator/submissions đã có trong một mốc trung gian nhưng đã được gỡ khỏi demo theo quyết định gộp Creator vào Admin. Chúng không thuộc OpenAPI/runtime hiện hành.
 

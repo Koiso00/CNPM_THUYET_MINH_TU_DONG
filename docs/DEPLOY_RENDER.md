@@ -41,6 +41,10 @@ Các bước này chỉ cần làm lại nếu service bị xóa/tạo lại, ch
 5. Cho phép Render truy cập Atlas:
    - Trong trang service Render mở **Connect → Outbound** và sao chép mọi IP/CIDR được liệt kê. Render có thể dùng bất kỳ địa chỉ nào trong các dải IP của vùng đó. [Render outbound IP](https://render.com/docs/outbound-ip-addresses)
    - Trong Atlas vào **Security → Network Access → IP Access List → Add IP Address**. Thêm từng IP/CIDR vào một entry riêng, giữ nguyên hậu tố CIDR như `/24` nếu có. Tắt tùy chọn temporary nếu cần duy trì lâu dài. Giữ entry IP cá nhân nếu máy bạn còn cần kết nối trực tiếp.
+
+6. Sau khi cập nhật phiên bản có thống kê người đang trên website, chạy một lần lệnh
+   `uv run --frozen python -m app.commands.init_database` từ môi trường có quyền kết nối Atlas
+   để tạo TTL index dọn presence cũ. Lệnh chỉ tạo index, không thay đổi tài khoản hoặc nội dung.
    - Không dùng `0.0.0.0/0` để xử lý nhanh; cách đó cho phép mọi IP thử kết nối tới cluster. [Atlas IP Access List](https://www.mongodb.com/docs/atlas/security/add-ip-address-to-list/)
 6. Nhấn **Deploy Web Service** và theo dõi trạng thái trong **Deploys/Logs**. Khi deploy hoàn tất, trạng thái cần là **Live**.
 7. Kiểm tra readiness bằng URL thật của service:

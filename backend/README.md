@@ -57,8 +57,8 @@ Sau khi cấu hình .env, chạy tường minh từ backend:
 uv run --frozen python -m app.commands.init_database
 ```
 
-Lệnh tạo unique index username_key/refresh_token_hash, TTL expires_at và index user_id.
-Có thể chạy lại; không tạo tài khoản, không xóa dữ liệu/index khi gặp xung đột.
+Lệnh tạo unique index username_key/refresh_token_hash, TTL expires_at, index user_id
+và TTL cho presence khách. Có thể chạy lại; không tạo tài khoản, không xóa dữ liệu/index khi gặp xung đột.
 Không tự thực hiện bước này lúc API startup. Trên Atlas phát triển hiện tại đã chạy thành công.
 
 ## Tạo lại audio demo

@@ -49,3 +49,15 @@ async def ensure_usage_event_indexes(collection: AsyncCollection) -> list[str]:
             IndexModel([("event_type", ASCENDING), ("day", ASCENDING)]),
         ]
     )
+
+
+async def ensure_visitor_presence_indexes(collection: AsyncCollection) -> list[str]:
+    return await collection.create_indexes(
+        [
+            IndexModel(
+                [("last_seen", ASCENDING)],
+                name="ttl_visitor_presence_last_seen",
+                expireAfterSeconds=180,
+            )
+        ]
+    )

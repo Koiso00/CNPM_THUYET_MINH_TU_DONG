@@ -32,6 +32,12 @@ class GuestEventResult(BaseModel):
     accepted: bool
 
 
+class GuestPresence(BaseModel):
+    model_config = ConfigDict(extra="forbid", hide_input_in_errors=True)
+
+    visitor_id: UUID
+
+
 class GuestDashboard(BaseModel):
     day: str
     guest_visitors: int = Field(ge=0)
