@@ -6,6 +6,7 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import { CAMPUS_MAP_CENTER, createCampusMapStyle } from "./campusMapConfig";
 import { campusPoiMarkerSymbol } from "./campusPoiLocations";
 import type { LocationFix } from "./geofence";
+import type { AppLanguage } from "../../shared/i18n";
 
 type MapStatus = "loading" | "ready" | "error";
 
@@ -14,12 +15,18 @@ export function CampusMap({
   selectedPlaceId,
   onSelectPlace,
   currentFix,
+  language = "vi",
 }: {
   places: Place[];
   selectedPlaceId: string | null;
   onSelectPlace: (placeId: string) => void;
   currentFix: LocationFix | null;
+  language?: AppLanguage;
 }) {
+  const describeMapError = (error: unknown) => {
+    const message = error instanceof Error ? error.message : "Unknown map error";
+    return message.replace(/(https?:\/\/[^?\s)]+)\?[^\s)]+/g, "$1?[redacted]");
+  };
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
   const markersRef = useRef<{ remove: () => void }[]>([]);
@@ -27,13 +34,15 @@ export function CampusMap({
   const [attempt, setAttempt] = useState(0);
   const [status, setStatus] = useState<MapStatus>("loading");
   const [mapLoaded, setMapLoaded] = useState(false);
+  const [diagnostic, setDiagnostic] = useState("");
 
   useEffect(() => {
     let cancelled = false;
     let map: MapLibreMap | null = null;
-    let hadLoadError = false;
+    let styleLoaded = false;
     setStatus("loading");
     setMapLoaded(false);
+    setDiagnostic("");
 
     if (typeof WebGL2RenderingContext === "undefined") {
       setStatus("error");
@@ -63,19 +72,38 @@ export function CampusMap({
         mapRef.current = map;
         map.addControl(new NavigationControl({ showCompass: false }), "top-right");
 
-        map.on("error", () => {
-          hadLoadError = true;
-          setStatus("error");
+        map.on("error", (event) => {
+          // A failed raster tile is not necessarily a failed map. MapLibre can
+          // still render the rest of the map, so only show a fatal error until
+          // the style has loaded successfully.
+          if (!styleLoaded) {
+            setStatus("error");
+            setDiagnostic([
+              `Map error: ${describeMapError(event.error)}`,
+              "sourceId" in event && event.sourceId ? `source: ${event.sourceId}` : "",
+              "sourceDataType" in event && event.sourceDataType
+                ? `data: ${event.sourceDataType}`
+                : "",
+            ].filter(Boolean).join(" · "));
+          }
         });
         map.once("load", () => {
-          if (!cancelled) setMapLoaded(true);
+          if (!cancelled) {
+            styleLoaded = true;
+            setMapLoaded(true);
+            setStatus("ready");
+            setDiagnostic("");
+          }
         });
         map.once("idle", () => {
-          if (!cancelled && !hadLoadError) setStatus("ready");
+          if (!cancelled && styleLoaded) setStatus("ready");
         });
       })
-      .catch(() => {
-        if (!cancelled) setStatus("error");
+      .catch((error: unknown) => {
+        if (!cancelled) {
+          setDiagnostic(describeMapError(error));
+          setStatus("error");
+        }
       });
 
     return () => {
@@ -164,15 +192,20 @@ export function CampusMap({
         className="campus-map-canvas"
         ref={containerRef}
         role="application"
-        aria-label="Bản đồ nền Stadia Maps khu vực cơ sở chính Đại học Sài Gòn"
+        aria-label={language === "en"
+          ? "Stadia Maps basemap of Saigon University's main campus"
+          : language === "ko"
+            ? "사이공대학교 본 캠퍼스 스타디아 지도"
+            : "Bản đồ nền Stadia Maps khu vực cơ sở chính Đại học Sài Gòn"}
       />
       <div className="campus-map-status" aria-live="polite">
-        {status === "loading" && <span>Đang tải bản đồ khu vực cơ sở chính…</span>}
+        {status === "loading" && <span>{language === "en" ? "Loading campus map…" : language === "ko" ? "캠퍼스 지도를 불러오는 중…" : "Đang tải bản đồ khu vực cơ sở chính…"}</span>}
         {status === "error" && (
           <div role="alert">
-            <span>Không tải được bản đồ. Kiểm tra kết nối Internet rồi thử lại.</span>
+            <span>{language === "en" ? "Could not load the map. Check your internet connection and try again." : language === "ko" ? "지도를 불러오지 못했습니다. 인터넷 연결을 확인한 후 다시 시도하세요." : "Không tải được bản đồ. Kiểm tra kết nối Internet rồi thử lại."}</span>
+            {import.meta.env.DEV && diagnostic && <small>{diagnostic}</small>}
             <button type="button" onClick={() => setAttempt((value) => value + 1)}>
-              Tải lại bản đồ
+              {language === "en" ? "Reload map" : language === "ko" ? "지도 다시 불러오기" : "Tải lại bản đồ"}
             </button>
           </div>
         )}

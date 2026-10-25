@@ -18,6 +18,10 @@
 - Build báo kích thước chunk MapLibre lớn hơn 500 kB; đây là cảnh báo tối ưu bundle, không làm build thất bại.
 - Chưa chạy E2E hoặc kiểm tra trực quan trên điện thoại trong lượt này.
 
+## Cập nhật nội dung/audio tiếng Hàn — 26/10/2026
+
+Người dùng đã duyệt bản dịch và 10 MP3 Hàn. Nội dung/audio đã được nhập vào Atlas và công bố trong release `2cebd7fb-7ca8-4719-819b-abb2a2191038`; release có đủ 10 POI, audio vi/en/ko. Các ghi chú “chưa có” phía trên phản ánh trạng thái tại ngày 24/10.
+
 ## Còn lại / bước kế tiếp
 
 - Chưa có nội dung/audio POI tiếng Hàn; UI tiếng Hàn hiện hiển thị nội dung tiếng Việt.

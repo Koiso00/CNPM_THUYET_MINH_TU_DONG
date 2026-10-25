@@ -199,7 +199,7 @@ it("keeps Vietnamese POI icons and plays the approved English audio with English
   const zoneA = screen.getByRole("article", { name: "Zone A" });
   expect(zoneA.querySelector(".poi-number-letter")).toHaveTextContent("A");
   expect(within(zoneA).getByText("Approved English description.")).toBeInTheDocument();
-  await user.click(within(zoneA).getByRole("button", { name: "Listen to audio guide" }));
+  await user.click(within(zoneA).getByRole("button", { name: "Listen to English audio" }));
   expect(play).toHaveBeenCalledOnce();
   expect(screen.getByLabelText("Play audio for Zone A")).toHaveAttribute(
     "src",

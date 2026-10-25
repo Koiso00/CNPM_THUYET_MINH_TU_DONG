@@ -13,7 +13,7 @@ it("persists the selected interface language for the next route or visit", () =>
 
 it("keeps the currently published narration language explicit", () => {
   expect(translate("en", "contentLanguage")).toBe("English");
-  expect(translate("ko", "contentLanguage")).toBe("베트남어");
+  expect(translate("ko", "contentLanguage")).toBe("한국어");
   expect(translate("en", "englishAudioNote")).toContain("English narration is not available");
 });
 

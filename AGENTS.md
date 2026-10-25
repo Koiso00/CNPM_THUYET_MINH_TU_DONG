@@ -1,6 +1,6 @@
 > **Trạng thái hiện hành — 24/10/2026:** khách không cần đăng nhập; Admin quản lý nội dung/audio tại `#/admin` và dashboard/tài khoản tại `#/management`. Stadia Maps, 10 tọa độ đã kiểm chứng thực địa, GPS opt-in/mô phỏng/geofence frontend và phát audio khi chạm điểm đã được người dùng thử. iPhone/Safari vẫn có thể chặn tự phát theo geofence; nghiệm thu ngưỡng GPS/geofence được để sau. Dashboard thống kê đã hoạt động trên bản deploy theo xác nhận người dùng. QR là bước phát triển kế tiếp sau dashboard và đa ngôn ngữ.
 
-> **Đa ngôn ngữ — 24/10/2026:** giao diện khách VI/EN/KO; lựa chọn ngôn ngữ được giữ qua các trang. Admin biên tập POI/audio theo ngôn ngữ. Người dùng đã duyệt 10 bản dịch POI English và 10 MP3 English; Atlas có release song ngữ `09d43a32-43d1-4f2b-85d0-cdae2ad29981`, audio Việt được giữ nguyên. Nội dung/audio POI tiếng Hàn chưa có. Frontend 61 test, backend 181 test (16 integration skip mặc định), typecheck/build/Ruff đạt theo đợt hồi quy tương ứng. Render báo `sgu-campus-guide-demo` “Suspended by you”; code mới trong workspace chưa được deploy lên Render.
+> **Đa ngôn ngữ — 26/10/2026:** giao diện khách VI/EN/KO; lựa chọn ngôn ngữ được giữ qua các trang. Admin biên tập POI/audio theo ngôn ngữ. Người dùng duyệt 10 bản dịch và 10 MP3 tiếng Anh; Atlas có release song ngữ `09d43a32-43d1-4f2b-85d0-cdae2ad29981`. Ngày 26/10 đã duyệt và công bố thêm 10 bản dịch/audio Hàn trong release `2cebd7fb-7ca8-4719-819b-abb2a2191038`. Release hiện có audio vi/en/ko cho đủ 10 điểm. Render báo `sgu-campus-guide-demo` “Suspended by you”; cần khởi động service để khách nghe trên web.
 
 > **Atlas ứng dụng — 24/10/2026:** `phong` là Admin active; không còn tài khoản User/Creator legacy. Giữ nguyên tour, release và audio.
 
@@ -37,7 +37,7 @@
 - `#/admin`: Admin biên tập địa điểm, nội dung và audio theo ngôn ngữ, lưu nháp/công bố.
 - `#/management`: dashboard theo ngày ICT và quản lý tài khoản. Creator UI/API và quy trình gửi/duyệt đã gỡ khỏi demo.
 - Bản đồ Stadia, GPS opt-in/mô phỏng/geofence đã tích hợp. Tọa độ 10 điểm đã kiểm chứng thực địa; chạm điểm và phát audio thủ công đã hoạt động trên điện thoại. Safari tự phát khi vào vùng và ngưỡng 30/45 m chưa nghiệm thu.
-- Nội dung English và audio English đã công bố cùng tiếng Việt. Giao diện tiếng Hàn có; nội dung/audio tiếng Hàn chưa có.
+- Nội dung/audio tiếng Việt, English và Korean đã công bố cho đủ 10 POI trong Atlas release hiện hành.
 - Theo dõi phần việc tại [WORK_BREAKDOWN](docs/WORK_BREAKDOWN.md), chọn kiểm tra phù hợp theo [TEST_AND_DEMO](docs/TEST_AND_DEMO.md), ghi kết quả mới tại `docs/test-reports/`.
 - Báo rõ kiểm tra nào đã chạy/chưa chạy và giới hạn. Test double không chứng minh Atlas thật đã hoạt động. Không đưa nội dung `.env` vào chat/log.
 

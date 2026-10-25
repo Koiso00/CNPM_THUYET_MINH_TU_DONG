@@ -47,6 +47,7 @@ function CampusMapPreview({
         selectedPlaceId={selectedPlaceId}
         onSelectPlace={onSelectPlace}
         currentFix={currentFix}
+        language={language}
       />
       <div className="map-stage-footer">
         <span>

@@ -83,3 +83,11 @@ Không có thao tác ghi/xóa dữ liệu Atlas trong phần việc này.
 - Kiểm tra hồi quy: **57/57 frontend test đạt**. Trên Edge viewport 390×844 với MP3 công bố từ Atlas, chạm “Nghe thuyết minh” chọn Khu A và audio phát (currentTime tăng ~2,54 giây, readyState 4). Đây chưa phải kiểm tra iPhone/Safari.
 - Một sự kiện audio thử đã được gửi nhầm vào Atlas do chạy thử với ID hành trình giả; đã xóa đúng một bản ghi khớp đồng thời visitor ID, journey ID, release ID và place ID của bài thử. Không có dữ liệu tour/audio nào thay đổi.
 - Người dùng xác nhận sau khi dùng bản cập nhật trên điện thoại, chạm địa điểm và nghe audio đã hoạt động. Đây xác nhận luồng chọn điểm thủ công; GPS tự nhận diện/tự phát và ngưỡng 30/45 m vẫn cần nghiệm thu riêng trước QR.
+
+## Khắc phục bản đồ local — 26/10/2026
+
+- Nguyên nhân local: Vite không tải được module tối ưu `maplibre-gl` tại `/node_modules/.vite/deps/maplibre-gl.js`; module bị thiếu trong `node_modules`. Stadia không phải nguyên nhân: tile khuôn viên và lưới tile lân cận trả HTTP 200; cùng trình duyệt tải trực tiếp ảnh tile 256×256 thành công, WebGL2 khả dụng.
+- Khôi phục dependencies theo `package-lock.json`, khởi động lại Vite local. Sau đó trang `#/explore` tải MapLibre, hiển thị nền Stadia, attribution và đủ 10 marker. Trạng thái lỗi không còn xuất hiện.
+- Cập nhật `CampusMap` để lỗi tile đơn lẻ sau khi style đã tải không đánh dấu toàn bản đồ là lỗi; thông báo tải/lỗi/thử lại được hiển thị theo VI/EN/KO. Lỗi khởi tạo trong dev có thông tin chẩn đoán đã lọc query string.
+- Frontend **61/61 test đạt**, typecheck và production build đạt; build vẫn báo chunk MapLibre lớn hơn 500 kB. `git diff --check` đạt.
+- Bản đồ đã xác nhận trong trình duyệt local trên máy này; chưa kiểm tra lại mạng điện thoại hoặc Safari/iPhone.
