@@ -29,7 +29,7 @@ const metrics: {
   icon: "users" | "user" | "audio" | "pin" | "check" | "grid";
 }[] = [
   { key: "users", label: "Tổng tài khoản", icon: "users" },
-  { key: "active_users", label: "Tài khoản đang hoạt động", icon: "user" },
+  { key: "active_users", label: "Tài khoản User đang hoạt động", icon: "user" },
   { key: "draft_places", label: "Địa điểm trong bản nháp", icon: "pin" },
   { key: "published_places", label: "Địa điểm đã công bố", icon: "check" },
   { key: "audio_assets", label: "Audio đã nhập", icon: "audio" },
