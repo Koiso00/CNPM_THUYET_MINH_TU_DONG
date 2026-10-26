@@ -88,9 +88,7 @@ def inspect_mp3(path: Path) -> dict:
 
 
 async def synthesize(text: str, path: Path) -> None:
-    await edge_tts.Communicate(text, VOICE, rate="+0%", volume="+0%", pitch="+0Hz").save(
-        str(path)
-    )
+    await edge_tts.Communicate(text, VOICE, rate="+0%", volume="+0%", pitch="+0Hz").save(str(path))
 
 
 async def prepare_entry(

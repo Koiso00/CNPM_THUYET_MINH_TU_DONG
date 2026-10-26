@@ -34,10 +34,7 @@ def validate_pack():
     review_state_is_valid = (
         manifest.get("draft_translation") is True
         and manifest.get("review_status") == "pending-user-review"
-    ) or (
-        manifest.get("draft_translation") is False
-        and manifest.get("review_status") == APPROVAL
-    )
+    ) or (manifest.get("draft_translation") is False and manifest.get("review_status") == APPROVAL)
     if (
         manifest.get("source_sha256") != sha256(source_bytes).hexdigest()
         or not manifest.get("complete")

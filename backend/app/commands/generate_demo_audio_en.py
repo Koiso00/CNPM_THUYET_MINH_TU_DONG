@@ -185,9 +185,8 @@ async def generate() -> int:
     if not manifest["complete"]:
         print("English audio pack incomplete; rerun to retry failed entries.")
         return 1
-    print(
-        f"Complete: 10 English MP3 files, {sum(item['bytes'] for item in manifest['entries'])} bytes."
-    )
+    total_bytes = sum(item["bytes"] for item in manifest["entries"])
+    print(f"Complete: 10 English MP3 files, {total_bytes} bytes.")
     return 0
 
 

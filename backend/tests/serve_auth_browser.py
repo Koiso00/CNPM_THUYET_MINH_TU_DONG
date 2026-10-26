@@ -18,8 +18,8 @@ from app.commands.import_demo_audio import validated_pack
 from app.commands.seed_demo_content import source_draft
 from app.core.config import Settings
 from app.db.indexes import ensure_session_indexes, ensure_submission_indexes, ensure_user_indexes
-from app.repositories.sessions import SessionRepository
 from app.repositories.events import EventRepository
+from app.repositories.sessions import SessionRepository
 from app.repositories.users import UserRepository
 from app.services.auth import AuthService
 from tests.demo_database import isolated_content

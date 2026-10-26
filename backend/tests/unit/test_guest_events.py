@@ -47,9 +47,7 @@ async def test_guest_presence_is_public_and_records_browser(settings_factory):
     harness.app.dependency_overrides[get_event_repository] = lambda: events
     visitor = uuid4()
     async with harness.client as client:
-        response = await client.post(
-            "/api/v1/events/presence", json={"visitor_id": str(visitor)}
-        )
+        response = await client.post("/api/v1/events/presence", json={"visitor_id": str(visitor)})
     assert response.status_code == 204
     assert str(visitor) in events.presence
 
