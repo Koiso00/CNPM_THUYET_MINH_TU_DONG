@@ -60,8 +60,7 @@ class AdminRepository:
                 {"day": day, "event_type": "audio_played"}
             ),
             "guest_audio_by_place": [
-                {"place_id": row["_id"], "plays": row["plays"]}
-                for row in place_rows
+                {"place_id": row["_id"], "plays": row["plays"]} for row in place_rows
             ],
         }
 
