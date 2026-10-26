@@ -1,5 +1,10 @@
 # CI/CD
 
+> **Trạng thái 26/10/2026:** GitHub Actions run #3 trên `main` (commit `342d3e5`) đạt ở
+> cả frontend và backend. Readiness Render được người dùng kiểm tra: `ready` và database
+> `connected`. Chưa xác nhận Auto-Deploy của Render đã chọn **After CI Checks Pass**;
+> xem [nhật ký thiết lập](test-reports/CI_CD_PROGRESS_2026_10_26.md).
+
 ## GitHub Actions CI
 
 Workflow tại `.github/workflows/ci.yml` tự chạy khi mở/cập nhật Pull Request vào

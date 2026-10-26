@@ -1,6 +1,6 @@
 > **Cập nhật người dùng ngày 24/10/2026:** Stadia/GPS hoạt động trên điện thoại, 10 tọa độ đã kiểm chứng thực địa và chạm địa điểm phát audio được. Dashboard Admin có lọc ngày và lượt nghe theo địa điểm; người dùng xác nhận bản deploy hoạt động. Giao diện khách VI/EN/KO và nội dung/audio English cho 10 POI đã hoàn tất; QR là bước phát triển kế tiếp. Ngưỡng GPS/geofence và tự phát trên iPhone/Safari vẫn cần nghiệm thu trước demo chính thức.
 
-> **Tiến độ 24/10:** giao diện khách VI/EN/KO giữ lựa chọn xuyên hành trình; 10 POI English và 10 MP3 đã được người dùng duyệt và công bố trong Atlas release `09d43a32-43d1-4f2b-85d0-cdae2ad29981`. Audio Việt vẫn giữ riêng. Workspace có code hỗ trợ localization/audio theo ngôn ngữ. Render báo service `sgu-campus-guide-demo` đang “Suspended by you”, nên code mới chưa deploy lên đó. Xem [báo cáo đa ngôn ngữ](test-reports/MULTILINGUAL_UI_PROGRESS_2026_10_24.md).
+> **Tiến độ ngày 24/10 — mốc lịch sử:** giao diện khách VI/EN/KO giữ lựa chọn xuyên hành trình; 10 POI English và 10 MP3 đã được người dùng duyệt và công bố trong Atlas release `09d43a32-43d1-4f2b-85d0-cdae2ad29981`. Audio Việt vẫn giữ riêng. Workspace có code hỗ trợ localization/audio theo ngôn ngữ. Khi ghi nhận mốc này, Render báo service `sgu-campus-guide-demo` đang “Suspended by you”; trạng thái mới nhất xem ở cập nhật CI/CD 26/10 bên dưới. Xem [báo cáo đa ngôn ngữ](test-reports/MULTILINGUAL_UI_PROGRESS_2026_10_24.md).
 
 > **Cập nhật Admin đa ngôn ngữ 24/10:** `#/admin` có bộ chọn Tiếng Việt/English/한국어; các trường tên địa điểm, thuyết minh và nguồn tư liệu được chỉnh theo ngôn ngữ. Danh sách/nghe thử/tải MP3 cũng đổi theo lựa chọn. Bản dịch phải đủ trường và khớp checksum nội dung Việt trước khi xuất hiện trong release. Tên tour hiện vẫn dùng chung. Kiểm tra: frontend 61 test, build/typecheck đạt; backend 181 test đạt, 16 integration test skip theo mặc định. Chi tiết tại [nhật ký Admin đa ngôn ngữ](test-reports/ADMIN_MULTILINGUAL_CONTENT_2026_10_24.md).
 
@@ -8,7 +8,17 @@
 
 # Bối cảnh dự án
 
-## Trạng thái demo hiện hành — 24/10/2026
+## Cập nhật CI/CD — 26/10/2026
+
+Đã thêm GitHub Actions cho frontend/backend, sửa lỗi Node.js và Ruff phát hiện trong các
+lần chạy đầu. GitHub Actions run #3 trên `main` (commit `342d3e5`) đạt: frontend 61/61 test,
+backend checks đạt. Người dùng gọi readiness trên Render và nhận `status=ready`,
+`database=connected`; API đã chạy và kết nối Atlas. Chưa xác nhận tùy chọn Render
+**After CI Checks Pass**, commit mới nhất đã được triển khai hay luồng giao diện/audio đã
+được kiểm tra lại. Xem [nhật ký CI/CD](test-reports/CI_CD_PROGRESS_2026_10_26.md) và
+[hướng dẫn CI/CD](CI_CD.md).
+
+## Trạng thái demo hiện hành — cập nhật đến 26/10/2026
 
 Đối với demo, người nghe dùng welcome và không đăng nhập; ID khách được giữ trong trình duyệt, mỗi lần bấm bắt đầu tạo hành trình mới. Creator/Admin gộp thành một vai trò vận hành Admin; Creator UI/API đã được gỡ khỏi demo. Trang Nội dung (`#/admin`) và Quản trị (`#/management`) dành cho Admin. Nội dung/audio công khai chỉ đọc release đã công bố; dashboard có visit, journey và audio theo ngày ICT. Bản đồ Stadia và GPS hoạt động trên điện thoại; 10 tọa độ đã kiểm chứng thực địa. Người dùng xác nhận chạm địa điểm phát audio được trên điện thoại. Dashboard có bộ lọc ngày ICT và lượt phát audio theo địa điểm; người dùng xác nhận bản deploy hoạt động. Nội dung/audio Việt và English cho 10 điểm đã được người dùng duyệt và công bố trong release song ngữ ngày 24/10. Ngày 26/10 người dùng duyệt bản dịch/audio tiếng Hàn cho 10 điểm; đã nhập Atlas và công bố release `2cebd7fb-7ca8-4719-819b-abb2a2191038`, giữ nguyên tiếng Việt/English. Nghiệm thu GPS tự nhận diện/tự phát và ngưỡng geofence 30/45 m được dời lại nhưng cần xong trước demo chính thức. Các tài khoản legacy `123`, `AGT`, `phong11` và đề xuất `pending` gắn với Creator đã được xóa theo phạm vi người dùng chốt; hiện Atlas có 1 Admin active (`phong`), không còn User/Creator legacy. Xem [kế hoạch khách/QR](DEMO_GUEST_QR_PLAN.md), [báo cáo khách](test-reports/DEMO_GUEST_PROGRESS_2026_10_23.md), [báo cáo Admin/audio](test-reports/DEMO_CONTENT_AUDIO_ADMIN.md), [báo cáo audio English](test-reports/DEMO_AUDIO_EN_DRAFT_2026_10_24.md) và [báo cáo audio Hàn](test-reports/DEMO_AUDIO_KO_DRAFT_2026_10_26.md).
 
