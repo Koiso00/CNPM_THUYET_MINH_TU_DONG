@@ -21,7 +21,7 @@ Kế hoạch gốc 10 tuần và vai trò User/Creator/Admin được giữ làm
 
 ## Chạy local
 
-Yêu cầu: Node.js 22.12 trở lên, Python 3.12 và `uv`. Backend và frontend chạy trong hai terminal riêng, từ thư mục gốc repository.
+Yêu cầu: Node.js 22.19 trở lên, Python 3.12 và `uv`. Backend và frontend chạy trong hai terminal riêng, từ thư mục gốc repository.
 
 Backend:
 
