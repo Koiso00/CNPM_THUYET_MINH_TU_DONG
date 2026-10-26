@@ -18,7 +18,7 @@ class EventRepository:
         )
 
     async def online_visitors(self) -> int:
-        cutoff = datetime.now(UTC) - timedelta(seconds=90)
+        cutoff = datetime.now(UTC) - timedelta(seconds=180)
         return await self.presence.count_documents({"last_seen": {"$gte": cutoff}})
 
     async def record(self, event: dict) -> bool:
