@@ -2,15 +2,24 @@
 
 # Kiểm thử và demo
 
+## Cập nhật CI/CD — 26/10/2026
+
+GitHub Actions run #3 trên `main`, commit `342d3e5`, đạt ở hai job Frontend checks và
+Backend checks; frontend 61/61 test đạt. Ruff check và format check cũng đạt tại workspace.
+Người dùng kiểm tra `/api/v1/health/ready` trên Render và nhận `{"status":"ready",
+"database":"connected"}`. Đây là kiểm tra readiness API/Atlas, chưa phải nghiệm thu toàn
+bộ giao diện, audio hoặc deploy đúng commit mới nhất. Auto-Deploy **After CI Checks Pass**
+trên Render chưa được xác nhận. Xem [nhật ký CI/CD](test-reports/CI_CD_PROGRESS_2026_10_26.md).
+
 ## Cập nhật bản song ngữ — 24/10/2026
 
-Người dùng duyệt bản dịch và audio English cho 10 POI. Atlas release `09d43a32-43d1-4f2b-85d0-cdae2ad29981` có đủ 10 bản dịch, 10 audio English và 10 audio Việt. API trả byte range 206 cho cả hai ngôn ngữ; frontend chọn audio theo locale và giữ icon POI theo tên gốc. Hồi quy: 181 backend test đạt, 16 integration test skip theo mặc định; 61 frontend test đạt; Ruff/typecheck/build đạt. Code mới hiện ở workspace. Render báo service `sgu-campus-guide-demo` “Suspended by you”, nên chưa deploy code lên đó.
+Người dùng duyệt bản dịch và audio English cho 10 POI. Atlas release `09d43a32-43d1-4f2b-85d0-cdae2ad29981` có đủ 10 bản dịch, 10 audio English và 10 audio Việt. API trả byte range 206 cho cả hai ngôn ngữ; frontend chọn audio theo locale và giữ icon POI theo tên gốc. Hồi quy: 181 backend test đạt, 16 integration test skip theo mặc định; 61 frontend test đạt; Ruff/typecheck/build đạt. Code mới hiện ở workspace. Tại thời điểm ghi nhận 24/10, Render báo service `sgu-campus-guide-demo` “Suspended by you”; xem cập nhật readiness/CI/CD ngày 26/10 ở đầu tài liệu.
 
 ## Cập nhật biên tập nội dung theo ngôn ngữ — 24/10/2026
 
 Admin có bộ chọn Tiếng Việt/English/한국어 cho các trường tên địa điểm, thuyết minh và nguồn tư liệu. Danh sách và tải MP3 theo ngôn ngữ đang chọn; có thể nghe thử audio đã nhập. Bản dịch đang nhập dở được giữ trong biểu mẫu và không gửi như bản hợp lệ; sửa nội dung Việt làm checksum bản dịch cũ mất hiệu lực đến khi Admin cập nhật bản dịch. Tên tour hiện dùng chung giữa các ngôn ngữ. Build/typecheck và 61 frontend test đạt; backend 181 test đạt, 16 integration test bỏ qua theo mặc định. Xem [nhật ký Admin đa ngôn ngữ](test-reports/ADMIN_MULTILINGUAL_CONTENT_2026_10_24.md).
 
-Trạng thái 24/10/2026: khách không đăng nhập; Admin quản lý nội dung/audio và dashboard; Stadia, 10 marker, GPS opt-in/mô phỏng/geofence đã có. Người dùng đã thử GPS trên điện thoại, kiểm chứng tọa độ thực địa và xác nhận chạm điểm phát audio được. Tự phát theo geofence trên iPhone/Safari và ngưỡng thực tế còn chờ nghiệm thu. Dashboard có bộ lọc ngày ICT, tổng visit/journey/audio và lượt phát audio theo địa điểm từ sự kiện thật; người dùng xác nhận bản deploy hoạt động sau sửa lỗi aggregate async. Mô phỏng không ghi thống kê thật. Đợt hồi quy đa ngôn ngữ gần nhất: frontend 61 test; backend 181 test, 16 integration skip mặc định; Ruff/typecheck/build đạt. E2E 12/12 desktop/mobile là kết quả hồi quy trước đó. Render hiện báo service “Suspended by you”; code workspace mới chưa deploy lên đó. Xem [nhật ký dashboard](test-reports/ADMIN_DASHBOARD_PROGRESS_2026_10_24.md), [OSM/GPS](test-reports/MAP_OSM_PROGRESS_2026_10_24.md), [đa ngôn ngữ](test-reports/MULTILINGUAL_UI_PROGRESS_2026_10_24.md), [Admin/audio](test-reports/DEMO_CONTENT_AUDIO_ADMIN.md) và [khách](test-reports/DEMO_GUEST_PROGRESS_2026_10_23.md).
+Trạng thái ghi nhận ngày 24/10/2026: khách không đăng nhập; Admin quản lý nội dung/audio và dashboard; Stadia, 10 marker, GPS opt-in/mô phỏng/geofence đã có. Người dùng đã thử GPS trên điện thoại, kiểm chứng tọa độ thực địa và xác nhận chạm điểm phát audio được. Tự phát theo geofence trên iPhone/Safari và ngưỡng thực tế còn chờ nghiệm thu. Dashboard có bộ lọc ngày ICT, tổng visit/journey/audio và lượt phát audio theo địa điểm từ sự kiện thật; người dùng xác nhận bản deploy hoạt động sau sửa lỗi aggregate async. Mô phỏng không ghi thống kê thật. Đợt hồi quy đa ngôn ngữ gần nhất: frontend 61 test; backend 181 test, 16 integration skip mặc định; Ruff/typecheck/build đạt. E2E 12/12 desktop/mobile là kết quả hồi quy trước đó. Tại thời điểm đó Render báo service “Suspended by you” và code workspace mới chưa deploy; cập nhật hiện hành về readiness/CI/CD xem phần 26/10 đầu tài liệu. Xem [nhật ký dashboard](test-reports/ADMIN_DASHBOARD_PROGRESS_2026_10_24.md), [OSM/GPS](test-reports/MAP_OSM_PROGRESS_2026_10_24.md), [đa ngôn ngữ](test-reports/MULTILINGUAL_UI_PROGRESS_2026_10_24.md), [Admin/audio](test-reports/DEMO_CONTENT_AUDIO_ADMIN.md) và [khách](test-reports/DEMO_GUEST_PROGRESS_2026_10_23.md).
 
 ## Kiểm tra khung
 

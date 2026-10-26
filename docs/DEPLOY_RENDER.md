@@ -2,7 +2,9 @@
 
 Tài liệu này ghi lại cách vận hành dịch vụ demo SGU Campus Guide đã tạo trên Render và MongoDB Atlas. Cấu hình hiện tại là **Render Web Service chạy Docker**, mã nguồn lấy từ GitHub nhánh `main`, dữ liệu người dùng/phiên lưu trên Atlas.
 
-> **Trạng thái 24/10/2026:** bản Render trước đó có dashboard Admin; người dùng xác nhận dashboard hoạt động sau khi sửa lỗi aggregate. Render hiện báo `sgu-campus-guide-demo` “Suspended by you”. Code mới trong workspace (đa ngôn ngữ và sửa giao diện mobile) chưa được deploy lên service. Nội dung/audio English đã có trong Atlas release, nhưng code phục vụ release ở phiên bản workspace chưa được phát hành trên Render.
+> **Ảnh chụp trạng thái 24/10/2026:** bản Render trước đó có dashboard Admin; người dùng xác nhận dashboard hoạt động sau khi sửa lỗi aggregate. Khi ghi nhận, Render báo `sgu-campus-guide-demo` “Suspended by you”. Code mới trong workspace (đa ngôn ngữ và sửa giao diện mobile) chưa được deploy lên service. Nội dung/audio English đã có trong Atlas release, nhưng code phục vụ release ở phiên bản workspace chưa được phát hành trên Render. Trạng thái mới nhất ở cập nhật 26/10 bên dưới.
+
+> **Cập nhật 26/10/2026:** service đã được tiếp tục hoạt động; người dùng kiểm tra `/api/v1/health/ready` và nhận `status=ready`, `database=connected`. GitHub Actions CI cho frontend/backend đã đạt. Chưa xác nhận cấu hình Render **After CI Checks Pass**, cũng chưa xác nhận giao diện/audio hoặc commit mới nhất đã được deploy. Xem [nhật ký CI/CD](test-reports/CI_CD_PROGRESS_2026_10_26.md).
 
 > Tài liệu bên dưới hướng dẫn cấu hình/vận hành chung. Không xem các dòng trạng thái cũ trong hướng dẫn này là mô tả bản demo đang chạy.
 

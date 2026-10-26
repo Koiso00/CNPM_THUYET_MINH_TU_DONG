@@ -1,6 +1,6 @@
 > **Trạng thái — 24/10/2026:** Stadia Maps và GPS đã được thử trên điện thoại; 10 tọa độ được kiểm chứng thực địa, chạm địa điểm phát audio hoạt động. Tự phát khi geofence kích hoạt trên iPhone/Safari và ngưỡng GPS chưa nghiệm thu. Dashboard Admin có lọc ngày và lượt nghe theo địa điểm; người dùng xác nhận bản deploy hoạt động.
 >
-> Giao diện khách hỗ trợ VI/EN/KO. Nội dung/audio cho 10 điểm đã được duyệt bằng cả ba ngôn ngữ. Atlas release `2cebd7fb-7ca8-4719-819b-abb2a2191038` có đủ 10 audio vi/en/ko; tiếng Việt và English được giữ nguyên. Render báo `sgu-campus-guide-demo` “Suspended by you”, cần khởi động service để khách nghe trên web. Xem [nhật ký audio Hàn](docs/test-reports/DEMO_AUDIO_KO_DRAFT_2026_10_26.md).
+> Giao diện khách hỗ trợ VI/EN/KO. Nội dung/audio cho 10 điểm đã được duyệt bằng cả ba ngôn ngữ. Atlas release `2cebd7fb-7ca8-4719-819b-abb2a2191038` có đủ 10 audio vi/en/ko; tiếng Việt và English được giữ nguyên. Cập nhật 26/10: GitHub Actions CI đạt ở frontend/backend; Render readiness trả `ready` và `database=connected`. Chưa xác nhận Auto-Deploy đang chờ CI đạt hoặc đã kiểm tra giao diện sau deploy. Xem [nhật ký CI/CD](docs/test-reports/CI_CD_PROGRESS_2026_10_26.md) và [nhật ký audio Hàn](docs/test-reports/DEMO_AUDIO_KO_DRAFT_2026_10_26.md).
 
 # Website thuyết minh cơ sở chính Đại học Sài Gòn
 
