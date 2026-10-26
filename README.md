@@ -69,6 +69,10 @@ Admin kiểm tra nội dung/audio trong `/#/admin`, rồi thao tác **Lưu nháp
 
 ## Kiểm tra
 
+GitHub Actions chạy kiểm tra frontend/backend cho Pull Request vào `main` và push lên `main`.
+Xem [hướng dẫn CI/CD](docs/CI_CD.md) để yêu cầu check đạt trước khi merge và bật Render deploy
+sau CI.
+
 Frontend, từ thư mục `frontend`:
 
 ```powershell
