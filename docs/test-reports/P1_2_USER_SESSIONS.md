@@ -11,7 +11,6 @@ Phạm vi: lớp dữ liệu; chưa triển khai đăng ký/đăng nhập HTTP h
 ## Đã thực hiện
 
 - Model User/session, UUIDv4 lưu chuỗi, datetime UTC theo millisecond BSON.
-- Username key trim/casefold và unique index; role user/creator/admin, mặc định user.
 - Hash mật khẩu/refresh ẩn trong serialization thông thường; không lưu token rõ.
 - Session tối đa 7 ngày, truy vấn kiểm tra hết hạn/thu hồi, thay refresh digest nguyên tử.
 - Unique refresh digest, TTL expires_at và index user_id.

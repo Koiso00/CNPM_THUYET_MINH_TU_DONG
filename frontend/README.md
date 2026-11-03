@@ -5,11 +5,11 @@ React 19, TypeScript và Vite. Ứng dụng có welcome cho khách, trang khám 
 ## Trạng thái hiện tại
 
 - `/#/welcome`: khách chọn VI/EN/KO; lựa chọn được lưu và giữ khi đi qua các trang. Trên mobile, bộ chọn ngôn ngữ hiển thị dạng gọn ở header.
-- `/#/explore`: khách xem 10 địa điểm trên bản đồ và nghe audio đã công bố. Nội dung/audio English đã có cho 10 POI; Korean UI có nhưng nội dung/audio Korean chưa có.
+- `/#/explore`: khách xem 10 địa điểm trên bản đồ và nghe audio đã công bố. Nội dung/audio Việt, English và Korean đã được duyệt và công bố cho 10 POI.
 - `/#/admin`: Admin quản lý nội dung POI theo ngôn ngữ, bản nháp, công bố và MP3.
 - `/#/management`: Admin xem thống kê theo ngày và quản lý tài khoản.
 - GPS thật opt-in và mô phỏng đi qua chung luồng geofence. Người dùng đã kiểm chứng tọa độ và nghe được audio khi chạm điểm trên điện thoại. Safari có thể chặn tự phát theo geofence; nghiệm thu GPS tự nhận diện/autoplay và ngưỡng geofence còn để sau.
-- QR chưa triển khai. Offline và service worker chưa triển khai; AI/dịch/TTS tự động hoãn.
+- Offline và service worker chưa triển khai; AI/dịch/TTS tự động hoãn.
 
 ## Chạy local
 

@@ -4,7 +4,7 @@ import type { Place } from "./content";
 import { AudioPlayer, type AudioPlayerHandle } from "./AudioPlayer";
 import type { GuestSession } from "../guest/session";
 import { CampusMap } from "../map/CampusMap";
-import { campusPoiMarkerSymbol, withCampusPoiLocations } from "../map/campusPoiLocations";
+import { campusPoiMarkerSymbol } from "../map/campusPoiLocations";
 import { LocationControls } from "../map/LocationControls";
 import { useCampusLocation } from "../map/useCampusLocation";
 import type { LocationFix } from "../map/geofence";
@@ -75,7 +75,7 @@ export function ExplorePage({
   language?: AppLanguage;
 }) {
   const t = (key: Parameters<typeof translate>[1]) => translate(language, key);
-  const mappedPlaces = withCampusPoiLocations(campusPlaces);
+  const mappedPlaces = campusPlaces;
   const translationFor = (place: Place) =>
     language === "en" ? place.translations?.en : language === "ko" ? place.translations?.ko : undefined;
   const localized = (place: Place) => {

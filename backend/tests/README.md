@@ -58,7 +58,6 @@ chỉ xóa chính collection nó vừa tạo và xác minh đã xóa trong final
 Không ghi vào users/sessions ứng dụng, không duyệt prefix để xóa hàng loạt.
 Chạy trên database phát triển với quyền create/index/read/write/drop collection tạm.
 Test TTL kiểm tra cấu hình index và chặn phiên hết hạn bằng truy vấn; không đợi MongoDB dọn TTL.
-Test Creator tạo collection `__test_p12_content_submissions_<uuid>` riêng để kiểm tra index,
 quyền sở hữu, CAS khi gửi duyệt và chuyển trạng thái áp dụng; collection được xóa và xác minh.
 
 Kết quả P1.2: 69 test cục bộ và 12 test Atlas đạt.

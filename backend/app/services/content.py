@@ -30,6 +30,13 @@ class ContentService:
         return ContentService.admin_view(tour)
 
     async def save(self, payload, actor_id):
+        tour = await self.draft()
+        if tour["revision"] != payload.revision:
+            self.changed(None)
+        existing_ids = {place["id"] for place in tour["draft"]["places"]}
+        requested_ids = {str(place.id) for place in payload.draft.places}
+        if requested_ids != existing_ids:
+            raise HTTPException(422, "Adding or removing places is disabled.")
         return self.changed(
             await self.repository.save(
                 payload.revision,

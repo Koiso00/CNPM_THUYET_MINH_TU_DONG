@@ -12,7 +12,6 @@ from app.api.content_dependencies import (
 )
 from app.api.dependencies import require_roles
 from app.models.user import UserRole
-from app.schemas.admin import UpdateUser
 from app.schemas.content import Revision, SaveCampus
 
 router = APIRouter()
@@ -41,22 +40,6 @@ async def publish_campus(
 @router.post("/campus/unpublish", dependencies=[Depends(admin)])
 async def unpublish_campus(payload: Revision, service=Depends(get_content_service)):
     return await service.unpublish(payload.revision)
-
-
-@router.get("/users", dependencies=[Depends(admin)])
-async def users(
-    offset: int = Query(0, ge=0),
-    limit: int = Query(50, ge=1, le=100),
-    service=Depends(get_admin_service),
-):
-    return await service.users(offset, limit)
-
-
-@router.put("/users/{user_id}")
-async def update_user(
-    user_id: UUID, payload: UpdateUser, principal=Depends(admin), service=Depends(get_admin_service)
-):
-    return await service.update_user(str(user_id), payload, str(principal.user.id))
 
 
 @router.get("/dashboard", dependencies=[Depends(admin)])

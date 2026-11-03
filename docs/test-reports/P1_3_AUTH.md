@@ -4,7 +4,6 @@ Ngày kiểm tra: 21/10/2026. Windows, Python 3.12.10, FastAPI/PyMongo Async, At
 
 ## Quyết định đã chốt
 
-- Đăng ký công khai chỉ tạo User; Creator/Admin được quản trị cấp sau.
 - Mật khẩu 15–128 ký tự, Unicode/dấu cách được phép, không bắt buộc trộn nhóm ký tự.
 - Username không phân biệt hoa/thường; access 15 phút, phiên tối đa 7 ngày tuyệt đối.
 
@@ -32,7 +31,6 @@ Test gồm các biên độ dài mật khẩu, Unicode/dấu cách, từ chối 
 username trùng/hoa thường, sai/missing/inactive account cùng lỗi 401, JWT sai chữ ký/claims/hết hạn,
 CSRF thiếu/sai/hết hạn/khác phiên/origin, cờ cookie production, refresh sau 15 phút,
 chặn sau 7 ngày, chặn token refresh cũ, logout một/tất cả phiên, đổi role từ database có tác dụng.
-Probe quyền admin/creator chỉ tồn tại trong test app; không thêm route giả vào ứng dụng thật.
 
 Integration mới thử HTTP từ register đến logout qua dependency/repository thật và kiểm tra
 hai service refresh đồng thời chỉ một thắng. Mọi dữ liệu tài khoản thử nằm trong collection tạm,

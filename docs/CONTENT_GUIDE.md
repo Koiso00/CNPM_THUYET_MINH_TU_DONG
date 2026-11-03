@@ -9,7 +9,7 @@ Lưu nguyên văn tại [nguồn tiếng Việt](../data/sources/campus-vi-user-
 Dùng văn bản này làm nguồn tiếng Việt cho nội dung/audio. Nội dung demo đã được nhập vào hệ thống; 10 tọa độ đã được người dùng kiểm chứng thực địa. Không đánh dấu nội dung lịch sử là đã được nhà trường duyệt nếu chưa có bằng chứng riêng.
 Người dùng chọn Edge-TTS giọng nam tiếng Việt. Đã tạo 10 MP3 vi-VN-NamMinhNeural từ nguyên văn mô tả,
 không đọc tiêu đề/metadata; tổng 211.008 giây, 1,266,048 byte. File ở data/generated/audio/vi-male,
-đã kiểm tra kỹ thuật, chưa nghe duyệt phát âm. Xem [báo cáo](test-reports/DEMO_AUDIO_VI_MALE.md).
+đã kiểm tra kỹ thuật; người dùng sau đó đã nghe và duyệt 10 MP3. Xem [báo cáo](test-reports/DEMO_AUDIO_VI_MALE.md).
 Các chỉ dẫn trên/dưới/trái/phải tham chiếu sơ đồ chưa được gửi kèm, không tự đổi thành hướng địa lý.
 Người dùng đã rà soát và duyệt bản dịch English/audio English cho 10 POI vào 24/10/2026; xem [bản dịch](../data/sources/campus-en-translation-draft-2026-10-24.md) và [báo cáo](test-reports/DEMO_AUDIO_EN_DRAFT_2026_10_24.md). Bản tiếng Hàn cho 10 POI và 10 MP3 giọng nam được người dùng duyệt ngày 26/10/2026, đã nhập Atlas và công bố trong release mới. Xem [bản dịch Hàn](../data/sources/campus-ko-translation-draft-2026-10-26.md) và [báo cáo audio Hàn](test-reports/DEMO_AUDIO_KO_DRAFT_2026_10_26.md). Không tự thêm tên đầy đủ của KLF hoặc thông tin lịch sử.
 
@@ -31,7 +31,7 @@ Người dùng đã rà soát và duyệt bản dịch English/audio English cho
 3. Viết bản Việt có dẫn nguồn; nội dung chưa xác minh phải giữ ở nháp.
 4. Dùng bản dịch English và Korean đã được người dùng duyệt; mọi bản dịch mới phải được con người kiểm tra.
 5. Tạo MP3, nghe thử từng ngôn ngữ; có thể tải file thay thế.
-6. Admin kiểm tra nội dung/audio trước khi công bố. Workflow Creator đã được gỡ khỏi demo hiện hành.
+6. Admin kiểm tra nội dung/audio trước khi công bố.
 
 AI chỉ hỗ trợ tóm tắt/viết lại tài liệu đã cung cấp, không dùng làm nguồn lịch sử.
 Ghi rõ nội dung do AI gợi ý và phần được con người kiểm tra.

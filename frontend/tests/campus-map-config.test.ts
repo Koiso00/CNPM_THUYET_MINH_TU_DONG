@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { CAMPUS_MAP_CENTER, createCampusMapStyle } from "../src/features/map/campusMapConfig";
-import { campusPoiMarkerSymbol, withCampusPoiLocations } from "../src/features/map/campusPoiLocations";
+import { campusPoiMarkerSymbol } from "../src/features/map/campusPoiLocations";
+import { withTestLocations } from "./coordinate-fixture";
 import { campusPlaces } from "../src/features/tours/campusPlaces";
 
 describe("campus map configuration", () => {
@@ -9,7 +10,7 @@ describe("campus map configuration", () => {
   });
 
   it("maps the ten user-provided latitude/longitude pairs to GeoJSON order", () => {
-    const places = withCampusPoiLocations(campusPlaces.map((place) => ({
+    const places = withTestLocations(campusPlaces.map((place) => ({
       ...place,
       source: "user supplied",
       location: null,

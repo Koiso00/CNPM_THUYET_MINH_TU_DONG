@@ -9,8 +9,7 @@ App shell hiển thị trang khách công khai và khu vực Admin; audio công 
 | tours    | Đọc snapshot công bố từ API; khách chọn điểm và nghe thủ công |
 | map      | Bản đồ MapLibre dùng tile raster Stadia Maps trực tuyến, có attribution, 10 marker và trạng thái tải/lỗi; người dùng đã cấu hình domain và kiểm tra trên điện thoại. Tọa độ đã kiểm chứng thực địa; tự phát trên iPhone/Safari cần thử lại sau điều chỉnh trình phát. |
 | playback | Phát MP3 công bố qua Range/HEAD; ghi lượt phát khi audio bắt đầu |
-| offline  | Manifest, IndexedDB, tải/cập nhật gói và Workbox          |
-| creator  | Nội dung thuộc quyền quản lý và gửi duyệt                 |
+| offline  | Đã loại khỏi phạm vi ngày 27/10/2026 |
 | admin    | Biên soạn trực tiếp, công bố, quản lý tài khoản và dashboard |
 
 Dùng LocationProvider và AudioProvider tại module sở hữu khi triển khai.

@@ -1,6 +1,14 @@
-> **Trạng thái hiện hành — 26/10/2026:** khách không đăng nhập; Admin biên tập nội dung/audio và quản lý dashboard/tài khoản. API content/audio/Admin/events đã triển khai; audio GridFS hỗ trợ Range. Release hiện hành có bản dịch và audio tiếng Việt, English, Korean cho 10 POI. Workflow Creator/API Creator bên dưới là lịch sử và đã gỡ khỏi demo. QR chưa triển khai. Kế hoạch phạm vi tại [DEMO_GUEST_QR_PLAN](DEMO_GUEST_QR_PLAN.md).
+
+
+> **Trạng thái hiện hành — 26/10/2026:** khách không đăng nhập; Admin biên tập nội dung/audio và quản lý dashboard/tài khoản. API content/audio/Admin/events đã triển khai; audio GridFS hỗ trợ Range. Release hiện hành có bản dịch và audio tiếng Việt, English, Korean cho 10 POI.md).
 
 # Dữ liệu và hợp đồng API
+
+**Cập nhật 03/11/2026:** Đã gỡ API quản lý danh sách và thay đổi tài khoản khỏi demo; hệ thống dùng một tài khoản Admin. Đăng nhập, phiên, CSRF và kiểm tra quyền Admin vẫn được áp dụng.
+
+**Tọa độ 03/11/2026:** `location` của từng điểm được lưu trong nháp và snapshot release theo ID ổn định. Trang khám phá dùng tọa độ từ release; trang Admin hiển thị trạng thái tọa độ của nháp. Đổi tên điểm không làm thay đổi tọa độ. Lệnh seed mới chứa 10 tọa độ đã xác nhận; không tự sửa dữ liệu có sẵn.
+
+**Cập nhật 03/11/2026:** API lưu nháp chỉ chấp nhận danh sách có cùng tập ID địa điểm như bản nháp hiện tại. Thêm hoặc xóa ID bị từ chối với HTTP 422; nội dung, bản dịch và audio của địa điểm hiện có vẫn có thể chỉnh sửa theo quy trình. Nếu revision đã cũ, API trả 409. Thay đổi chưa tác động đến release đang công bố cho đến khi Admin công bố lại.
 
 ## Hợp đồng đã có
 
@@ -30,13 +38,11 @@ P1.2 ban đầu chỉ có collection/index User/session; GridFS được tích h
 | PUT /admin/campus/places/{place_id}/audio?revision=N&language=vi\|en\|ko | Admin + CSRF; body MP3 thô, Content-Type audio/mpeg, tối đa 10 MiB; 413 quá cỡ, 415 sai loại, 422 không có MP3 frames; không tự công bố |
 | GET/HEAD /audio/{release_id}/{place_id} | Công khai; kiểm tra release hiện hành và asset ghim; hỗ trợ single Range (206), suffix/open-ended; 416 range sai |
 | GET/HEAD /admin/audio/{asset_id} | Admin; preview asset đã nhập |
-| GET /admin/users?offset=0&limit=50 | Admin; tối đa 100/trang; id, username, role, is_active, updated_at, is_protected; không trả password_hash/token |
-| PUT /admin/users/{user_id} | Admin + CSRF; `{role,is_active}`; chặn tự sửa và sửa Admin đang hoạt động (409); khóa thu hồi các phiên |
 | GET /admin/dashboard?day=YYYY-MM-DD | Admin; tổng tài khoản, số trình duyệt đang trên website, guest_visitors, guest_journeys, guest_audio_plays và breakdown audio theo địa điểm; khách/hành trình/audio lọc theo ngày ICT |
 | POST /events/guest | Công khai; ghi visit, journey_started hoặc audio_played với event_id chống gửi trùng |
 | POST /events/presence | Công khai; cập nhật lần hoạt động gần nhất của ID trình duyệt khách để dashboard đếm trình duyệt đang trên web trong 90 giây gần nhất |
 
-Các endpoint Creator/submissions đã có trong một mốc trung gian nhưng đã được gỡ khỏi demo theo quyết định gộp Creator vào Admin. Chúng không thuộc OpenAPI/runtime hiện hành.
+Chúng không thuộc OpenAPI/runtime hiện hành.
 
 Draft: `{title,language:"vi",places:[{id,title,description,source,location,translations}]}`. Trường gốc hiện là tiếng Việt; `translations` giữ localization theo ngôn ngữ.
 Mỗi bản dịch `en`/`ko` chứa `title`, `description`, `source` và `source_text_sha256` ràng buộc với mô tả tiếng Việt hiện tại. Admin nhập nội dung qua cùng form theo ngôn ngữ đã chọn; bản dịch chưa đủ ba trường không được gửi lưu. Khi sửa bản dịch, frontend tính lại checksum nguồn để bản dịch có thể được công bố. Khi sửa văn bản tiếng Việt, checksum cũ không còn khớp và bản dịch bị loại khỏi snapshot đến khi Admin cập nhật lại.
@@ -50,7 +56,7 @@ Toàn bộ phản hồi API vẫn no-store. Audio không phục vụ trực ti�
 Import checksum/idempotence và bootstrap Admin ở các lệnh README.
 `audio_assets` đếm tất cả file ready đã nhập, gồm phiên bản cũ; không phải số địa điểm có audio.
 
-Lịch sử: Creator từng đề xuất toàn tour trong collection `content_submissions`; workflow/API này đã gỡ khỏi demo. Admin hiện biên soạn trực tiếp bản nháp và công bố riêng. Các truy vấn tour/release hiện hành đọc primary để tránh trạng thái cũ sau khi ghi.
+Admin hiện biên soạn trực tiếp bản nháp và công bố riêng. Các truy vấn tour/release hiện hành đọc primary để tránh trạng thái cũ sau khi ghi.
 
 ## API xác thực đã có P1.3
 
@@ -105,7 +111,7 @@ chuẩn hóa đến millisecond theo BSON. Model không nhận field lạ và kh
 
 Username giữ cách viết để hiển thị, bỏ khoảng trắng hai đầu; username_key dùng casefold.
 Phong/phong là cùng một tài khoản; unique index `uq_users_username_key` chống đăng ký đồng thời.
-Giới hạn username: 1–128 ký tự in được. Role mặc định user, chỉ chấp nhận user/creator/admin.
+Giới hạn username: 1–128 ký tự in được.
 P1.3 service băm/kiểm tra mật khẩu bằng Argon2id trước khi lưu; public registration chỉ tạo user.
 Hash không xuất hiện trong dump/repr thông thường; `to_document()` chỉ dùng nội bộ repository.
 
@@ -133,7 +139,7 @@ Khởi tạo index bằng lệnh ở [backend README](../backend/README.md); kh�
 
 | Collection | Thông tin và ràng buộc cần có |
 | --- | --- |
-| users | Định danh đăng nhập duy nhất, password hash, role User/Creator/Admin, trạng thái |
+| users ||
 | sessions | Phiên đăng nhập và thông tin thu hồi; không lưu mật khẩu/token rõ |
 | tours | Chủ sở hữu, metadata, danh sách/thứ tự POI, trạng thái nháp và phiên bản |
 | pois | Tọa độ GeoJSON Point, bán kính geofence, ảnh, nguồn tư liệu, phiên bản |
@@ -141,7 +147,6 @@ Khởi tạo index bằng lệnh ở [backend README](../backend/README.md); kh�
 | tour_releases | Snapshot bất biến của bản công bố, POI, bản dịch và asset tham chiếu |
 | assets | Loại file, GridFS ID, kích thước, checksum, ngôn ngữ/giọng và phiên bản nguồn |
 | jobs | Loại việc, khóa chống trùng, trạng thái, lần thử, lease và lỗi đã lọc bí mật |
-| offline_packs | Release + ngôn ngữ, manifest phần dùng chung/phần ngôn ngữ, dung lượng và checksum |
 | audit_logs | Ai làm gì với nội dung/tài khoản, thời điểm và kết quả |
 | usage_events | ID chống trùng, loại sự kiện, tour/phiên, thời điểm xảy ra/nhận, cờ mô phỏng |
 
@@ -159,25 +164,19 @@ Không mặc định yêu cầu MongoDB transaction trước khi kiểm tra kh�
 | /api/v1/content | Tour/POI/localization; tách quyền nháp và bản công bố |
 | /api/v1/audio | Tìm/phát asset, yêu cầu tạo đúng nội dung công bố |
 | /api/v1/maps | Metadata/tài nguyên bản đồ có kiểm tra quyền |
-| /api/v1/offline-packs | Manifest phiên bản và tài nguyên tải |
 | /api/v1/jobs | Trạng thái công việc mà tài khoản được phép xem |
-| /api/v1/ai | Gợi ý bản nháp từ tài liệu Creator cung cấp |
+| /api/v1/ai ||
 | /api/v1/admin | Xét duyệt, tài khoản, nhật ký, dashboard |
 | /api/v1/events | Nhận sự kiện sử dụng, chống gửi trùng |
 
 Đây là phân nhóm, không phải danh sách endpoint đã sẵn sàng. Chốt phương thức, payload,
 mã lỗi và phân trang trong PR tính năng, cập nhật OpenAPI và tài liệu cùng lúc.
 Những yêu cầu nền sẽ trả job ID/trạng thái thay vì chờ dịch/TTS xong.
-Manifest cần release ID, ngôn ngữ, danh sách URL/asset, kích thước và checksum.
-Thiết kế offline đã chốt: mỗi lựa chọn release/ngôn ngữ tham chiếu shared_assets và language_assets.
-Client xác định asset còn thiếu/hỏng/sai phiên bản để tính dung lượng tải thêm, không tải lại
-bản đồ/ảnh đã hợp lệ khi thêm ngôn ngữ. Trạng thái hoàn tất tính theo từng release/ngôn ngữ
-và toàn bộ asset cần thiết, không dựa vào một cờ chung cho mọi ngôn ngữ.
-Đây là hợp đồng mục tiêu, chưa có endpoint hoặc schema offline chạy thật.
+Offline đã loại khỏi phạm vi dự án ngày 27/10/2026.
 
 ## Ma trận quyền mục tiêu
 
-| Hành động | User | Creator | Admin |
+| Hành động | User || Admin |
 | --- | --- | --- | --- |
 | Nghe/tải bản công bố | Có | Có | Có |
 | Soạn/gửi duyệt | Không | Nội dung thuộc quyền quản lý | Quản trị theo chính sách được chốt |
