@@ -1,10 +1,16 @@
-> **Ưu tiên 24/10/2026:** dashboard thống kê Admin và đa ngôn ngữ đã hoàn tất phần demo; QR là bước phát triển kế tiếp. OSM/Stadia và GPS opt-in/mô phỏng/geofence có trong frontend. Nghiệm thu GPS tự phát và ngưỡng thực địa có thể để sau nhưng cần xong trước demo chính thức.
+> **Cập nhật người dùng 03/11/2026:** Ghi nhận GPS/geofence đã khảo sát theo yêu cầu người dùng; không có số liệu hay biên bản khảo sát mới kèm theo. Dashboard đã được người dùng kiểm thử thực tế và xác nhận đạt; Render đã triển khai thành công theo xác nhận người dùng. Bỏ qua nghiệm thu tự phát Safari, hàng đợi audio và Docker. Các ghi chú cũ yêu cầu các phần này chỉ là lịch sử.
+
+
+
+> **Quyết định ngày 27/10/2026:** Người dùng loại chức năng offline khỏi toàn bộ phạm vi dự án và kế hoạch dài hạn. Các mô tả trước đây về offline chỉ có giá trị lịch sử.
+
+> *OSM/Stadia và GPS opt-in/mô phỏng/geofence có trong frontend. Nghiệm thu GPS tự phát và ngưỡng thực địa có thể để sau nhưng cần xong trước demo chính thức.
 
 # Kiến trúc
 
 ## Trạng thái demo hiện hành — cập nhật 24/10/2026
 
-Khách dùng `#/welcome` không cần tài khoản; bắt đầu hành trình mới mới mở `#/explore`. Browser giữ ID khách và hành trình trong localStorage. Nội dung/audio công khai lấy từ release đã công bố; giao diện và nội dung/audio POI English/Việt theo locale. Visit/journey/audio được ghi qua API sự kiện công khai có schema giới hạn và đếm theo ngày ICT. Admin biên soạn trực tiếp tại `#/admin`, chọn VI/EN/KO để sửa nội dung từng địa điểm và quản lý MP3 tương ứng; xem dashboard/quản lý tài khoản tại `#/management`. Creator workflow/API đã gỡ khỏi demo. Stadia Maps, 10 tọa độ người dùng cung cấp và GPS opt-in/mô phỏng cùng geofence đã tích hợp phía frontend; người dùng đã kiểm chứng tọa độ thực địa và xác nhận chạm điểm phát audio trên điện thoại. Tự phát theo geofence trên iPhone/Safari và ngưỡng GPS chưa nghiệm thu. Dashboard nền hoạt động trên deploy theo xác nhận người dùng. QR là bước phát triển kế tiếp; offline và AI vẫn hoãn. Các phần dài hạn bên dưới vẫn tham khảo kế hoạch gốc.
+Khách dùng `#/welcome` không cần tài khoản; bắt đầu hành trình mới mới mở `#/explore`. Browser giữ ID khách và hành trình trong localStorage. Nội dung/audio công khai lấy từ release đã công bố; giao diện và nội dung/audio POI English/Việt theo locale. Visit/journey/audio được ghi qua API sự kiện công khai có schema giới hạn và đếm theo ngày ICT. Admin biên soạn trực tiếp tại `#/admin`, chọn VI/EN/KO để sửa nội dung từng địa điểm và quản lý MP3 tương ứng; xem dashboard/quản lý tài khoản tại `#/management`. Stadia Maps, 10 tọa độ người dùng cung cấp và GPS opt-in/mô phỏng cùng geofence đã tích hợp phía frontend; người dùng đã kiểm chứng tọa độ thực địa và xác nhận chạm điểm phát audio trên điện thoại. Tự phát theo geofence trên iPhone/Safari và ngưỡng GPS chưa nghiệm thu. Dashboard nền hoạt động trên deploy theo xác nhận người dùng. Các phần dài hạn bên dưới vẫn tham khảo kế hoạch gốc.
 
 Trạng thái: phần đầu mô tả demo đang chạy; các mục dài hạn bên dưới là thiết kế mục tiêu.
 
@@ -14,7 +20,6 @@ Thanh điều hướng giữa hai trang làm việc dùng chung `shared/Workspac
 `#/admin` hiển thị **Nội dung** (audio), `#/management` hiển thị **Quản trị** (grid).
 Hai trang chỉ cho Admin. `features/content/ContentPage.tsx` quản lý POI/văn bản/audio;
 `features/admin/ManagementPage.tsx` chỉ đọc dashboard/users và cập nhật user qua API Admin.
-Creator UI/API và workflow gửi/duyệt đã gỡ khỏi demo; Admin biên soạn trực tiếp, lưu nháp rồi công bố. Các mô tả Creator bên dưới là lịch sử hoặc kế hoạch dài hạn.
 RBAC backend chặn User khỏi cả hai khu vực quản trị.
 
 Router → service → repository vẫn là ranh giới bắt buộc. Demo có một tour `campus-main`:
@@ -33,8 +38,8 @@ Trình phát duy nhất được dừng khi đổi địa điểm hoặc rời t
 Admin API dùng RBAC/CSRF hiện có. Khóa user thu hồi phiên; mở khóa không hồi sinh phiên cũ.
 Admin đang hoạt động được bảo vệ khỏi khóa/hạ quyền trên web. Dashboard dùng count database,
 snapshot hiện hành, event visit/journey/audio theo ngày và presence của trình duyệt khách
-được cập nhật mỗi 30 giây; online tính theo tín hiệu trong 90 giây gần nhất. QR, Dịch/TTS tự động, bản đồ,
-QR/camera, offline và AI chưa triển khai. GPS tự nhận diện/tự phát theo geofence và ngưỡng thực địa còn chờ nghiệm thu. Các phần dài hạn bên dưới giữ vai trò thiết kế mục tiêu.
+được cập nhật mỗi 30 giây; online tính theo tín hiệu trong 90 giây gần nhất.
+GPS tự nhận diện/tự phát theo geofence và ngưỡng thực địa còn chờ nghiệm thu. Các phần dài hạn bên dưới giữ vai trò thiết kế mục tiêu.
 P1.1 đã bổ sung connection pool MongoDB theo lifespan và endpoint readiness.
 P1.2 có model/repository User/session và unique/TTL index thật trên Atlas.
 P1.3 có API JWT cookie/CSRF và dependency RBAC, đã kiểm thử với Atlas thật.
@@ -48,7 +53,6 @@ Explore hiện đọc nội dung công khai đã công bố và phát audio th�
 ```mermaid
 flowchart LR
   User[Trình duyệt] --> Web[React / MapLibre / trình phát]
-  Web <--> Local[IndexedDB / Cache Storage]
   Web --> API[FastAPI /api/v1]
   API --> Services[Services]
   Services --> Repositories[Repositories]
@@ -66,13 +70,13 @@ không nuốt lỗi 404 của API. UI route guard không thay kiểm tra quyền
 ## Ranh giới mã
 
 - `backend/app/api/v1/endpoints/`: router độc lập auth, content, audio, maps,
-  offline_packs, jobs, ai, admin, events. Health và auth có endpoint thực.
+  jobs, ai, admin, events. Health và auth có endpoint thực.
 - `core/`: cấu hình và chính sách thời hạn phiên; `db/`: Mongo lifecycle và index User/session.
 - `commands/`: khởi tạo index tường minh, không tự chạy khi import hoặc startup API.
 - `schemas/`, `models/`: hợp đồng HTTP và quy tắc tài liệu lưu trữ.
 - `services/`: nghiệp vụ; `repositories/`: truy xuất MongoDB/GridFS.
 - `services/providers/`: lớp bọc dịch/TTS/Gemini; `workers/`: xử lý công việc bền vững.
-- Frontend chia feature auth, guest, tours, map, playback, offline và admin.
+- Frontend chia feature auth, guest, tours, map, playback và admin.
   Vị trí, geofence và audio không được gắn chặt vào một component bản đồ.
 
 ## Phiên phía giao diện P1.4
@@ -92,7 +96,7 @@ Tải lại/đóng trang mất RAM là bình thường, cookie phiên cho phép 
 
 ## Luồng công bố và xử lý nền
 
-Creator tạo nháp, kiểm tra Việt–Anh/MP3 rồi gửi duyệt. Admin duyệt một phiên bản cụ thể.
+Admin duyệt một phiên bản cụ thể.
 Service tạo snapshot công bố; chỉnh sửa tiếp theo chỉ đổi nháp, không thay asset của snapshot cũ.
 
 Dịch/TTS lưu job trước, trả mã công việc cho giao diện. Worker có retry hữu hạn,
@@ -119,9 +123,7 @@ TTL chỉ dọn dữ liệu cũ, repository luôn kiểm tra thời hạn/thu h�
 bằng chiến lược API chung của service worker. Không đưa bí mật Gemini/TTS vào frontend.
 
 MongoDB lưu metadata; GridFS lưu file. API media kiểm tra quyền và hỗ trợ Range.
-Bản đồ phải có đủ style/font/sprite được phép đóng gói; PMTiles không tự bao gồm các phụ thuộc này.
-Offline pack được chọn theo release/ngôn ngữ; bản đồ/ảnh dùng chung qua tham chiếu asset/checksum,
-nội dung/MP3 theo ngôn ngữ. Không bắt tải mọi ngôn ngữ trên server. Xem [runtime](TOUR_RUNTIME.md).
+Offline đã loại khỏi phạm vi dự án ngày 27/10/2026. Xem [runtime](TOUR_RUNTIME.md).
 
 ## Triển khai
 

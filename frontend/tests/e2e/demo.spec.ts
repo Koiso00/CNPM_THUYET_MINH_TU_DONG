@@ -46,60 +46,15 @@ test("guest returns to welcome, starts a journey, reloads and reuses visitor id 
   expect(secondJourneyId).not.toBe(firstJourneyId);
 });
 
-test("manages a disposable account from the separate system page", async ({
-  page,
-}, info) => {
+test("shows dashboard without account management", async ({ page }, info) => {
   await login(page);
-  const username = `managed_${info.project.name}_${Date.now()}`;
-  const csrf = await page.request.get("/api/v1/auth/csrf");
-  const created = await page.request.post("/api/v1/auth/register", {
-    headers: { "X-CSRF-Token": (await csrf.json()).csrf_token },
-    data: { username, password },
-  });
-  expect(created.status()).toBe(201);
   await page.getByRole("link", { name: "Admin", exact: true }).click();
-  await expect(
-    page.getByRole("heading", { name: "Quản trị hệ thống" }),
-  ).toBeVisible();
-  await expect(page.getByLabel("Vai trò e2e_admin")).toBeDisabled();
-  await page.getByLabel(`Vai trò ${username}`).selectOption("admin");
-  await page.getByLabel(`Hoạt động ${username}`).uncheck();
-  await page
-    .getByRole("button", { name: `Lưu ${username}`, exact: true })
-    .click();
-  await expect(
-    page
-      .getByRole("status")
-      .filter({ hasText: `Đã cập nhật tài khoản ${username}` }),
-  ).toBeVisible();
-  const users = await page.request.get(
-    "/api/v1/admin/users?offset=0&limit=100",
-  );
-  const stored = (await users.json()).find(
-    (item: { username: string }) => item.username === username,
-  );
-  expect(stored.role).toBe("admin");
-  expect(stored.is_active).toBe(false);
+  await expect(page.getByRole("heading", { name: "Quản trị hệ thống" })).toBeVisible();
+  await expect(page.getByRole("region", { name: "Dashboard" })).toBeVisible();
+  await expect(page.getByRole("region", { name: "Quản lý tài khoản" })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Làm mới số liệu" })).toBeEnabled();
-  expect(
-    await page.evaluate(
-      () => document.documentElement.scrollWidth <= innerWidth,
-    ),
-  ).toBe(true);
-  await page.screenshot({
-    path: info.outputPath("management.png"),
-    fullPage: true,
-  });
-  await page.goto("/#/admin");
-  await expect(
-    page.getByRole("heading", { name: "Nội dung khuôn viên" }),
-  ).toBeVisible();
-  await expect(page.getByRole("region", { name: "Dashboard" })).toHaveCount(0);
-  await expect(
-    page.getByRole("region", { name: "Quản lý tài khoản" }),
-  ).toHaveCount(0);
+  await page.screenshot({ path: info.outputPath("management.png"), fullPage: true });
 });
-
 
 async function login(page: import("@playwright/test").Page) {
   await page.goto("/#/login");

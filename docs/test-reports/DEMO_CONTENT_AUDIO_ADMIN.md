@@ -5,7 +5,6 @@
 ## Cập nhật kiểm tra Admin và giao diện nội bộ — 23/10/2026
 
 - Trạng thái Atlas của tài khoản mục tiêu `phong`: database kết nối được, tài khoản tồn tại, đang active và có role Admin. Chạy lệnh status không reset mật khẩu.
-- Không xóa User/Creator cũ trong lượt này; role counts được ghi nhận để xử lý sau khi xác định đúng tài khoản và phiên liên quan.
 - Giao diện Admin vẫn vào được từ liên kết `Admin` sau đăng nhập, kể cả khi route hiện tại là `#/login`. Đăng ký đã bỏ khỏi giao diện Admin; route cũ `#/register` chuyển về login.
 - Header ở trang explore không còn hiển thị ngôn ngữ hoặc đăng nhập quản trị; quyền vào `#/management` của Admin vẫn được giữ riêng.
 - Frontend đã sửa responsive header và kiểm tra trực tiếp ở viewport 803px; không còn che hero hoặc làm lệch chữ.
@@ -19,7 +18,7 @@ Triển khai phần tiếp theo của demo 2 ngày theo yêu cầu người dùn
 - Admin sửa tên tour, thêm/sửa/xóa điểm trong nháp, ghi nguồn, lưu, công bố/gỡ công bố.
   Revision CAS trả 409 nếu bản nháp thay đổi; lỗi mạng giữ dữ liệu form.
 - User chỉ đọc snapshot hiện hành qua API; chưa công bố trả thông báo, không fallback
-  sang 10 mô tả tĩnh. Creator không đọc/sửa API Admin.
+  sang 10 mô tả tĩnh.
 - GridFS lưu MP3, metadata có checksum và checksum văn bản. Snapshot ghim asset ID;
   sửa chữ hoặc tải audio mới không thay audio của release đã công bố.
 - API MP3 GET/HEAD, single Range 206, suffix/open-ended, lỗi 416. Preview riêng cho Admin.
@@ -77,14 +76,13 @@ phục vụ frontend build cùng nguồn tại `http://127.0.0.1:8000`.
 - Test auth cũ giả mọi phản hồi là grant đăng nhập, không có response cho API Admin mới;
   cập nhật fixture đúng endpoint và tiêu đề UI mới. Không sửa mã để bỏ qua lỗi nghiệp vụ.
 - TypeScript phát hiện nhánh tiêu đề Admin cũ không thể tới sau khi tách AdminPage;
-  cập nhật nhánh Creator. Tách GET/HEAD decorator để không trùng OpenAPI operation ID.
+  Tách GET/HEAD decorator để không trùng OpenAPI operation ID.
 - Test upload dùng lại CSRF sau khi một request khác đã thay cookie: lấy token mới trước
   lượt kiểm tra quá cỡ. CSRF middleware hoạt động đúng, không nới kiểm tra token.
 
 ## Giới hạn và đối chiếu kế hoạch
 
 Đây là tập con demo tiếng Việt/một tour. Chưa hoàn thành toàn bộ P1.5/P2.3/P3.1/P3.3/P5.2:
-POI/localization đang nhúng trong draft, chưa tách collection; chưa có Creator gửi duyệt,
 workflow song ngữ, jobs/TTS/dịch/fallback, phiên tour/geofence, usage events/audit.
 Vị trí có thể null; UI chưa cung cấp công cụ nhập tọa độ do chưa có khảo sát.
 Release không còn tham chiếu và các phiên bản audio cũ chưa có tác vụ dọn tự động;
@@ -112,7 +110,6 @@ Server test override mọi service dữ liệu sang collection riêng và phải
 
 ## E2E hồi quy bổ sung — 23/10/2026
 
-- E2E Admin/nội dung/audio đạt đủ desktop và viewport mobile: tài khoản thử, dashboard, playback GridFS, chuyển điểm, sửa/lưu nháp không đổi release, tải MP3 thay thế rồi công bố, route Creator cũ.
 - Luồng khách E2E đạt desktop và viewport mobile: welcome, visit, bắt đầu, tải lại, tab mới dùng lại visitor ID và journey mới.
 - Server E2E dùng Atlas nhưng toàn bộ user/session/content/release/assets/usage events/GridFS nằm trong collection/bucket tạm; shutdown xác nhận đã dọn. Không ghi nội dung vào database ứng dụng.
 - Frontend 39 test; build/typecheck đạt. Backend test sự kiện khách và setup Admin: 20 đạt.
@@ -124,12 +121,9 @@ Server test override mọi service dữ liệu sang collection riêng và phải
 
 ## Kiểm kê bổ sung — 24/10/2026
 
-- Trước khi dọn tài khoản legacy: `phong` là Admin active; role counts là 2 User, 1 Creator, 1 Admin.
 - Release đang công khai tồn tại và có audio ID ở cả 10/10 địa điểm; nháp có 10 địa điểm nhưng chưa ghim audio ID. Điều này phù hợp với việc audio được gắn vào snapshot khi công bố.
-- Hai User `123` và `AGT` từng có một phiên active mỗi tài khoản; đã thu hồi đúng hai phiên. Creator `phong11` không có phiên active, nhưng có một đề xuất đang `pending`.
+- Hai User `123` và `AGT` từng có một phiên active mỗi tài khoản; đã thu hồi đúng hai phiên.
 - Người dùng đã nghe 10 MP3 demo và xác nhận audio đúng, không cần thay. Release Atlas đã gắn audio cho 10/10 địa điểm; không sửa hoặc công bố lại trong bước xác nhận này.
-- Theo xác nhận rõ ràng của người dùng, đã xóa đúng tài khoản Creator `phong11` và đề xuất `pending` liên kết trong một giao dịch Atlas; 0 phiên bổ sung cần thu hồi. Xác minh sau giao dịch: tài khoản/đề xuất không còn, Admin `phong` vẫn active.
-- Lệnh kiểm tra trạng thái chỉ đọc sau khi xóa Creator (trước khi xóa hai User) xác nhận role counts trung gian: 2 User, 0 Creator, 1 Admin; `phong` tồn tại, active, role Admin.
+- Xác minh sau giao dịch: tài khoản/đề xuất không còn, Admin `phong` vẫn active.
 - Không xóa/sửa tour nháp, release hoặc audio. Hai phiên User legacy đã bị thu hồi trước khi xóa tài khoản.
-- Theo phạm vi đã chốt trước đó, đã xóa hai User legacy `123`, `AGT`; xác minh sau giao dịch role counts là 0 User, 0 Creator, 1 Admin, `phong` vẫn active.
-- Hồi quy mã trong lượt cleanup: backend unit **173 passed**, frontend **39 passed**, `npm run build` đạt, E2E **12/12 passed** desktop/mobile. E2E chạy sau khi dọn Creator nhưng trước khi xóa hai User; toàn bộ test dùng collection/bucket biệt lập và shutdown xác nhận dọn sạch. Bộ `auth.spec.ts` cũ từng timeout vì kiểm tra signup/Creator đã gỡ; cập nhật theo luồng guest/Admin hiện tại và toàn bộ E2E chạy lại đạt. Lần pytest đầu bị chặn bởi quyền truy cập thư mục temp hệ thống; chạy lại với basetemp trong workspace đạt đủ.
+- Hồi quy mã trong lượt cleanup: backend unit **173 passed**, frontend **39 passed**, `npm run build` đạt, E2E **12/12 passed** desktop/mobile. Lần pytest đầu bị chặn bởi quyền truy cập thư mục temp hệ thống; chạy lại với basetemp trong workspace đạt đủ.

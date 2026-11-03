@@ -1,12 +1,22 @@
-> **Cập nhật người dùng ngày 24/10/2026:** Stadia/GPS hoạt động trên điện thoại, 10 tọa độ đã kiểm chứng thực địa và chạm địa điểm phát audio được. Dashboard Admin có lọc ngày và lượt nghe theo địa điểm; người dùng xác nhận bản deploy hoạt động. Giao diện khách VI/EN/KO và nội dung/audio English cho 10 POI đã hoàn tất; QR là bước phát triển kế tiếp. Ngưỡng GPS/geofence và tự phát trên iPhone/Safari vẫn cần nghiệm thu trước demo chính thức.
+> **Cập nhật người dùng 03/11/2026:** Ghi nhận GPS/geofence đã khảo sát theo yêu cầu người dùng; không có số liệu hay biên bản khảo sát mới kèm theo. Dashboard đã được người dùng kiểm thử thực tế và xác nhận đạt; Render đã triển khai thành công theo xác nhận người dùng. Bỏ qua nghiệm thu tự phát Safari, hàng đợi audio và Docker. Các ghi chú cũ yêu cầu các phần này chỉ là lịch sử.
+
+
+
+> **Quyết định ngày 27/10/2026:** Người dùng loại chức năng offline khỏi toàn bộ phạm vi dự án và kế hoạch dài hạn. Các mô tả trước đây về offline chỉ có giá trị lịch sử.
+
+> **Cập nhật người dùng ngày 24/10/2026:** Stadia/GPS hoạt động trên điện thoại, 10 tọa độ đã kiểm chứng thực địa và chạm địa điểm phát audio được. Dashboard Admin có lọc ngày và lượt nghe theo địa điểm; người dùng xác nhận bản deploy hoạt động. Ngưỡng GPS/geofence và tự phát trên iPhone/Safari vẫn cần nghiệm thu trước demo chính thức.
 
 > **Tiến độ ngày 24/10 — mốc lịch sử:** giao diện khách VI/EN/KO giữ lựa chọn xuyên hành trình; 10 POI English và 10 MP3 đã được người dùng duyệt và công bố trong Atlas release `09d43a32-43d1-4f2b-85d0-cdae2ad29981`. Audio Việt vẫn giữ riêng. Workspace có code hỗ trợ localization/audio theo ngôn ngữ. Khi ghi nhận mốc này, Render báo service `sgu-campus-guide-demo` đang “Suspended by you”; trạng thái mới nhất xem ở cập nhật CI/CD 26/10 bên dưới. Xem [báo cáo đa ngôn ngữ](test-reports/MULTILINGUAL_UI_PROGRESS_2026_10_24.md).
 
 > **Cập nhật Admin đa ngôn ngữ 24/10:** `#/admin` có bộ chọn Tiếng Việt/English/한국어; các trường tên địa điểm, thuyết minh và nguồn tư liệu được chỉnh theo ngôn ngữ. Danh sách/nghe thử/tải MP3 cũng đổi theo lựa chọn. Bản dịch phải đủ trường và khớp checksum nội dung Việt trước khi xuất hiện trong release. Tên tour hiện vẫn dùng chung. Kiểm tra: frontend 61 test, build/typecheck đạt; backend 181 test đạt, 16 integration test skip theo mặc định. Chi tiết tại [nhật ký Admin đa ngôn ngữ](test-reports/ADMIN_MULTILINGUAL_CONTENT_2026_10_24.md).
 
-> **Ảnh chụp trạng thái ngày 23/10/2026 — lịch sử:** khách không đăng nhập; welcome, hành trình, nội dung/audio và dashboard đã có; QR còn hoãn tại thời điểm đó. Trạng thái hiện hành được cập nhật trong phần 24/10 bên dưới.
+> *Trạng thái hiện hành được cập nhật trong phần 24/10 bên dưới.
 
 # Bối cảnh dự án
+
+**Quyết định 03/11/2026:** Demo chỉ dùng một tài khoản Admin; bỏ giao diện và API quản lý tài khoản/phân quyền. Đăng nhập và bảo vệ các chức năng Admin vẫn được giữ.
+
+**Quyết định người dùng 03/11/2026:** Bỏ chức năng thêm và xóa địa điểm trong demo vì bản đồ hiện sử dụng tập điểm có sẵn. Admin tiếp tục chỉnh sửa nội dung và audio của các điểm hiện có. Các mô tả thêm/xóa trong mốc cũ là lịch sử.
 
 ## Cập nhật CI/CD — 26/10/2026
 
@@ -20,9 +30,8 @@ backend checks đạt. Người dùng gọi readiness trên Render và nhận `s
 
 ## Trạng thái demo hiện hành — cập nhật đến 26/10/2026
 
-Đối với demo, người nghe dùng welcome và không đăng nhập; ID khách được giữ trong trình duyệt, mỗi lần bấm bắt đầu tạo hành trình mới. Creator/Admin gộp thành một vai trò vận hành Admin; Creator UI/API đã được gỡ khỏi demo. Trang Nội dung (`#/admin`) và Quản trị (`#/management`) dành cho Admin. Nội dung/audio công khai chỉ đọc release đã công bố; dashboard có visit, journey và audio theo ngày ICT. Bản đồ Stadia và GPS hoạt động trên điện thoại; 10 tọa độ đã kiểm chứng thực địa. Người dùng xác nhận chạm địa điểm phát audio được trên điện thoại. Dashboard có bộ lọc ngày ICT và lượt phát audio theo địa điểm; người dùng xác nhận bản deploy hoạt động. Nội dung/audio Việt và English cho 10 điểm đã được người dùng duyệt và công bố trong release song ngữ ngày 24/10. Ngày 26/10 người dùng duyệt bản dịch/audio tiếng Hàn cho 10 điểm; đã nhập Atlas và công bố release `2cebd7fb-7ca8-4719-819b-abb2a2191038`, giữ nguyên tiếng Việt/English. Nghiệm thu GPS tự nhận diện/tự phát và ngưỡng geofence 30/45 m được dời lại nhưng cần xong trước demo chính thức. Các tài khoản legacy `123`, `AGT`, `phong11` và đề xuất `pending` gắn với Creator đã được xóa theo phạm vi người dùng chốt; hiện Atlas có 1 Admin active (`phong`), không còn User/Creator legacy. Xem [kế hoạch khách/QR](DEMO_GUEST_QR_PLAN.md), [báo cáo khách](test-reports/DEMO_GUEST_PROGRESS_2026_10_23.md), [báo cáo Admin/audio](test-reports/DEMO_CONTENT_AUDIO_ADMIN.md), [báo cáo audio English](test-reports/DEMO_AUDIO_EN_DRAFT_2026_10_24.md) và [báo cáo audio Hàn](test-reports/DEMO_AUDIO_KO_DRAFT_2026_10_26.md).
+Đối với demo, người nghe dùng welcome và không đăng nhập; ID khách được giữ trong trình duyệt, mỗi lần bấm bắt đầu tạo hành trình mới. Trang Nội dung (`#/admin`) và Quản trị (`#/management`) dành cho Admin. Nội dung/audio công khai chỉ đọc release đã công bố; dashboard có visit, journey và audio theo ngày ICT. Bản đồ Stadia và GPS hoạt động trên điện thoại; 10 tọa độ đã kiểm chứng thực địa. Người dùng xác nhận chạm địa điểm phát audio được trên điện thoại. Dashboard có bộ lọc ngày ICT và lượt phát audio theo địa điểm; người dùng xác nhận bản deploy hoạt động. Nội dung/audio Việt và English cho 10 điểm đã được người dùng duyệt và công bố trong release song ngữ ngày 24/10. Ngày 26/10 người dùng duyệt bản dịch/audio tiếng Hàn cho 10 điểm; đã nhập Atlas và công bố release `2cebd7fb-7ca8-4719-819b-abb2a2191038`, giữ nguyên tiếng Việt/English. Nghiệm thu GPS tự nhận diện/tự phát và ngưỡng geofence 30/45 m được dời lại nhưng cần xong trước demo chính thức.md).
 
-Các phần mô tả ba vai trò và Creator ở dưới là quyết định của kế hoạch gốc dài hạn hoặc lịch sử trước khi cập nhật demo; không mô tả luồng demo hiện hành.
 
 ## Nguồn và quyết định đã chốt
 
@@ -43,11 +52,11 @@ Giọng xác nhận từ dịch vụ: vi-VN-NamMinhNeural, dùng tốc độ/âm
 | Sản phẩm | Website trên điện thoại và máy tính, không bắt buộc cài ứng dụng |
 | Khu vực | Cơ sở chính Đại học Sài Gòn; 8–10 điểm ngoài trời |
 | Nội dung | Một tour mẫu; tiếng Việt và tiếng Anh |
-| Vai trò dài hạn | User, Creator, Admin; demo hiện tại gộp Creator vào Admin theo yêu cầu cập nhật |
+| Vai trò dài hạn ||
 | Tham quan | Tự do; tự nhận điểm khi trang đang mở hoặc chọn nghe thủ công |
 | Demo | GPS mô phỏng cùng luồng xử lý với GPS thật |
-| Ngoại tuyến | Khách tự chọn ngôn ngữ tải, có thể tải bổ sung; nội dung/MP3 theo ngôn ngữ, bản đồ/ảnh dùng chung |
-| Nền tảng | FastAPI, MongoDB/GridFS, React, MapLibre/PMTiles, Workbox/IndexedDB |
+| Ngoại tuyến | Đã loại khỏi phạm vi dự án ngày 27/10/2026 |
+| Nền tảng | FastAPI, MongoDB/GridFS, React, MapLibre |
 | AI | Gemini theo cấu hình; chỉ gợi ý bản nháp |
 | Chi phí | Ưu tiên hạ tầng miễn phí; bản chạy trên máy để dự phòng |
 | Tiến độ | Lộ trình dự kiến 10 tuần; không phải cam kết hoàn thành |
@@ -55,14 +64,14 @@ Giọng xác nhận từ dịch vụ: vi-VN-NamMinhNeural, dùng tốc độ/âm
 
 ## Các phương án không còn là phạm vi hiện hành
 
-Kế hoạch gốc được giữ cho phát triển dài hạn. Phạm vi demo đã cập nhật ngày 23/10: gộp Creator/Admin,
+Kế hoạch gốc được giữ cho phát triển dài hạn.
 chỉ OSM trực tuyến ở bản đầu, thống kê người đang ở từng điểm và xuất CSV.
 Không tự khôi phục các phương án này. Không suy diễn số giờ làm hoặc năng lực nhóm
 thành cam kết tiến độ mới.
 
 ## Trạng thái thực tế
 
-Admin dùng **Nội dung** (`#/admin`) để quản lý địa điểm/bài/audio và **Quản trị** (`#/management`) để xem dashboard/tài khoản. Creator UI, API và quy trình duyệt đã gỡ khỏi demo; User không được vào các API Admin. Các mô tả Creator bên dưới là lịch sử hoặc thiết kế dài hạn.
+Admin dùng **Nội dung** (`#/admin`) để quản lý địa điểm/bài/audio và **Quản trị** (`#/management`) để xem dashboard/tài khoản.
 
 **Cập nhật 22/10/2026:** đã triển khai demo dữ liệu/audio/quản trị:
 10 mô tả nguồn nhập thành bản nháp MongoDB, 10 MP3 nhập GridFS; Admin có thể sửa/thêm/xóa
@@ -79,7 +88,7 @@ theo ID trình duyệt; khách demo không cần đăng nhập nên không đư�
 Cho phép Admin thay MP3 theo nội dung đang lưu, tối đa 10 MiB (10 × 1024 × 1024 byte)/file;
 công bố lại mới áp dụng cho người nghe. Admin đang hoạt động được bảo vệ khỏi khóa/hạ quyền
 trên web để tránh mất toàn bộ quyền quản trị khi hai Admin thao tác đồng thời.
-Ở một mốc trung gian, Creator từng có luồng đề xuất toàn tour (xem [báo cáo workflow](test-reports/CREATOR_REVIEW.md)); luồng đó đã gỡ khỏi demo hiện hành khi gộp Creator vào Admin. Bản dịch POI English/audio đã được duyệt và công bố thủ công; dịch/TTS tự động có jobs vẫn hoãn. Ưu tiên hiện tại là QR sau hoàn thành dashboard và đa ngôn ngữ.
+Bản dịch POI English/audio đã được duyệt và công bố thủ công; dịch/TTS tự động có jobs vẫn hoãn.
 
 Các đoạn bên dưới mô tả các mốc đã đạt trước cập nhật này; trạng thái mới ở trên thay thế
 các ghi chú “chưa tích hợp” của nội dung/audio/quản trị.
@@ -95,11 +104,7 @@ P1.4 có UI đăng ký/đăng nhập, gia hạn phiên, đăng xuất và khung 
 
 ## Cập nhật cách thực hiện
 
-Ngày 21/10/2026, người dùng đồng ý thay gói bắt buộc đầy đủ Việt–Anh bằng gói theo ngôn ngữ tự chọn.
-Tải offline là tùy chọn; không tải vẫn dùng trực tuyến. Chỉ bảo đảm offline cho ngôn ngữ đã tải đủ.
-Bản đồ/ảnh/tài nguyên dùng chung không tải lại khi thêm ngôn ngữ nếu đã có đúng phiên bản và checksum.
-Khi tăng số ngôn ngữ trên hệ thống, không tự tải các ngôn ngữ mới về máy khách.
-Chi tiết ở [TOUR_RUNTIME](TOUR_RUNTIME.md). Thay đổi thiết kế này không đưa offline trở lại demo 2 ngày.
+Ngày 27/10/2026, người dùng loại offline khỏi phạm vi dự án, thay quyết định tải theo ngôn ngữ ngày 21/10.
 
 Người dùng yêu cầu chia nhỏ công việc, test sau từng phần và báo lỗi/chênh lệch với kế hoạch.
 Theo dõi tại [WORK_BREAKDOWN](WORK_BREAKDOWN.md). Người dùng chọn MongoDB Atlas cho môi trường
@@ -109,7 +114,6 @@ P1.2 hoàn tất theo [báo cáo](test-reports/P1_2_USER_SESSIONS.md).
 Người dùng đã chốt username không phân biệt hoa/thường: Phong và phong cùng một tài khoản.
 Token truy cập 15 phút, tự gia hạn trong phiên có hạn tuyệt đối 7 ngày từ lúc đăng nhập;
 gia hạn không đẩy mốc 7 ngày ra xa hơn. Hết phiên cần đăng nhập lại.
-Đăng ký công khai chỉ tạo User, quyền Creator/Admin do quản trị cấp sau.
 Mật khẩu đăng ký 15–128 ký tự, cho phép Unicode/dấu cách, không bắt buộc trộn nhóm ký tự.
 P1.3 triển khai JWT/cookie/CSRF và API gia hạn; P1.4 đã nối giao diện và gia hạn tự động.
 Xem [báo cáo giao diện](test-reports/P1_4_AUTH_UI.md); chưa nghiệm thu trên điện thoại vật lý.

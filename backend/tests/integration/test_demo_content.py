@@ -11,7 +11,7 @@ from app.commands.seed_demo_content import source_draft
 from app.db.indexes import ensure_session_indexes, ensure_user_indexes
 from app.repositories.sessions import SessionRepository
 from app.repositories.users import UserRepository
-from app.services.auth import AuthenticationError, AuthService
+from app.services.auth import AuthService
 from tests.auth_support import SECRET, auth_harness, csrf_headers, register_and_login
 from tests.demo_database import isolated_content
 
@@ -97,41 +97,7 @@ async def test_demo_http_atlas(settings_factory, user_test_collection, session_t
                 "published_places": 10,
                 "published_tours": 1,
             }
-            accounts = (await client.get("/api/v1/admin/users")).json()
-            assert len(accounts) == 1 and "password_hash" not in str(accounts)
-            target = await auth.register("visitor", "another long password 1234")
-            target_grant = await auth.login("visitor", "another long password 1234")
-            update = await client.put(
-                f"/api/v1/admin/users/{target.id}",
-                json={"role": "user", "is_active": False},
-                headers=await csrf_headers(client),
-            )
-            assert update.status_code == 200 and not update.json()["is_active"]
-            with pytest.raises(AuthenticationError):
-                await auth.authenticate(target_grant.access_token)
-            await client.put(
-                f"/api/v1/admin/users/{target.id}",
-                json={"role": "user", "is_active": True},
-                headers=await csrf_headers(client),
-            )
-            with pytest.raises(AuthenticationError):
-                await auth.authenticate(target_grant.access_token)
-            await user_test_collection.update_one(
-                {"_id": str(target.id)}, {"$set": {"role": "admin"}}
-            )
-            assert (
-                await client.put(
-                    f"/api/v1/admin/users/{target.id}",
-                    json={"role": "user", "is_active": False},
-                    headers=await csrf_headers(client),
-                )
-            ).status_code == 409
-            denied = await client.put(
-                f"/api/v1/admin/users/{uid}",
-                json={"role": "user", "is_active": False},
-                headers=await csrf_headers(client),
-            )
-            assert denied.status_code == 409
+            assert (await client.get("/api/v1/admin/users")).status_code == 404
             await client.post(
                 "/api/v1/admin/campus/unpublish",
                 json={"revision": 3},

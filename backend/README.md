@@ -2,7 +2,7 @@
 
 Python 3.12, FastAPI và PyMongo Async. Phần P1.1 đã có vòng đời kết nối MongoDB,
 liveness/readiness. P1.2 bổ sung model/repository User/session và index thật trên Atlas.
-P1.3 đã có API auth, JWT cookie/CSRF và dependency RBAC. Demo hiện có API nội dung công bố, audio GridFS/Range, sự kiện khách, dashboard và API quản trị. Nội dung/audio tiếng Việt và English được gắn theo locale; Creator API đã gỡ khỏi demo. Kết quả hiện hành xem tại [báo cáo demo](../docs/test-reports/DEMO_CONTENT_AUDIO_ADMIN.md), [đa ngôn ngữ](../docs/test-reports/MULTILINGUAL_UI_PROGRESS_2026_10_24.md) và [dashboard](../docs/test-reports/ADMIN_DASHBOARD_PROGRESS_2026_10_24.md).
+3 đã có API auth, JWT cookie/CSRF và dependency RBAC. Demo hiện có API nội dung công bố, audio GridFS/Range, sự kiện khách, dashboard và API .
 
 ## Chạy
 

@@ -21,7 +21,6 @@ Theo [hướng dẫn chính thức](https://www.mongodb.com/docs/atlas/tutorial/
 4. Nếu đổi mạng, kiểm tra lại IP được phép truy cập.
 
 Database User là tài khoản MongoDB của ứng dụng, khác tài khoản đăng nhập Atlas,
-và cũng khác User/Creator/Admin sẽ đăng nhập website thuyết minh.
 Xem [điều kiện kết nối](https://www.mongodb.com/docs/atlas/connect-to-database-deployment/)
 và [quản lý Database User](https://www.mongodb.com/docs/atlas/security-add-mongodb-users/).
 

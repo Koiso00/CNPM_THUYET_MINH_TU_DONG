@@ -1,4 +1,10 @@
-> **Ảnh chụp ngày 23/10/2026 — lịch sử:** khách không đăng nhập; welcome, hành trình, nội dung/audio và dashboard đã có; QR còn hoãn tại thời điểm đó. Trạng thái mới nhất xem ở phần cập nhật 24/10 dưới đây và [kế hoạch khách/QR](DEMO_GUEST_QR_PLAN.md).
+> **Cập nhật người dùng 03/11/2026:** Ghi nhận GPS/geofence đã khảo sát theo yêu cầu người dùng; không có số liệu hay biên bản khảo sát mới kèm theo. Dashboard đã được người dùng kiểm thử thực tế và xác nhận đạt; Render đã triển khai thành công theo xác nhận người dùng. Bỏ qua nghiệm thu tự phát Safari, hàng đợi audio và Docker. Các ghi chú cũ yêu cầu các phần này chỉ là lịch sử.
+
+
+
+> **Quyết định ngày 27/10/2026:** Người dùng loại chức năng offline khỏi toàn bộ phạm vi dự án và kế hoạch dài hạn. Các mô tả trước đây về offline chỉ có giá trị lịch sử.
+
+> *md).
 
 # Kiểm thử và demo
 
@@ -44,7 +50,7 @@ Những kiểm tra này không xác nhận chức năng nghiệp vụ, kết n�
 Cập nhật 22/10: xem [báo cáo demo nội dung/audio/quản trị](test-reports/DEMO_CONTENT_AUDIO_ADMIN.md)
 
 Cập nhật 23/10: khách công khai, ID khách/hành trình và thống kê cơ bản đã có trong
-[báo cáo demo khách](test-reports/DEMO_GUEST_PROGRESS_2026_10_23.md). QR/camera vẫn hoãn.
+
 Các số lượng và giới hạn theo từng mốc cũ bên dưới là lịch sử kiểm thử.
 
 Mốc UI 23/10: `#/welcome` tách khỏi `#/explore`, khách không đăng nhập; route đăng ký cũ chuyển về login. Trạng thái 24/10: bộ chọn VI/EN/KO hoạt động tại Welcome và giữ lựa chọn trong hành trình; header mobile hiển thị bộ chọn. Cập nhật 26/10: release đã duyệt có nội dung/audio POI tiếng Việt, English và Korean cho đủ 10 điểm. Xem [báo cáo đa ngôn ngữ](test-reports/MULTILINGUAL_UI_PROGRESS_2026_10_24.md) và [nhật ký audio Hàn](test-reports/DEMO_AUDIO_KO_DRAFT_2026_10_26.md).
@@ -64,13 +70,12 @@ Chưa nghe duyệt hoặc kiểm thử trình phát.
 
 | Nhóm | Tình huống cần chứng minh |
 | --- | --- |
-| Auth/RBAC dài hạn | Đăng ký không tự chọn quyền; User không xem nháp; Creator không sửa nội dung ngoài quyền; CSRF, hết hạn/thu hồi phiên. Creator workflow chưa thuộc demo hiện hành. |
+| Auth/RBAC dài hạn |Đăng ký không tự chọn quyền; User không xem nháp; CSRF, hết hạn/thu hồi phiên.|
 | Công bố | Từ chối/gửi lại; sửa nháp giữ nguyên release; bản dịch/audio đúng phiên bản; asset nháp không tải trái phép |
 | GPS | Sai số, mẫu cũ, ranh giới vùng, vùng chồng nhau, từ chối quyền, ẩn/hiện trang |
 | Audio | Một nguồn phát; không phát lặp; đổi ngôn ngữ; từng tầng fallback; thiếu giọng cục bộ; autoplay bị chặn |
 | Jobs | Yêu cầu trùng, giới hạn đồng thời, provider lỗi, retry hữu hạn, restart và kết quả lỗi thời |
-| Offline | Chỉ tải Việt vẫn dùng được khi tắt mạng/đóng mở lại; thêm Anh không tải lại bản đồ/ảnh hợp lệ; ngôn ngữ chưa tải báo thiếu; tải dở/checksum sai/cập nhật lỗi/browser xóa dữ liệu không báo sẵn sàng |
-| Đăng xuất | Xóa cache/quyền theo tài khoản, nhiều tab, đăng xuất offline rồi kết nối lại |
+| Đăng xuất | Thu hồi phiên và kiểm tra hành vi nhiều tab |
 | Dashboard | Bắt đầu tour/nghe hoàn tất đúng, sự kiện gửi lại không nhân đôi, loại mô phỏng khỏi dữ liệu thật |
 | Triển khai | Secrets không vào frontend; HTTPS; restart không mất asset; phục hồi bản chạy trên máy |
 
@@ -79,14 +84,10 @@ Safari iPhone kiểm tra bổ sung, báo rõ kết quả; không tuyên bố h�
 
 ## Kịch bản kế hoạch dài hạn
 
-1. Creator nhập một điểm có nguồn, Việt–Anh, ảnh và audio; gửi duyệt.
 2. Admin duyệt; User chỉ thấy bản đã công bố.
 3. User bắt đầu tour, bật mô phỏng và đi qua các điểm; không cần cấp GPS trong chế độ này.
 4. Chuyển Việt/Anh, nghe lại thủ công, kiểm tra hàng đợi.
-5. Chỉ tải gói tiếng Việt; tắt mạng, đóng/mở lại vẫn xem bản đồ/nghe Việt. Chọn Anh chưa tải phải báo thiếu.
-   Có mạng lại, tải bổ sung Anh và kiểm tra không tải lại tài nguyên chung còn hợp lệ; thử cả hai offline.
-6. Có mạng lại, đồng bộ sự kiện một lần; dashboard không trộn dữ liệu mô phỏng.
-7. Thử đăng xuất offline, kết nối lại và xác nhận phiên không tự khôi phục ngoài ý muốn.
+5. Kiểm tra dashboard không trộn dữ liệu mô phỏng và sự kiện gửi lại không nhân đôi.
 
 GPS mô phỏng không thay thế khảo sát thực địa. Chuẩn bị bản local và tài nguyên từ trước,
 không phụ thuộc dịch/TTS/Gemini trực tiếp trong buổi trình bày.

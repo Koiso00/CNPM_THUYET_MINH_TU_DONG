@@ -1,7 +1,6 @@
 # Đồng bộ tên và icon điều hướng — 22/10/2026
 
 Theo yêu cầu người dùng, đổi tên màn hình hiện có tại `#/admin` thành **Nội dung**
-(icon audio), và trang khung `#/creator` thành **Quản trị** (icon grid).
 Tiêu đề tương ứng: “Nội dung khuôn viên” và “Không gian quản trị”.
 Đổi cả liên kết từ trang khám phá và hướng dẫn mở màn hình chức năng trong README.
 
@@ -15,7 +14,7 @@ Kiểm tra đã chạy:
 - `npm run build`: TypeScript và Vite đạt; frontend build tại cổng 8000 đã có thay đổi.
 - Edge headless, 1366×900 và 390×900: chuyển cả hai trang, tên/thứ tự/icon không đổi,
   aria-current theo đúng route và không tràn ngang. Đã xem ảnh desktop trang Quản trị.
-  Ảnh kiểm tra tại `frontend/test-results/nav-{admin,creator}-{1366,390}.png` (gitignored).
+  png` (gitignored).
   Phiên/API được giả lập chỉ trong browser kiểm thử; không đọc/sửa dữ liệu ứng dụng.
 - `git diff --check`: kiểm tra sau cập nhật.
 

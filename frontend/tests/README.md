@@ -3,14 +3,12 @@
 ## Hồi quy hiện hành — 24/10/2026
 
 - Unit/UI: 39 test đạt; `npm run build` (typecheck + build) đạt.
-- E2E: 12 test đạt trên desktop/mobile với server và collection/bucket Atlas biệt lập; shutdown xác nhận dọn sạch. `auth.spec.ts` kiểm tra guest public, route signup cũ chuyển về login, Admin login/refresh/logout bằng HttpOnly cookie; `demo.spec.ts` kiểm tra journey, quản trị, nội dung/audio và route Creator đã nghỉ.
+- E2E: 12 test đạt trên desktop/mobile với server và collection/bucket Atlas biệt lập; shutdown xác nhận dọn sạch.
 - Không dùng credentials hoặc dữ liệu tài khoản ứng dụng thật trong E2E; fixture dùng tài khoản giả chỉ tồn tại trong collection tạm.
 
 ## Test cục bộ
 
-Cập nhật luồng Creator ngày 22/10: **38 test đạt**; có kiểm tra lưu bản đề xuất riêng,
 gửi Admin duyệt và chặn công bố khi đang áp dụng đề xuất. Xem
-[báo cáo Creator](../../docs/test-reports/CREATOR_REVIEW.md).
 
 Cập nhật tách trang ngày 22/10: **36 test đạt**, có thêm kiểm tra quyền trang Quản trị,
 tách API nội dung/tài khoản, phân trang, lỗi tải/thử lại, giữ thay đổi khi lưu thất bại và
@@ -30,7 +28,6 @@ và điều hướng trong trang không làm thay đổi hash route. Tổng hi�
 
 ## Test Edge với API/Atlas thật
 
-Cập nhật Creator ngày 22/10: **10/10 test đạt**, gồm 5 kịch bản trên desktop/mobile;
 luồng đề xuất kiểm tra lưu riêng, gửi duyệt, áp dụng mà chưa đổi snapshot công bố,
 công bố riêng và khôi phục dữ liệu kiểm thử. Server biệt lập đã dọn/xác minh dữ liệu.
 
@@ -38,7 +35,6 @@ Sau khi tách trang: **8 test đạt**, gồm quản lý tài khoản tạm từ
 `E2E_BASE_URL` cho phép chạy vào server biệt lập ở cổng khác để giữ app thật đang hoạt động.
 Khi dùng cổng khác, phải đặt biến này trong chính terminal chạy Playwright; nếu bỏ qua,
 Playwright dùng mặc định cổng 5173. Chờ thông báo server biệt lập sẵn sàng trước khi chạy.
-Mỗi lượt kiểm tra toàn bộ cần bộ dữ liệu biệt lập mới; kịch bản Creator khôi phục nội dung
 sau khi xác minh công bố để lượt viewport tiếp theo còn audio khớp với văn bản nguồn.
 Lượt này dùng frontend build cùng nguồn trên cổng 8001, origin cho phép chỉ 8001 ở process
 kiểm thử; không đổi cấu hình ứng dụng thật. Server test có route shutdown đặt trước static
@@ -61,7 +57,6 @@ uv run --frozen python -m tests.serve_auth_browser
 ```
 
 Chờ dòng ready. Server chỉ bind 127.0.0.1:8000, tạo collection tạm và hai tài khoản test
-Creator/Admin; không tạo tài khoản đặc quyền trong users ứng dụng.
 
 Terminal 2, từ frontend:
 

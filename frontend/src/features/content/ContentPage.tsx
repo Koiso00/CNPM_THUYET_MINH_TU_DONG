@@ -356,28 +356,6 @@ export function ContentPage({ client }: { client: AuthClient }) {
                     {index + 1}. {translationFor(item, contentLanguage).title || item.title}
                   </button>
                 ))}
-                <button
-                  disabled={busy || draft.places.length >= 100}
-                  onClick={() => {
-                    setDraft({
-                      ...draft,
-                      places: [
-                        ...draft.places,
-                        {
-                          id: crypto.randomUUID(),
-                          title: "Địa điểm mới",
-                          description: "",
-                          source: "",
-                          location: null,
-                        },
-                      ],
-                    });
-                    setSelected(draft.places.length);
-                    setDirty(true);
-                  }}
-                >
-                  Thêm địa điểm
-                </button>
               </div>
               {place && (
                 <div className="admin-place-fields">
@@ -426,25 +404,8 @@ export function ContentPage({ client }: { client: AuthClient }) {
                   <p>
                     {place.location
                       ? "Đã có tọa độ lưu trong dữ liệu."
-                      : "Chưa có tọa độ khảo sát."}
+                      : "Chưa có tọa độ lưu trong dữ liệu."}
                   </p>
-                  <button
-                    disabled={busy}
-                    onClick={() => {
-                      if (!window.confirm(`Xóa ${place.title} khỏi bản nháp?`))
-                        return;
-                      setDraft({
-                        ...draft,
-                        places: draft.places.filter(
-                          (item) => item.id !== place.id,
-                        ),
-                      });
-                      setSelected(0);
-                      setDirty(true);
-                    }}
-                  >
-                    Xóa khỏi bản nháp
-                  </button>
                 </div>
               )}
             </div>

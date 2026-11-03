@@ -59,7 +59,9 @@ it("authors directly as Admin without loading a Creator review queue", async () 
   const client = adminClient();
   render(<ContentPage client={client} />);
   await screen.findByLabelText("Nội dung thuyết minh");
-  expect(screen.getByRole("button", { name: "Thêm địa điểm" })).toBeEnabled();
+  expect(screen.queryByRole("button", { name: "Thêm địa điểm" })).not.toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: "Xóa khỏi bản nháp" })).not.toBeInTheDocument();
+  expect(screen.getByLabelText("Tên địa điểm")).toHaveValue("Khu A");
   expect(screen.queryByRole("button", { name: "Duyệt đề xuất" })).not.toBeInTheDocument();
   expect(client.get).not.toHaveBeenCalledWith("/admin/submissions");
 });
@@ -147,27 +149,6 @@ it("saves before publishing and keeps account management separate", async () => 
 });
 
 
-it("sends selected user role and lock state without password fields", async () => {
-  const client = adminClient();
-  const mutate = vi.spyOn(client, "mutate").mockResolvedValue({
-    id: "user-1",
-    username: "visitor",
-    role: "admin",
-    is_active: false,
-  });
-  render(<ManagementPage client={client} />);
-  await screen.findByLabelText("Vai trò visitor");
-  fireEvent.change(screen.getByLabelText("Vai trò visitor"), {
-    target: { value: "admin" },
-  });
-  await userEvent.click(screen.getByLabelText("Hoạt động visitor"));
-  await userEvent.click(screen.getByRole("button", { name: "Lưu visitor" }));
-  expect(mutate).toHaveBeenCalledWith(
-    "/admin/users/user-1",
-    { role: "admin", is_active: false },
-    "PUT",
-  );
-});
 
 it("reuses the audio element and starts the newly selected place from the visitor tap", async () => {
   const play = vi.spyOn(HTMLMediaElement.prototype, "play").mockImplementation(function (this: HTMLMediaElement) {
@@ -204,12 +185,14 @@ it("reuses the audio element and starts the newly selected place from the visito
   pause.mockRestore();
 });
 
-it("loads dashboard and accounts independently from campus content", async () => {
+it("loads dashboard without account management or campus content", async () => {
   const client = adminClient();
   render(<ManagementPage client={client} />);
-  await screen.findByLabelText("Vai trò visitor");
+  await screen.findByText("Lượt phát audio theo địa điểm");
+  expect(screen.queryByRole("region", { name: "Quản lý tài khoản" })).not.toBeInTheDocument();
+  expect(client.get).not.toHaveBeenCalledWith(expect.stringContaining("/admin/users"));
   const dashboard = screen.getByRole("region", { name: "Dashboard" });
-  expect(dashboard).toHaveTextContent("Tổng tài khoản3");
+  expect(dashboard).not.toHaveTextContent("Tổng tài khoản");
   expect(dashboard).toHaveTextContent("Lượt phát audio theo địa điểm");
   const get = vi.mocked(client.get);
   expect(get).toHaveBeenCalledWith(expect.stringMatching(/\/admin\/dashboard\?day=\d{4}-\d{2}-\d{2}/));
@@ -229,20 +212,6 @@ it("loads dashboard and accounts independently from campus content", async () =>
   ).toHaveAttribute("aria-current", "page");
 });
 
-it("keeps account edits after a failed save and prevents leaving a dirty page", async () => {
-  const client = adminClient();
-  vi.spyOn(client, "mutate").mockRejectedValue(new TypeError("offline"));
-  render(<ManagementPage client={client} />);
-  const role = await screen.findByLabelText("Vai trò visitor");
-  fireEvent.change(role, { target: { value: "admin" } });
-  await userEvent.click(screen.getByRole("button", { name: "Lưu visitor" }));
-  expect(await screen.findByRole("alert")).toHaveTextContent(
-    "thay đổi đang nhập vẫn được giữ",
-  );
-  expect(role).toHaveValue("admin");
-  expect(screen.getByRole("button", { name: "Trang sau" })).toBeDisabled();
-  expect(screen.getByRole("button", { name: "Lưu visitor" })).toBeEnabled();
-});
 
 it("shows a dashboard failure and retries without inventing counts", async () => {
   const client = adminClient();
@@ -263,76 +232,6 @@ it("shows a dashboard failure and retries without inventing counts", async () =>
     screen.getByRole("button", { name: "Làm mới số liệu" }),
   );
   await waitFor(() =>
-    expect(document.querySelectorAll(".admin-stats article")).toHaveLength(9),
+    expect(document.querySelectorAll(".admin-stats article")).toHaveLength(8),
   );
-});
-
-it("disables editing protected administrators", async () => {
-  const client = adminClient();
-  vi.spyOn(client, "get").mockImplementation(async (path) =>
-    path.startsWith("/admin/dashboard")
-      ? stats
-      : [
-          {
-            id: "admin-id",
-            username: "operator",
-            role: "admin",
-            is_active: true,
-            is_protected: true,
-          },
-        ],
-  );
-  render(<ManagementPage client={client} />);
-  expect(await screen.findByLabelText("Vai trò operator")).toBeDisabled();
-  expect(screen.getByLabelText("Hoạt động operator")).toBeDisabled();
-  expect(screen.getByRole("button", { name: "Lưu operator" })).toBeDisabled();
-});
-
-it("retries loading accounts without treating a failed request as an empty list", async () => {
-  const client = adminClient();
-  const get = vi.spyOn(client, "get").mockImplementation(async (path) => {
-    if (path.startsWith("/admin/dashboard")) return stats;
-    throw new TypeError("offline");
-  });
-  render(<ManagementPage client={client} />);
-  expect(await screen.findByRole("alert")).toHaveTextContent(
-    "Chưa tải được danh sách",
-  );
-  expect(
-    screen.queryByText("Không có tài khoản trong trang này."),
-  ).not.toBeInTheDocument();
-  get.mockImplementation(async (path) =>
-    path.startsWith("/admin/dashboard")
-      ? stats
-      : [{ id: "user-1", username: "visitor", role: "user", is_active: true }],
-  );
-  await userEvent.click(
-    screen.getByRole("button", { name: "Thử tải lại tài khoản" }),
-  );
-  expect(await screen.findByLabelText("Vai trò visitor")).toBeInTheDocument();
-});
-
-it("pages through accounts without keeping rows from the previous page", async () => {
-  const client = adminClient();
-  const accounts = Array.from({ length: 21 }, (_, index) => ({
-    id: `user-${index}`,
-    username: `visitor${index}`,
-    role: "user",
-    is_active: true,
-  }));
-  vi.spyOn(client, "get").mockImplementation(async (path) =>
-    path.startsWith("/admin/dashboard")
-      ? stats
-      : path.includes("offset=20")
-        ? accounts.slice(20)
-        : accounts.slice(0, 20),
-  );
-  render(<ManagementPage client={client} />);
-  await screen.findByLabelText("Vai trò visitor0");
-  await userEvent.click(screen.getByRole("button", { name: "Trang sau" }));
-  expect(await screen.findByLabelText("Vai trò visitor20")).toBeInTheDocument();
-  expect(screen.queryByLabelText("Vai trò visitor0")).not.toBeInTheDocument();
-  expect(screen.getByRole("button", { name: "Trang sau" })).toBeDisabled();
-  await userEvent.click(screen.getByRole("button", { name: "Trang trước" }));
-  expect(await screen.findByLabelText("Vai trò visitor0")).toBeInTheDocument();
 });

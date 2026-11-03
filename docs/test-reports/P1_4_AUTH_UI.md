@@ -14,7 +14,6 @@ Vitest 5.0.5, Playwright 1.64.1, Windows/Edge với Atlas phát triển.
   generation guard ngăn phản hồi cũ phục hồi UI sau logout.
 - Không lưu JWT/refresh/CSRF vào Web Storage/IndexedDB; chỉ có User công khai và expiry trong RAM.
 - Lỗi mạng/503 có thông báo tiếng Việt/thử lại; logout lỗi không giả báo thành công.
-- Hash routing và khung trang theo vai trò, User/Creator không mở khu Admin.
 - Menu/thẻ tính năng chưa triển khai có nhãn “Sắp có”, không có dashboard số liệu giả.
 - Minh họa khuôn viên bằng CSS có nhãn hình minh họa, không dùng như bản đồ/tòa nhà được xác minh.
 
@@ -31,11 +30,10 @@ Vitest 5.0.5, Playwright 1.64.1, Windows/Edge với Atlas phát triển.
 Hai project Edge: desktop 1366×900, mobile viewport 390×844 (touch emulation).
 E2E thử đăng ký/trùng tên/login/logout, reload mất access cookie, kiểm tra HttpOnly,
 Web Storage rỗng, hai tab cùng reload đều refresh 200, logout đồng bộ tab,
-Admin mở khung quản trị, Creator bị chặn Admin nhưng mở khung nội dung,
 sai mật khẩu và mất mạng giữ tên đăng nhập. Không có tràn ngang ở viewport kiểm tra.
 
 Test browser dùng tests.serve_auth_browser, tạo đúng hai collection ngẫu nhiên, seed
-Creator/Admin giả trong đó và đăng ký User qua UI. Không ghi users/sessions ứng dụng.
+Không ghi users/sessions ứng dụng.
 Sau kiểm thử đã dừng server test qua loopback, cả hai collection tạm được xóa/xác minh.
 Sau đó chạy lại backend phát triển thật và Vite để người dùng xem giao diện.
 

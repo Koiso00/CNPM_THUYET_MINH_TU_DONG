@@ -1,8 +1,12 @@
+> **Cập nhật người dùng 03/11/2026:** Ghi nhận GPS/geofence đã khảo sát theo yêu cầu người dùng; không có số liệu hay biên bản khảo sát mới kèm theo. Dashboard đã được người dùng kiểm thử thực tế và xác nhận đạt; Render đã triển khai thành công theo xác nhận người dùng. Bỏ qua nghiệm thu tự phát Safari, hàng đợi audio và Docker. Các ghi chú cũ yêu cầu các phần này chỉ là lịch sử.
+
+
+
 # Lộ trình thực hiện
 
 Nguồn chuẩn: [kế hoạch gốc](PROJECT_PLAN.md). Các tuần là mốc tương đối, không tự đổi thành
 deadline lịch hoặc cam kết tiến độ. Không áp dụng phương án rút gọn 5 ngày.
-Ưu tiên hiện hành — cập nhật 24/10/2026: dashboard thống kê nền đã hoạt động trên deploy. Giao diện khách VI/EN/KO đã hoàn tất, lựa chọn ngôn ngữ được giữ xuyên hành trình; nội dung POI và audio English cho 10 điểm đã được người dùng duyệt và công bố cùng tiếng Việt. QR là phần phát triển kế tiếp. GPS tự nhận diện/tự phát trên iPhone/Safari và ngưỡng geofence được để sau, cần nghiệm thu trước demo chính thức. Nội dung/audio Hàn, offline, AI và dịch/TTS tự động còn hoãn.
+Ưu tiên hiện hành — cập nhật 24/10/2026: dashboard thống kê nền đã hoạt động trên deploy. Giao diện khách VI/EN/KO đã hoàn tất, lựa chọn ngôn ngữ được giữ xuyên hành trình; nội dung POI và audio English cho 10 điểm đã được người dùng duyệt và công bố cùng tiếng Việt. GPS tự nhận diện/tự phát trên iPhone/Safari và ngưỡng geofence được để sau, cần nghiệm thu trước demo chính thức. Nội dung/audio Hàn đã công bố ngày 26/10; AI và dịch/TTS tự động còn hoãn. Offline đã loại khỏi phạm vi ngày 27/10.
 
 **Tiến độ 24/10:** giao diện khách VI/EN/KO, nội dung/audio English và biên tập nội dung/audio theo locale trong Admin đã triển khai. Bộ chọn ngôn ngữ mobile Welcome cũng đã được khôi phục, menu được kiểm tra trực quan; chi tiết và kiểm thử tại [báo cáo đa ngôn ngữ](test-reports/MULTILINGUAL_UI_PROGRESS_2026_10_24.md) và [nhật ký Admin](test-reports/ADMIN_MULTILINGUAL_CONTENT_2026_10_24.md).
 
@@ -26,10 +30,10 @@ Sau từng phần ghi test, lỗi đã sửa và đối chiếu phạm vi trư�
 
 | Mốc | Công việc | Điều kiện chuyển mốc |
 | --- | --- | --- |
-| Tuần 1–2 | MongoDB/index, đăng ký/đăng nhập/RBAC, khảo sát nội dung; thử sớm một POI gồm map/audio/mô phỏng/offline | Quyền được kiểm tra ở API; bản thử chứng minh tài nguyên offline có thể mở lại |
-| Tuần 3–4 | UI tham quan, MapLibre/PMTiles, GPS thật/mô phỏng, geofence/hàng đợi | Không phát chồng/lặp; có kết quả khảo sát ngưỡng |
-| Tuần 5–6 | Creator, bản dịch Việt–Anh, TTS jobs, xét duyệt, versioning, fallback audio | Bản nháp không ảnh hưởng bản công bố; file khớp phiên bản nội dung |
-| Tuần 7–8 | Offline pack theo ngôn ngữ chọn, tài nguyên chung, resume, checksum, dung lượng, nâng phiên bản, đăng xuất offline | Tắt mạng/đóng mở lại dùng được ngôn ngữ đã tải; tải thêm không lặp tài nguyên chung; ngôn ngữ chưa tải báo rõ |
+| Tuần 1–2 | MongoDB/index, đăng ký/đăng nhập/RBAC, khảo sát nội dung; thử sớm một POI gồm map/audio/mô phỏng | Quyền được kiểm tra ở API; bản thử xác nhận bản đồ và âm thanh |
+| Tuần 3–4 | UI tham quan, MapLibre, GPS thật/mô phỏng, geofence/hàng đợi | Không phát chồng/lặp; có kết quả khảo sát ngưỡng |
+| Tuần 5–6 || Bản nháp không ảnh hưởng bản công bố; file khớp phiên bản nội dung |
+| Tuần 7–8 | Hoàn thiện các chức năng còn lại và kiểm thử tích hợp theo ưu tiên hiện hành | Đạt ma trận nghiệm thu |
 | Tuần 9–10 | Gemini, dashboard, nội dung 8–10 điểm, cloud/local, QA và demo | Đạt ma trận nghiệm thu và diễn tập thực tế |
 
 ## Phân công định hướng
@@ -43,4 +47,3 @@ Nếu số người hoặc thời gian thực tế thay đổi, trao đổi lạ
 Mỗi đầu việc ghi đầu vào, đầu ra, trạng thái, điều kiện nghiệm thu và tài liệu bị ảnh hưởng.
 Không đánh dấu hoàn thành bằng số file hoặc số router. Ghi kết quả chạy thử và giới hạn thực tế.
 Ưu tiên một luồng dùng được xuyên suốt trước khi mở rộng toàn bộ POI.
-Không cần chờ cuối tuần 7 mới kiểm tra tính khả thi của bản đồ/audio offline.

@@ -1,3 +1,5 @@
+> **Cập nhật người dùng 03/11/2026:** Ghi nhận GPS/geofence đã khảo sát theo yêu cầu người dùng; không có số liệu hay biên bản khảo sát mới kèm theo. Dashboard đã được người dùng kiểm thử thực tế và xác nhận đạt; Render đã triển khai thành công theo xác nhận người dùng. Bỏ qua nghiệm thu tự phát Safari, hàng đợi audio và Docker. Các ghi chú cũ yêu cầu các phần này chỉ là lịch sử.
+
 # Hướng dẫn deploy demo lên Render
 
 Tài liệu này ghi lại cách vận hành dịch vụ demo SGU Campus Guide đã tạo trên Render và MongoDB Atlas. Cấu hình hiện tại là **Render Web Service chạy Docker**, mã nguồn lấy từ GitHub nhánh `main`, dữ liệu người dùng/phiên lưu trên Atlas.

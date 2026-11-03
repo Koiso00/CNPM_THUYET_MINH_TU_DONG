@@ -1,10 +1,16 @@
+> **Cập nhật người dùng 03/11/2026:** Ghi nhận GPS/geofence đã khảo sát theo yêu cầu người dùng; không có số liệu hay biên bản khảo sát mới kèm theo. Dashboard đã được người dùng kiểm thử thực tế và xác nhận đạt; Render đã triển khai thành công theo xác nhận người dùng. Bỏ qua nghiệm thu tự phát Safari, hàng đợi audio và Docker. Các ghi chú cũ yêu cầu các phần này chỉ là lịch sử.
+
+
+
+> **Quyết định ngày 27/10/2026:** Người dùng loại chức năng offline khỏi toàn bộ phạm vi dự án và kế hoạch dài hạn. Các mô tả trước đây về offline chỉ có giá trị lịch sử.
+
 > **Trạng thái — 24/10/2026:** Stadia Maps và GPS đã được thử trên điện thoại; 10 tọa độ được kiểm chứng thực địa, chạm địa điểm phát audio hoạt động. Tự phát khi geofence kích hoạt trên iPhone/Safari và ngưỡng GPS chưa nghiệm thu. Dashboard Admin có lọc ngày và lượt nghe theo địa điểm; người dùng xác nhận bản deploy hoạt động.
 >
 > Giao diện khách hỗ trợ VI/EN/KO. Nội dung/audio cho 10 điểm đã được duyệt bằng cả ba ngôn ngữ. Atlas release `2cebd7fb-7ca8-4719-819b-abb2a2191038` có đủ 10 audio vi/en/ko; tiếng Việt và English được giữ nguyên. Cập nhật 26/10: GitHub Actions CI đạt ở frontend/backend; Render readiness trả `ready` và `database=connected`. Chưa xác nhận Auto-Deploy đang chờ CI đạt hoặc đã kiểm tra giao diện sau deploy. Xem [nhật ký CI/CD](docs/test-reports/CI_CD_PROGRESS_2026_10_26.md) và [nhật ký audio Hàn](docs/test-reports/DEMO_AUDIO_KO_DRAFT_2026_10_26.md).
 
 # Website thuyết minh cơ sở chính Đại học Sài Gòn
 
-Website React dành cho điện thoại và máy tính. Khách vào trang chào, bắt đầu hành trình không cần tài khoản, xem các điểm trên bản đồ và nghe nội dung đã công bố. Admin đăng nhập để biên tập nội dung/audio và xem dashboard/quản lý tài khoản.
+Website React dành cho điện thoại và máy tính. Khách vào trang chào, bắt đầu hành trình không cần tài khoản, xem các điểm trên bản đồ và nghe nội dung đã công bố. Admin đăng nhập để biên tập nội dung/audio và xem dashboard.
 
 ## Trạng thái tính năng
 
@@ -12,12 +18,9 @@ Website React dành cho điện thoại và máy tính. Khách vào trang chào,
 | --- | --- |
 | Giao diện khách | Welcome, khám phá, bản đồ và thông báo hỗ trợ Tiếng Việt, English, 한국어; lựa chọn ngôn ngữ được giữ xuyên các trang. |
 | Nội dung/audio công khai | 10 POI có bản dịch và audio tiếng Việt, English, Korean trong release Atlas; MP3/GridFS được chọn theo ngôn ngữ. |
-| Admin Nội dung (`/#/admin`) | Thêm/sửa/xóa POI trong bản nháp; sửa trường dịch; quản lý/nghe thử MP3; lưu và công bố release. |
-| Admin Quản trị (`/#/management`) | Dashboard theo ngày ICT, tổng khách/hành trình/audio, lượt nghe theo địa điểm và quản lý tài khoản. Người dùng xác nhận dashboard chạy trên deploy. |
+| Admin Nội dung (`/#/admin`) | Sửa nội dung POI hiện có và trường dịch; quản lý/nghe thử MP3; lưu và công bố release. Không thêm hoặc xóa POI. |
+| Admin Quản trị (`/#/management`) | Dashboard theo ngày ICT, tổng khách/hành trình/audio và lượt nghe theo địa điểm. Người dùng xác nhận dashboard chạy trên deploy. |
 | Bản đồ/GPS | Stadia Maps; 10 tọa độ do người dùng cung cấp đã kiểm chứng thực địa. GPS opt-in/mô phỏng/geofence có trong frontend. Tự phát khi vào vùng và ngưỡng thực địa còn chờ nghiệm thu. |
-| QR, offline, AI | QR chưa triển khai; là bước phát triển tiếp theo. Offline và AI vẫn hoãn. |
-
-Kế hoạch gốc 10 tuần và vai trò User/Creator/Admin được giữ làm hướng dài hạn. Trong demo hiện tại, Creator được gộp vào Admin. Chi tiết tại [kế hoạch khách/QR](docs/DEMO_GUEST_QR_PLAN.md), [bối cảnh](docs/PROJECT_CONTEXT.md) và [lộ trình](docs/IMPLEMENTATION_PLAN.md).
 
 ## Chạy local
 
@@ -97,7 +100,7 @@ Test mặc định không ghi lên Atlas ứng dụng. Chỉ chạy integration 
 - [Bối cảnh dự án](docs/PROJECT_CONTEXT.md)
 - [Kiến trúc](docs/ARCHITECTURE.md)
 - [Kế hoạch gốc](docs/PROJECT_PLAN.md)
-- [Kế hoạch demo khách/QR](docs/DEMO_GUEST_QR_PLAN.md)
+
 - [Lộ trình triển khai](docs/IMPLEMENTATION_PLAN.md)
 - [Dữ liệu và API](docs/DATA_AND_API.md)
 - [Runtime tour](docs/TOUR_RUNTIME.md)

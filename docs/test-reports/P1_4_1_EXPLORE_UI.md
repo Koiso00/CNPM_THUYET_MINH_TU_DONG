@@ -15,7 +15,6 @@ Vùng sơ đồ là component giữ chỗ để thay bằng ảnh sơ đồ khu�
 - Ảnh bìa được gắn nhãn ảnh tham khảo, không gắn với POI cụ thể.
 - MP3 đã chuẩn bị ở bước trước nhưng chưa được tích hợp để phát trong trình duyệt; nút audio bị khóa.
 - Số liệu ví dụ trong ảnh thiết kế không được dùng làm số liệu thật.
-- Creator/Admin giữ khung trang hiện có; phần này chỉ thay trang khám phá.
 
 ## Kiểm tra
 

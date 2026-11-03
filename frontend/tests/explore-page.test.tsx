@@ -4,6 +4,7 @@ import { expect, it, vi } from "vitest";
 import { ExplorePage } from "../src/features/tours/ExplorePage";
 import type { GuestSession } from "../src/features/guest/session";
 import { campusPlaces } from "../src/features/tours/campusPlaces";
+import { withTestLocations } from "./coordinate-fixture";
 
 vi.mock("../src/features/map/CampusMap", () => ({
   CampusMap: ({ places, onSelectPlace }: { places: { location: unknown }[]; onSelectPlace: (id: string) => void }) => (
@@ -14,11 +15,11 @@ vi.mock("../src/features/map/CampusMap", () => ({
   ),
 }));
 
-const places = campusPlaces.map((place) => ({
+const places = withTestLocations(campusPlaces.map((place) => ({
   ...place,
   source: "Nguồn kiểm thử",
   location: null,
-}));
+})));
 const Page = () => (
   <ExplorePage username="phong" places={places} releaseId="release" />
 );
@@ -36,6 +37,13 @@ it("shows all ten supplied locations with GPS off until the visitor opts in", ()
   expect(screen.getByText(/Chọn biểu tượng trên bản đồ để xem mô tả/)).toBeInTheDocument();
   expect(screen.getByText("10 marker")).toBeInTheDocument();
   expect(screen.getByRole("application", { name: "Bản đồ thử nghiệm" })).toBeInTheDocument();
+});
+
+it("uses stored coordinates even when a place is renamed and does not invent missing ones", () => {
+  const renamed = { ...places[0], title: "Tên địa điểm đã đổi" };
+  const withoutLocation = { ...places[1], location: null };
+  render(<ExplorePage username="phong" places={[renamed, withoutLocation]} releaseId="release" />);
+  expect(screen.getByText("1 marker")).toBeInTheDocument();
 });
 
 it("uses the same A–E letter markers in the place cards as on the map", () => {

@@ -6,6 +6,7 @@ from uuid import NAMESPACE_URL, uuid5
 from pydantic import ValidationError
 from pymongo.errors import PyMongoError
 
+from app.commands.campus_coordinates import COORDINATES
 from app.commands.generate_demo_audio import SOURCE, parse_source
 from app.core.config import Settings
 from app.db.mongodb import MongoConnection
@@ -26,7 +27,12 @@ def source_draft():
                     "description": entry["text"],
                     "source": "data/sources/campus-vi-user-2026-10-21.md; "
                     "Người dùng cung cấp; chưa đối chiếu thực địa.",
-                    "location": None,
+                    "location": {
+                        "type": "Point",
+                        "coordinates": COORDINATES[
+                            str(uuid5(NAMESPACE_URL, "sgu-campus/" + entry["slug"]))
+                        ],
+                    },
                 }
                 for entry in entries
             ],

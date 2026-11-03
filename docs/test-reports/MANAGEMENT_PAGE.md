@@ -1,11 +1,11 @@
 # Tách Nội dung và hoàn thiện Quản trị — 22/10/2026
 
-> **Trạng thái hiện hành:** trang `#/management` dành cho Admin, gồm dashboard và tài khoản. Creator UI/API đã được gỡ khỏi demo; phần mô tả Creator trong báo cáo này là quyết định/lịch sử tại ngày 22/10.
+> **Trạng thái hiện hành:** trang `#/management` dành cho Admin, gồm dashboard và tài khoản.
 
 ## Phạm vi người dùng đã chốt
 
 Nội dung giữ địa điểm, bài thuyết minh và audio. Quản trị có dashboard và quản lý
-tài khoản dành cho Admin. Tại thời điểm 22/10, luồng Creator vẫn nằm trong kế hoạch và chưa triển khai soạn/gửi duyệt.
+tài khoản dành cho Admin.
 
 ## Thay đổi
 
@@ -19,9 +19,6 @@ tài khoản dành cho Admin. Tại thời điểm 22/10, luồng Creator vẫn 
   vô hiệu hóa lưu trùng, bảo vệ Admin/current user theo dữ liệu quyền và chỉ cho lưu khi đổi.
   Chưa lưu thì không chuyển trang danh sách; tải lại có xác nhận bỏ thay đổi.
 - Khám phá có liên kết rõ Nội dung và Quản trị cho Admin. Hai trang dùng chung nav/icon.
-  `#/creator` dành riêng cho Creator; Admin dùng đường dẫn cũ được chuyển sang Quản trị.
-  User/Creator không được gọi các API Admin qua trang Quản trị; backend RBAC vẫn bắt buộc.
-- Khu vực Creator chỉ mô tả trạng thái chưa triển khai, không còn thẻ quản lý user dễ gây nhầm.
 - Không thay backend nghiệp vụ, schema dữ liệu, policy phiên hoặc tài khoản ứng dụng.
 
 ## Kiểm tra
@@ -32,7 +29,6 @@ tài khoản dành cho Admin. Tại thời điểm 22/10, luồng Creator vẫn 
 - `npm run build`: TypeScript/Vite đạt, 39 modules; app ở cổng 8000 phục vụ build mới.
 - Edge headless + FastAPI/Atlas/GridFS thật ở server riêng cổng 8001: **8 passed**,
   bốn kịch bản × desktop 1366×900 và mobile viewport 390×844. Có đổi role/khóa tài khoản
-  dùng riêng cho test rồi đối chiếu database qua API, bảo vệ Admin, chặn Creator vào Quản trị,
   chuyển trang, upload/công bố/phát MP3, nhiều tab và lỗi mạng auth.
 - Không tràn ngang ở cả hai kích thước. Đã xem ảnh Quản trị desktop/mobile:
   `frontend/test-results/demo-manages-a-disposable--0d545-om-the-separate-system-page-*/management.png`
@@ -44,7 +40,6 @@ tài khoản dành cho Admin. Tại thời điểm 22/10, luồng Creator vẫn 
 ## Lỗi tìm thấy và xử lý
 
 - Sau khi tách nhánh Admin, TypeScript phát hiện so sánh role Admin không thể tới trong
-  khung Creator cũ. Đã tách CreatorPage và bỏ các nhánh giữ chỗ thừa.
 - Khi server test phục vụ frontend build trực tiếp, static mount `/` che route
   `/_test/shutdown`, trả 405. Đã đặt route test trước static mount; thêm test HTTP
   chứng minh GET frontend 200 và POST shutdown 202 mà không mở kết nối Atlas.
@@ -56,7 +51,6 @@ tài khoản dành cho Admin. Tại thời điểm 22/10, luồng Creator vẫn 
 
 ## Giới hạn
 
-Chưa có workflow Creator, audit/event analytics, tìm kiếm tài khoản, xóa tài khoản,
 GPS/offline/AI/dịch tự động hoặc kiểm thử điện thoại vật lý/cloud. Giữ quy tắc bảo vệ
 Admin đang hoạt động; không mở hạ quyền/khóa các tài khoản này trên web.
 Chưa chạy lại toàn bộ 15 integration test riêng vì backend nghiệp vụ không đổi;

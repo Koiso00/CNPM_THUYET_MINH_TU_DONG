@@ -3,7 +3,6 @@
 ## Phạm vi và quyết định
 
 - Người dùng chọn OpenStreetMap trực tuyến làm nguồn nền bản đồ.
-- Thứ tự công việc đã xác nhận: hiển thị bản đồ khuôn viên → GPS thật/mô phỏng và geofence → QR.
 - Người dùng đã cung cấp đủ 10 cặp vĩ độ/kinh độ theo tên địa điểm ngày 24/10; đã nhập vào dữ liệu giao diện và chuyển đúng thứ tự GeoJSON `[kinh độ, vĩ độ]`.
 - Tâm nhìn ban đầu đặt tại khuôn viên cơ sở chính theo đối tượng khuôn viên trên bản đồ, chỉ dùng để mở bản đồ; không đại diện tọa độ của bất kỳ POI nào.
 
@@ -12,7 +11,6 @@
 - Thêm MapLibre GL JS và bản đồ raster tương tác vào trang Explore.
 - Có điều khiển phóng to/thu nhỏ, attribution OpenStreetMap, trạng thái tải/lỗi và nút thử lại.
 - Giới hạn góc nghiêng để bản đồ giữ dạng phẳng; hỗ trợ cấu hình URL tile qua `VITE_OSM_TILE_URL`.
-- Trang thể hiện rõ cần Internet và tọa độ địa điểm đang chờ khảo sát; chưa xin quyền GPS hoặc triển khai QR.
 - Đã gắn marker có nhãn cho 10 địa điểm; chọn marker đồng bộ địa điểm đang xem trong panel nội dung.
 - Tọa độ là dữ liệu người dùng cung cấp, chưa được kiểm chứng thực địa. Không suy diễn bán kính geofence.
 - Sửa lỗi người dùng phản ánh 24/10: dữ liệu release dùng UUID, trong khi lần đầu ghép tọa độ theo ID mẫu cố định nên không có marker. Hiện ghép theo tên địa điểm trong release; marker là nút DOM, không phụ thuộc glyph/layer nhãn của style raster.
@@ -57,7 +55,7 @@
 2. Dùng điện thoại thật qua HTTPS, kiểm tra cho phép/từ chối quyền, sai số thực tế, tab nền và tiết kiệm pin.
 3. Khảo sát/hiệu chỉnh bán kính vào-ra cho khuôn viên; xác nhận cách xử lý các geofence gần/chồng lấn.
 4. E2E GPS (mock provider ở test) và mô phỏng qua 2 mẫu/đóng-dừng, đảm bảo sự kiện mô phỏng không vào dashboard thật.
-5. Theo cập nhật người dùng ngày 24/10, có thể phát triển QR trước nghiệm thu thực địa. GPS tự nhận diện, autoplay theo geofence và xác nhận ngưỡng vẫn cần hoàn tất trước demo chính thức.
+5. GPS tự nhận diện, autoplay theo geofence và xác nhận ngưỡng vẫn cần hoàn tất trước demo chính thức.
 
 Không có thao tác ghi/xóa dữ liệu Atlas trong phần việc này.
 
@@ -66,7 +64,7 @@ Không có thao tác ghi/xóa dữ liệu Atlas trong phần việc này.
 - Người dùng xác nhận đã cấu hình domain Stadia, bản đồ và GPS hoạt động trên điện thoại, và đã kiểm chứng 10 tọa độ tại thực địa. Các mục “chưa xác minh” ở trên là nhật ký của thời điểm triển khai trước phản hồi này.
 - Trên iPhone/Safari, khi geofence xác nhận điểm, audio không tự phát và giao diện báo trình duyệt chặn; bấm Phát thủ công thì nghe được. Đây là kết quả người dùng quan sát, không phải kết quả kiểm thử thiết bị do nhóm phát triển thực hiện.
 - Nguyên nhân khả dĩ từ mã: thẻ `<audio>` trước đây chỉ được tạo sau khi nhận điểm, nằm ngoài thao tác người dùng. Safari yêu cầu lần tải/phát đầu tiên của thẻ media gắn với thao tác người dùng. Đã giữ một thẻ audio xuyên suốt trang và gọi `load()` ngay trong thao tác bật GPS/mô phỏng; đổi điểm vẫn dùng thẻ đó. Đây là thay đổi cần người dùng thử lại trên iPhone, chưa thể coi là sửa xong trên thiết bị.
-- Chưa nhận xác nhận riêng rằng ngưỡng vào 30 m, ra 45 m và sai số 25 m phù hợp với mọi điểm. QR vẫn chờ nghiệm thu tự phát và ngưỡng.
+- Chưa nhận xác nhận riêng rằng ngưỡng vào 30 m, ra 45 m và sai số 25 m phù hợp với mọi điểm.
 - Kiểm tra mã sau sửa: 10/10 test tập trung `AudioPlayer` và `ExplorePage` đạt; typecheck/production build đạt; `git diff --check` đạt. Build vẫn cảnh báo bundle MapLibre lớn. Chưa chạy E2E hoặc kiểm tra iPhone/Safari trong phiên sửa này; kết quả trên thiết bị chỉ có thể xác nhận khi người dùng mở bản cập nhật.
 
 ### Chạy thử trực tiếp sau sửa
@@ -82,7 +80,7 @@ Không có thao tác ghi/xóa dữ liệu Atlas trong phần việc này.
 - Đã đổi marker và nút thẻ có audio để gọi `play()` đồng bộ ngay trong thao tác chạm; thẻ audio được giữ lại và thay nguồn khi chuyển điểm. Nút danh sách đổi thành “Nghe thuyết minh”; điểm chưa có audio vẫn chỉ mở nội dung.
 - Kiểm tra hồi quy: **57/57 frontend test đạt**. Trên Edge viewport 390×844 với MP3 công bố từ Atlas, chạm “Nghe thuyết minh” chọn Khu A và audio phát (currentTime tăng ~2,54 giây, readyState 4). Đây chưa phải kiểm tra iPhone/Safari.
 - Một sự kiện audio thử đã được gửi nhầm vào Atlas do chạy thử với ID hành trình giả; đã xóa đúng một bản ghi khớp đồng thời visitor ID, journey ID, release ID và place ID của bài thử. Không có dữ liệu tour/audio nào thay đổi.
-- Người dùng xác nhận sau khi dùng bản cập nhật trên điện thoại, chạm địa điểm và nghe audio đã hoạt động. Đây xác nhận luồng chọn điểm thủ công; GPS tự nhận diện/tự phát và ngưỡng 30/45 m vẫn cần nghiệm thu riêng trước QR.
+- Người dùng xác nhận sau khi dùng bản cập nhật trên điện thoại, chạm địa điểm và nghe audio đã hoạt động.
 
 ## Khắc phục bản đồ local — 26/10/2026
 

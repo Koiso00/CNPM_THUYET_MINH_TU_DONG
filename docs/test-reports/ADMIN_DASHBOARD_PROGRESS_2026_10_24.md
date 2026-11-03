@@ -2,7 +2,7 @@
 
 ## Phạm vi
 
-Theo ưu tiên của người dùng, hoàn thiện thống kê Admin trước QR. Dashboard có bộ lọc ngày ICT, các số tổng về khách/hành trình/lượt nghe và bảng lượt phát audio theo từng địa điểm. Thống kê dựa trên `usage_events`; GPS mô phỏng không được ghi vào đây.
+Dashboard có bộ lọc ngày ICT, các số tổng về khách/hành trình/lượt nghe và bảng lượt phát audio theo từng địa điểm. Thống kê dựa trên `usage_events`; GPS mô phỏng không được ghi vào đây.
 
 ## Nhật ký
 
@@ -16,7 +16,7 @@ Theo ưu tiên của người dùng, hoàn thiện thống kê Admin trước QR
 
 ## Trạng thái
 
-Thống kê nền của Admin đã hoạt động trên bản deploy theo xác nhận người dùng. QR là phần phát triển kế tiếp; nghiệm thu GPS/geofence thực tế vẫn có thể để sau nhưng cần hoàn tất trước demo chính thức.
+Thống kê nền của Admin đã hoạt động trên bản deploy theo xác nhận người dùng.
 
 ## Giới hạn kiểm thử
 

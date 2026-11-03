@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { campusPlaces } from "../src/features/tours/campusPlaces";
-import { withCampusPoiLocations } from "../src/features/map/campusPoiLocations";
+import { withTestLocations } from "./coordinate-fixture";
 import {
   distanceMeters,
   GEOFENCE_DEFAULTS,
@@ -8,7 +8,7 @@ import {
   type LocationFix,
 } from "../src/features/map/geofence";
 
-const places = withCampusPoiLocations(campusPlaces.map((place) => ({
+const places = withTestLocations(campusPlaces.map((place) => ({
   ...place,
   source: "test",
   location: null,

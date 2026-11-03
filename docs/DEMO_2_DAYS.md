@@ -1,6 +1,7 @@
-> **Ưu tiên mới ngày 23/10/2026:** tạm hoãn toàn bộ QR (tạo/tải/in mã, mở từ QR, quét trong web và thống kê QR) đến khi hoàn thành Admin và thiết lập địa điểm/audio phát. Các thiết kế QR bên dưới được giữ cho giai đoạn sau. “Địa điểm phát” trước mắt là địa điểm gắn nội dung/MP3 và chọn nghe thủ công; nếu cần tự kích hoạt theo tọa độ/GPS thì phải chốt thêm.
 
-> **Tài liệu mốc demo 21–23/10/2026:** nội dung bên dưới là kế hoạch ngắn hạn và lịch sử triển khai, không phải trạng thái mới nhất. Tại 24/10, khách, Admin, dashboard, bản đồ/GPS frontend và giao diện/nội dung/audio song ngữ đã được triển khai từng phần; QR là bước tiếp theo. Xem trạng thái hiện hành trong [kế hoạch khách/QR](DEMO_GUEST_QR_PLAN.md), [WORK_BREAKDOWN](WORK_BREAKDOWN.md) và các báo cáo ngày 24/10.
+> *“Địa điểm phát” trước mắt là địa điểm gắn nội dung/MP3 và chọn nghe thủ công; nếu cần tự kích hoạt theo tọa độ/GPS thì phải chốt thêm.
+
+> **Tài liệu mốc demo 21–23/10/2026:** nội dung bên dưới là kế hoạch ngắn hạn và lịch sử triển khai, không phải trạng thái mới nhất.md) và các báo cáo ngày 24/10.
 
 # Phạm vi demo ưu tiên trong 2 ngày
 
@@ -9,15 +10,13 @@ hoàn thành toàn bộ [kế hoạch gốc](PROJECT_PLAN.md). Chia nhỏ, test 
 
 ## Phạm vi đã chọn
 
-Cập nhật 23/10: áp dụng [kế hoạch khách, QR và vai trò nội bộ gộp](DEMO_GUEST_QR_PLAN.md). Người nghe không đăng nhập; Creator/Admin gộp thành vai trò quản trị demo.
-
 - Giao diện đăng ký/đăng nhập và phân quyền truy cập.
 - Người nghe xem/chọn địa điểm và phát audio thủ công.
 - Admin quản lý địa điểm, nội dung/audio và user.
 - Dashboard lấy số liệu từ dữ liệu thật trong hệ thống; không gán số người/lượt nghe giả.
 - Tạm hoãn GPS, geofence, offline, AI và dịch tự động trong demo.
 
-Phần mô tả và thứ tự theo ngày dưới đây phản ánh kế hoạch cũ đã triển khai. Kế hoạch demo mới ưu tiên một vai trò quản trị và các luồng khách/QR trong tài liệu liên kết ở trên.
+Phần mô tả và thứ tự theo ngày dưới đây phản ánh kế hoạch cũ đã triển khai.
 Chưa đưa hiện diện tại POI/lượt đến theo GPS vào demo.
 
 ## Thứ tự thực hiện dự kiến
@@ -56,4 +55,3 @@ Admin tải MP3 thay thế ≤10 MiB, công bố lại mới áp dụng. Các m�
   dashboard và nghe thủ công từ GridFS. Đã nhập 10 mô tả vào nháp và 10 MP3;
   Admin nghe kiểm tra rồi công bố qua UI. Không tự công bố nội dung ứng dụng.
 - Kiểm thử API/Atlas và Edge desktop/mobile viewport tại [báo cáo demo](test-reports/DEMO_CONTENT_AUDIO_ADMIN.md).
-- Còn nghiệm thu phát âm/nội dung, điện thoại vật lý và triển khai cloud; Creator/GPS/offline/AI/dịch tự động vẫn hoãn.

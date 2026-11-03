@@ -91,6 +91,58 @@ async def test_draft_publish_edit_conflict_unpublish(settings_factory):
         assert len(service.repository.releases) == 1
 
 
+async def test_admin_cannot_add_or_remove_places_but_can_edit_existing(settings_factory):
+    h = auth_harness(settings_factory)
+    service = attach(h)
+    async with h.client as client:
+        await register_and_login(client)
+        role(h, UserRole.ADMIN)
+        draft = deepcopy(service.repository.tour["draft"])
+        added = deepcopy(draft["places"][0])
+        added["id"] = str(uuid4())
+        draft["places"].append(added)
+        response = await client.put(
+            "/api/v1/admin/campus",
+            json={"revision": 1, "draft": draft},
+            headers=await csrf_headers(client),
+        )
+        assert response.status_code == 422
+        assert len(service.repository.tour["draft"]["places"]) == 10
+        draft["places"].pop()
+        draft["places"].pop()
+        response = await client.put(
+            "/api/v1/admin/campus",
+            json={"revision": 1, "draft": draft},
+            headers=await csrf_headers(client),
+        )
+        assert response.status_code == 422
+        draft = deepcopy(service.repository.tour["draft"])
+        draft["places"][0]["description"] = "Nội dung được chỉnh sửa"
+        response = await client.put(
+            "/api/v1/admin/campus",
+            json={"revision": 1, "draft": draft},
+            headers=await csrf_headers(client),
+        )
+        assert response.status_code == 200
+        assert len(response.json()["draft"]["places"]) == 10
+        assert response.json()["draft"]["places"][0]["description"] == "Nội dung được chỉnh sửa"
+
+
+async def test_admin_account_management_routes_are_not_available(settings_factory):
+    h = auth_harness(settings_factory)
+    attach(h)
+    async with h.client as client:
+        await register_and_login(client)
+        role(h, UserRole.ADMIN)
+        assert (await client.get("/api/v1/admin/users")).status_code == 404
+        response = await client.put(
+            f"/api/v1/admin/users/{uuid4()}",
+            json={"role": "admin", "is_active": True},
+            headers=await csrf_headers(client),
+        )
+        assert response.status_code == 404
+
+
 async def test_creator_routes_and_review_workflow_removed(settings_factory):
     h = auth_harness(settings_factory)
     attach(h)
@@ -115,7 +167,7 @@ async def test_nonadmin_cannot_read_or_write_admin_features(settings_factory, va
     async with h.client as client:
         await register_and_login(client)
         role(h, value)
-        for path in ("campus", "users", "dashboard", "audio", "audio/private"):
+        for path in ("campus", "dashboard", "audio", "audio/private"):
             assert (await client.get("/api/v1/admin/" + path)).status_code == 403
         creator_response = await client.get("/api/v1/creator/campus")
         assert creator_response.status_code == 404
@@ -123,7 +175,6 @@ async def test_nonadmin_cannot_read_or_write_admin_features(settings_factory, va
         for method, path, body in (
             ("PUT", "campus", {"revision": 1, "draft": {}}),
             ("POST", "campus/publish", {"revision": 1}),
-            ("PUT", f"users/{uuid4()}", {"role": "admin", "is_active": True}),
         ):
             response = await client.request(
                 method, "/api/v1/admin/" + path, json=body, headers=await csrf_headers(client)

@@ -1,3 +1,7 @@
+
+
+> **Quyết định ngày 27/10/2026:** Người dùng loại chức năng offline khỏi toàn bộ phạm vi dự án và kế hoạch dài hạn. Các mô tả trước đây về offline chỉ có giá trị lịch sử.
+
 # Kế hoạch thiết kế website thuyết minh cơ sở chính Đại học Sài Gòn
 
 ## 1. Mục tiêu và phạm vi đã thống nhất
@@ -8,8 +12,6 @@ Bản nghiệm thu gồm:
 
 - Một tour cơ sở chính với **8–10 điểm ngoài trời**, thuyết minh **Việt–Anh**.
 - Người dùng tự đăng ký, đăng nhập, tham quan tự do và nghe theo vị trí hoặc chọn điểm thủ công.
-- Creator soạn nội dung; Admin duyệt trước khi công bố.
-- Tải đầy đủ tour để sử dụng ngoại tuyến, gồm hai ngôn ngữ, MP3, ảnh và bản đồ.
 - **GPS mô phỏng** để trình diễn tại bất kỳ địa điểm nào.
 - Website trực tuyến trên hạ tầng miễn phí và bản chạy trên máy để dự phòng.
 
@@ -26,7 +28,7 @@ Lượt triển khai đầu tiên tạo tài liệu hướng dẫn dự án; ch�
 | `docs/PROJECT_CONTEXT.md` | Mục tiêu, người dùng, yêu cầu đã chốt, giới hạn và bảng quyết định |
 | `docs/ARCHITECTURE.md` | Thành phần hệ thống, cấu trúc mã dự kiến, luồng dữ liệu, xác thực, xử lý nền và triển khai |
 | `docs/DATA_AND_API.md` | Collection, quan hệ, phiên bản nội dung, phân quyền và hợp đồng API |
-| `docs/TOUR_RUNTIME.md` | GPS thật/mô phỏng, geofence, hàng đợi âm thanh và gói ngoại tuyến |
+| `docs/TOUR_RUNTIME.md` | GPS thật/mô phỏng, geofence và hàng đợi âm thanh |
 | `docs/IMPLEMENTATION_PLAN.md` | Kế hoạch 10 tuần, phụ thuộc công việc, phân công theo nhóm 2 hoặc 3 người |
 | `docs/TEST_AND_DEMO.md` | Tiêu chí nghiệm thu, kiểm thử thực địa, kịch bản demo và cách dự phòng |
 | `docs/CONTENT_GUIDE.md` | Quy trình khảo sát, ghi nguồn, thu thập ảnh/tọa độ và kiểm tra bản dịch |
@@ -44,11 +46,11 @@ Lượt triển khai đầu tiên tạo tài liệu hướng dẫn dự án; ch�
 
 ### Nền tảng và triển khai
 
-- **Frontend:** React 19.2, TypeScript, Vite 7; MapLibre + PMTiles; Workbox và IndexedDB.
+- **Frontend:** React 19.2, TypeScript, Vite 7; MapLibre.
 - **Backend:** FastAPI, Pydantic và PyMongo Async; tổ chức theo router → service → repository.
 - **Lưu trữ:** MongoDB lưu dữ liệu nghiệp vụ; GridFS lưu ảnh, MP3 và tài nguyên bản đồ.
 - **Dịch và giọng đọc:** `deep-translator` với GoogleTranslator cho Việt → Anh; Edge-TTS tạo MP3. Cho phép sửa bản dịch và tải MP3 thay thế khi dịch vụ không khả dụng.
-- **AI:** Gemini hỗ trợ tóm tắt, viết lại văn bản do Creator cung cấp; tên mô hình đặt trong cấu hình. AI chỉ tạo bản nháp, không tự công bố.
+- AI chỉ tạo bản nháp, không tự công bố.
 - **Trực tuyến:** một dịch vụ Render phục vụ cả frontend đã build và API, kết nối MongoDB Atlas Free. Cùng nguồn truy cập giúp đơn giản hóa cookie và tải tài nguyên cần đăng nhập.
 - **Dự phòng:** Docker Compose chạy FastAPI và MongoDB với volume bền vững; chuẩn bị dữ liệu và MP3 trước buổi demo. Khi thử bằng điện thoại, cung cấp đường dẫn HTTPS.
 
@@ -58,8 +60,7 @@ Không lưu file lâu dài trên ổ đĩa tạm của Render vì dữ liệu ph
 
 Ba vai trò:
 
-- **User:** xem/nghe tour đã công bố, tải gói và quản lý dữ liệu ngoại tuyến.
-- **Creator:** tạo, sửa và gửi duyệt nội dung thuộc quyền quản lý.
+- **User:** xem/nghe tour đã công bố.
 - **Admin:** quản lý tài khoản, cấp quyền, duyệt/từ chối và gỡ công bố.
 
 Tài khoản mới luôn là User; không cho người đăng ký tự chọn quyền. Xác thực dùng JWT trong cookie `HttpOnly`, `Secure` khi chạy HTTPS; bổ sung bảo vệ CSRF, băm mật khẩu và kiểm tra quyền tại API.
@@ -69,12 +70,12 @@ Các nhóm dữ liệu:
 - `users`, `sessions`: tài khoản, vai trò và phiên đăng nhập.
 - `tours`, `pois`, `localizations`: tour, điểm địa lý và nội dung theo ngôn ngữ.
 - `tour_releases`: bản nội dung đã duyệt, chứa snapshot các điểm và tài nguyên liên quan.
-- `assets`, `jobs`, `offline_packs`: metadata file, công việc nền và manifest tải xuống.
+- `assets`, `jobs`: metadata file, công việc nền và manifest tải xuống.
 - `audit_logs`, `usage_events`: nhật ký quản trị và sự kiện sử dụng.
 
 Tọa độ dùng GeoJSON theo thứ tự **kinh độ, vĩ độ**. Bản dịch và âm thanh gắn với phiên bản văn bản nguồn để phát hiện tài nguyên đã lỗi thời.
 
-API đặt dưới `/api/v1`, tách nhóm `auth`, `content`, `audio`, `maps`, `offline-packs`, `jobs`, `ai`, `admin` và `events`. Tác vụ dịch/TTS trả mã công việc và trạng thái; không giữ yêu cầu HTTP chờ xử lý toàn bộ tour.
+API đặt dưới `/api/v1`, tách nhóm `auth`, `content`, `audio`, `maps`, `jobs`, `ai`, `admin` và `events`. Tác vụ dịch/TTS trả mã công việc và trạng thái; không giữ yêu cầu HTTP chờ xử lý toàn bộ tour.
 
 Các công việc nền được lưu trong MongoDB, có giới hạn số tác vụ chạy đồng thời, thử lại hữu hạn và chống tạo trùng. Trong cấu hình miễn phí, bộ xử lý chạy cùng dịch vụ API và khôi phục công việc dang dở khi dịch vụ hoạt động trở lại.
 
@@ -82,11 +83,10 @@ Các công việc nền được lưu trong MongoDB, có giới hạn số tác 
 
 Luồng công bố:
 
-**Nháp → Creator kiểm tra bản dịch/MP3 → Gửi duyệt → Admin duyệt → Công bố phiên bản.**
+***
 
-Sửa nội dung sau công bố tạo bản nháp mới; người nghe tiếp tục dùng bản đã duyệt. Chỉ công bố phiên bản đủ nội dung Việt–Anh và tài nguyên cần thiết cho gói ngoại tuyến.
+Sửa nội dung sau công bố tạo bản nháp mới; người nghe tiếp tục dùng bản đã duyệt. Chỉ công bố phiên bản đáp ứng yêu cầu nội dung và tài nguyên đã duyệt.
 
-Giao diện gồm đăng ký/đăng nhập, danh sách tour, chi tiết tour, màn hình tham quan, quản lý gói tải, khu vực Creator và bảng điều khiển Admin.
 
 - Điện thoại: bản đồ, thẻ thông tin điểm và thanh điều khiển âm thanh dễ thao tác.
 - Máy tính: bản đồ cạnh danh sách điểm; khu vực biên tập có bảng và biểu mẫu.
@@ -114,33 +114,22 @@ Các giá trị khởi đầu để kiểm thử:
 
 Thứ tự âm thanh đã chốt:
 
-**MP3 trên thiết bị → MP3 trên máy chủ → tạo MP3 khi cần → giọng trình duyệt.**
+**MP3 trên máy chủ → tạo MP3 khi cần → giọng trình duyệt.**
 
-Tạo theo yêu cầu chỉ dùng văn bản đã công bố và chống yêu cầu trùng. Khi ngoại tuyến, bỏ qua các tầng cần mạng; nếu không có MP3 hoặc giọng cục bộ phù hợp, hiển thị văn bản và tình trạng thiếu âm thanh.
+Tạo theo yêu cầu chỉ dùng văn bản đã công bố và chống yêu cầu trùng. Nếu không có MP3 hoặc giọng phù hợp, hiển thị văn bản và tình trạng thiếu âm thanh.
 
-### Ngoại tuyến và thống kê
+### Thống kê
 
-Manifest gói chứa phiên bản tour, danh sách tài nguyên, kích thước và checksum. Gói bao gồm cả Việt–Anh, ảnh, MP3, PMTiles, style, font và biểu tượng bản đồ.
-
-- IndexedDB lưu dữ liệu có cấu trúc và file PMTiles; dùng nguồn đọc file cục bộ của PMTiles.
-- Cache Storage lưu giao diện và tài nguyên media đầy đủ; xử lý `Range` để nghe và tua MP3. Không coi phần âm thanh đã stream là một file đã tải hoàn chỉnh. [Tài liệu Workbox](https://developer.chrome.com/docs/workbox/serving-cached-audio-and-video)
-- Chỉ đánh dấu **“Sẵn sàng ngoại tuyến”** sau khi kiểm tra đủ tài nguyên.
-- Tải gián đoạn có thể tiếp tục; cập nhật tải sang bản mới rồi mới thay bản đang dùng.
-- Kiểm tra dung lượng trước khi tải; phát hiện dữ liệu bị trình duyệt xóa và yêu cầu tải lại.
-- Người đã đăng nhập và tải gói được mở lại ngoại tuyến trên cùng trình duyệt, kể cả phiên trực tuyến hết hạn.
-- Không đăng nhập mới, sửa nội dung hoặc thực hiện quản trị khi ngoại tuyến.
-- Đăng xuất xóa dữ liệu tour cục bộ và quyền truy cập ngoại tuyến; nếu đang mất mạng, ghi nhận yêu cầu thu hồi phiên để thực hiện khi kết nối lại.
-
-Dashboard v1 hiển thị số tài khoản, lượt bắt đầu tour, số người sử dụng theo kỳ, lượt nghe hoàn tất và trạng thái xử lý nội dung. Sự kiện ngoại tuyến được đồng bộ chống trùng khi có mạng; không cần lưu hành trình GPS thô.
+Dashboard v1 hiển thị số tài khoản, lượt bắt đầu tour, số người sử dụng theo kỳ, lượt nghe hoàn tất và trạng thái xử lý nội dung; không cần lưu hành trình GPS thô.
 
 ## 4. Lộ trình 10 tuần
 
 | Thời gian | Công việc và kết quả cần đạt |
 |---|---|
-| **Tuần 1–2** | Hoàn thiện tài liệu; dựng nền tảng, xác thực và dữ liệu; khảo sát 8–10 điểm. Thử nghiệm sớm một điểm có bản đồ, MP3, GPS mô phỏng và mở lại ngoại tuyến. |
+| **Tuần 1–2** | Hoàn thiện tài liệu; dựng nền tảng, xác thực và dữ liệu; khảo sát 8–10 điểm. Thử nghiệm sớm một điểm có bản đồ, MP3, GPS mô phỏng. |
 | **Tuần 3–4** | Hoàn thiện giao diện tham quan, bản đồ khuôn viên, GPS thật/mô phỏng, geofence và hàng đợi. Đi thực địa để đo và điều chỉnh ngưỡng. |
-| **Tuần 5–6** | Hoàn thiện Creator, dịch Việt–Anh, công việc TTS, kiểm tra bản dịch, duyệt/công bố và các tầng dự phòng âm thanh. |
-| **Tuần 7–8** | Hoàn thiện gói ngoại tuyến, tiếp tục tải, kiểm tra toàn vẹn, đổi phiên bản, dung lượng và đăng xuất ngoại tuyến. |
+| **Tuần 5–6** ||
+| **Tuần 7–8** | Hoàn thiện các chức năng còn lại và kiểm thử tích hợp theo ưu tiên hiện hành. |
 | **Tuần 9–10** | Tích hợp Gemini, dashboard thống kê, hoàn thiện dữ liệu thật; triển khai trực tuyến, kiểm thử tổng thể và diễn tập demo dự phòng. |
 
 Phân công theo năng lực:
@@ -153,11 +142,9 @@ Mười tuần là kế hoạch dự kiến theo yêu cầu ban đầu; chưa co
 
 ## 5. Kiểm thử và điều kiện nghiệm thu
 
-- **Phân quyền:** User không truy cập bản nháp; Creator không sửa nội dung ngoài quyền; đăng ký không thể tự nâng vai trò.
 - **Nội dung:** sửa bản nháp không làm đổi tour đang công bố; bản dịch và MP3 không bị gắn nhầm phiên bản.
 - **Geofence:** đi vào/ra vùng, GPS nhiễu, nhiều điểm gần nhau, mẫu cũ, chuyển tab và quay lại; không phát chồng hoặc tự phát lặp.
 - **Âm thanh:** kiểm tra từng tầng dự phòng, đổi ngôn ngữ, thiếu giọng đọc, lỗi dịch vụ và yêu cầu tạo trùng.
-- **Ngoại tuyến:** tải hoàn chỉnh, tắt mạng, đóng/mở lại website, xem bản đồ, nghe và đổi Việt–Anh; kiểm tra tải dở, thiếu dung lượng, file hỏng và đăng xuất.
 - **Mô phỏng:** demo toàn bộ tour trên máy tính ngoài trường mà không cần cấp GPS; thống kê mô phỏng không lẫn lượt dùng thật.
 - **Triển khai:** kiểm tra khởi động lại máy chủ không mất ảnh/MP3, cookie hoạt động qua HTTPS và bộ chạy trên máy phục hồi được dữ liệu.
 - **Thiết bị:** nghiệm thu chính trên Chrome Android và Chrome/Edge máy tính; kiểm tra bổ sung Safari iPhone và ghi rõ kết quả thực tế.
