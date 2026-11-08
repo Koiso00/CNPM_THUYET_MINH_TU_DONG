@@ -1,0 +1,308 @@
+Paragraphs: 95
+Tables: 10
+
+P0: BÁO CÁO ĐỀ TÀI THUYẾT MINH TỰ ĐỘNG ĐA NGÔN NGỮ CHO TRƯỜNG ĐẠI HỌC SÀI GÒN
+P1: Dự án xây dựng website giới thiệu cơ sở chính Trường Đại học Sài Gòn thông qua bản đồ, nội dung và audio thuyết minh. Khách có thể chọn ngôn ngữ, tìm hiểu các địa điểm và nghe nội dung đã công bố; Admin quản lý nội dung và theo dõi thống kê. Báo cáo trình bày bài toán, giải pháp, luồng sử dụng và trạng thái hệ thống.
+P2: 1. Problem Alignment – Xác định bài toán
+P3: Sinh viên, phụ huynh và khách đến cơ sở chính lần đầu thường khó nhận ra các khu vực và hiểu chức năng của từng nơi. Khi không có người hướng dẫn, thông tin dễ rời rạc, còn khách quốc tế phải đối mặt thêm rào cản ngôn ngữ.
+P4: Trường có lịch sử lâu đời được khánh thành vào năm 1910 , và cơ sở chính lưu giữ nhiều dấu ấn của quá trình ấy. Dự án xây dựng một website để mỗi khách có thể quan sát các điểm trên bản đồ, đọc mô tả và nghe thuyết minh bằng ngôn ngữ mình chọn. Hệ thống có thể định vị khi khách đồng ý, và vẫn cho phép chọn điểm thủ công.
+P5: 2. High Level Approach – Giải pháp tổng quan
+P6: Xây dựng website tương thích điện thoại và máy tính, truy cập trực tiếp bằng trình duyệt.
+P7: Hiển thị bản đồ cơ sở chính cùng 10 địa điểm thuyết minh.
+P8: Cung cấp nội dung và audio tiếng Việt, English và 한국어.
+P9: Cho phép khách bật GPS để nhận diện điểm theo vùng địa lý hoặc chọn điểm để nghe trực tiếp.
+P10: Cung cấp khu vực Admin để biên tập nội dung, quản lý audio, công bố phiên bản và theo dõi thống kê.
+P11: 3. Narrative – Kịch bản sử dụng
+P12: Khách mở website, chọn ngôn ngữ tại trang chào và nhấn bắt đầu hành trình. Trang khám phá hiển thị bản đồ và danh sách địa điểm. Khách chạm vào một điểm để xem thông tin và nghe audio tương ứng; khách có thể nghe lại khi cần.
+P13: Nếu muốn sử dụng định vị, khách chủ động bật GPS và cấp quyền cho trình duyệt. Hệ thống xử lý vị trí trên thiết bị, xác định điểm gần đó và thử phát audio khi điểm được xác nhận. Nếu trình duyệt chặn tự phát hoặc khách không cấp quyền vị trí, khách vẫn có thể chọn điểm và nhấn phát thủ công.
+P14: Admin đăng nhập để cập nhật địa điểm, văn bản và MP3 theo ngôn ngữ. Sau khi kiểm tra, Admin lưu bản nháp rồi công bố phiên bản riêng cho khách truy cập.
+P15: 4. Goals – Mục tiêu
+P16: 4.1. Mục tiêu chính
+P17: Hỗ trợ khách tự tìm hiểu các địa điểm trong cơ sở chính.
+P18: Giới thiệu nội dung thông qua bản đồ, văn bản và audio.
+P19: Cung cấp trải nghiệm bằng tiếng Việt, English và 한국어.
+P20: Tạo công cụ quản lý nội dung và thống kê cho Admin.
+P21: 4.2. Phạm vi phiên bản hiện tại
+P22: Một tour cơ sở chính với 10 địa điểm đã có nội dung và audio ba ngôn ngữ.
+P23: Khách không cần đăng nhập; lựa chọn ngôn ngữ được giữ khi chuyển trang và tải lại.
+P24: Bản đồ trực tuyến, GPS chủ động, mô phỏng vị trí và geofence phía trình duyệt.
+P25: Quản trị nội dung, audio, tài khoản và dashboard thống kê.
+P26: 5. Solution Alignment – Thiết kế giải pháp
+P27: 5.1. Phân hệ khách tham quan
+P28: Trang chào cho phép khách chọn ngôn ngữ và bắt đầu hành trình. Trang khám phá kết hợp bản đồ Stadia Maps, các điểm địa lý và phần nội dung. Khách có thể xem mô tả, phát audio, bật hoặc dừng định vị. Hệ thống cung cấp chế độ mô phỏng để kiểm tra luồng nhận diện điểm.
+P29: 5.2. Phân hệ quản trị
+P30: Trang Nội dung cho phép Admin thêm, sửa, xóa địa điểm trong bản nháp; biên tập các trường theo ngôn ngữ; tải MP3 và nghe thử. Admin lưu nháp trước khi công bố phiên bản. Trang Quản trị cung cấp dashboard và quản lý tài khoản. Các thao tác nội bộ yêu cầu xác thực và được kiểm tra quyền ở backend.
+P31: 5.3. Nền tảng công nghệ
+P32: Frontend sử dụng React, TypeScript và MapLibre; backend sử dụng FastAPI. MongoDB lưu dữ liệu nghiệp vụ, GridFS lưu audio. Hệ thống đã được triển khai trên Render và kết nối MongoDB Atlas theo xác nhận của người dùng.
+P33: 6. Key Flows – Các luồng chính
+P34: 6.1. Luồng khám phá và nghe thủ công
+P35: Mở website → Chọn ngôn ngữ → Bắt đầu hành trình → Xem bản đồ và danh sách → Chọn địa điểm → Xem mô tả và phát audio. Mỗi lần bắt đầu tạo một mã hành trình; mã khách được giữ trong trình duyệt để phục vụ thống kê.
+P36: 6.2. Luồng định vị và thuyết minh
+P37: Khách bật GPS → Trình duyệt yêu cầu quyền vị trí → Hệ thống nhận mẫu vị trí và kiểm tra điều kiện geofence → Khi xác nhận điểm, trang mở nội dung và thử phát audio. Nếu tự phát bị chặn, giao diện hướng dẫn khách nhấn phát.
+P38: 6.3. Luồng đổi ngôn ngữ
+P39: Khách chọn tiếng Việt, English hoặc 한국어 → Giao diện sử dụng ngôn ngữ được chọn → Nội dung và audio tương ứng được lấy từ phiên bản đã công bố khi có sẵn. Lựa chọn được lưu để sử dụng khi chuyển trang hoặc tải lại.
+P40: 6.4. Luồng quản trị nội dung
+P41: Admin đăng nhập → Mở trang Nội dung → Chọn ngôn ngữ và chỉnh sửa địa điểm hoặc audio → Lưu bản nháp → Kiểm tra và công bố. Nội dung khách đang xem chỉ thay đổi sau khi có phiên bản mới được công bố.
+P42: 6.5. Luồng theo dõi thống kê
+P43: Hệ thống ghi nhận các sự kiện truy cập, bắt đầu hành trình và bắt đầu phát audio. Admin mở trang Quản trị, chọn ngày theo múi giờ Việt Nam và xem tổng hợp, bao gồm lượt phát theo địa điểm. Mã khách thể hiện trình duyệt được nhận diện, không đồng nghĩa chắc chắn với số người thật duy nhất.
+P44: 7. Key Logic – Logic hệ thống
+P45: 7.1. Nội dung công bố và audio
+P46: Dữ liệu biên tập được lưu dưới dạng bản nháp. Khi công bố, hệ thống tạo snapshot nội dung và gắn audio phù hợp với phiên bản văn bản. Thay đổi bản nháp không trực tiếp sửa snapshot đang công bố. Audio được phục vụ qua API và lưu trên GridFS.
+P47: 7.2. Định vị và geofence
+P48: Vị trí được xử lý trong trình duyệt. Bộ xử lý dùng khoảng cách tới điểm, ngưỡng vào 30 m và ra 45 m, sai số tối đa 25 m và hai mẫu hợp lệ liên tiếp để xác nhận. Mẫu cũ hoặc quá sai số bị bỏ qua; việc xử lý được giới hạn tối đa một mẫu mỗi 5 giây. GPS thật và mô phỏng dùng chung cơ chế này. Theo xác nhận của người dùng, phần GPS được ghi nhận đã khảo sát.
+P49: 7.3. Điều khiển audio
+P50: Trình phát dùng một thẻ audio xuyên suốt trang khám phá. Khi khách chọn điểm, hệ thống đổi nguồn tương ứng. Khi geofence nhận điểm, hệ thống thử phát tự động; kết quả còn phụ thuộc chính sách của trình duyệt. Việc nghiệm thu tự phát Safari và xây dựng hàng đợi audio được người dùng cho phép bỏ qua.
+P51: 7.4. Bảo mật và thống kê
+P52: Phiên đăng nhập được bảo vệ bằng cookie HttpOnly; backend kiểm tra CSRF và quyền Admin. Nội dung nháp và chức năng quản trị không dành cho khách. Thống kê dựa trên sự kiện sử dụng; các lượt tự phát từ mô phỏng không được tính vào số liệu thật. Dashboard đã được người dùng kiểm thử thực tế và xác nhận đạt.
+P53: 8. Future Considerations – Hướng phát triển
+P54: Hoàn thiện cách xử lý khi nội dung hoặc audio của ngôn ngữ được chọn chưa có; hiện mã còn có cơ chế dùng nội dung dự phòng.
+P55: Nghiên cứu dịch và tạo giọng đọc tự động dưới dạng công việc nền có kiểm soát.
+P56: Xem xét AI hỗ trợ biên soạn bản nháp dựa trên tư liệu được cung cấp và vẫn cần người kiểm tra trước khi công bố.
+P57: Mở rộng ngôn ngữ, nội dung, địa điểm hoặc cơ sở khi có yêu cầu và dữ liệu được xác minh.
+P58: Bổ sung nhật ký quản trị và các chỉ số phân tích phù hợp với nhu cầu vận hành.
+P59: Hệ thống hiện đã có các chức năng nền phục vụ bản demo. Các hướng phát triển nêu trên chưa được xem là chức năng đã hoàn thành.
+P60: 9. Use Cases
+P61: 9.1. Các tác nhân
+P67: 9.2. Use case của khách tham quan
+P69: 9.3. Use case của Admin
+P71: 9.4 Use case tổng quát
+P73: 9.5. Use case UC01 – Chọn ngôn ngữ
+P75: 9.5.1. Đặc tả UC01 – Chọn ngôn ngữ
+P77: 9.6. Đặc tả use case UC02 – Bắt đầu hành trình
+P79: Sơ đồ use case UC02
+P80: 9.7. Đặc tả use case UC03 – Xem bản đồ và địa điểm
+P82: Sơ đồ use case UC03
+P83: 9.8. Use case UC04 – Xem nội dung địa điểm
+P85: 9.8.1. Đặc tả UC04 – Xem nội dung địa điểm
+P86: 9.9. Use case UC05 – Nghe thuyết minh
+P88: 9.9.1. Đặc tả UC05 – Nghe thuyết minh
+P89: 9.10. Use case UC06 – Bật hoặc dừng GPS
+P91: 9.10.1. Đặc tả UC06 – Bật hoặc dừng GPS
+P92: 9.11. Use case UC07 – Mô phỏng vị trí
+P94: 9.11.1. Đặc tả UC07 – Mô phỏng vị trí
+
+==================================================
+
+=== TABLE 0 (3 rows, 2 cols) ===
+  R0: Tác nhân | Vai trò
+  R1: Khách tham quan | Truy cập website, chọn ngôn ngữ, khám phá địa điểm và nghe thuyết minh; không cần đăng nhập.
+  R2: Admin | Đăng nhập để biên tập nội dung, quản lý audio, công bố và xem dashboard. Admin cũng có thể sử dụng các chức năng khám phá.
+
+=== TABLE 1 (8 rows, 3 cols) ===
+  R0: Mã | Use case | Mô tả
+  R1: UC01 | Chọn ngôn ngữ | Chọn tiếng Việt, English hoặc 한국어. Lựa chọn được giữ khi chuyển trang và tải lại.
+  R2: UC02 | Bắt đầu hành trình | Bắt đầu một lượt tham quan từ trang chào. Hệ thống tạo mã hành trình mới.
+  R3: UC03 | Xem bản đồ và địa điểm | Xem bản đồ cơ sở chính và các địa điểm đã công bố.
+  R4: UC04 | Xem nội dung địa điểm | Chọn một địa điểm để xem tên và nội dung thuyết minh.
+  R5: UC05 | Nghe thuyết minh | Phát, tạm dừng hoặc nghe lại audio của địa điểm. Hệ thống cũng thử phát khi geofence xác nhận điểm.
+  R6: UC06 | Bật hoặc dừng định vị GPS | Chủ động bật theo dõi vị trí, cấp quyền cho trình duyệt hoặc dừng theo dõi.
+  R7: UC07 | Mô phỏng vị trí | Chọn một điểm để mô phỏng vị trí và kiểm tra luồng nhận diện địa điểm.
+
+=== TABLE 2 (10 rows, 3 cols) ===
+  R0: Mã | Use case | Mô tả
+  R1: UC08 | Đăng nhập | Dùng tài khoản Admin để truy cập các chức năng quản trị.
+  R2: UC09 | Đăng xuất | Kết thúc phiên đăng nhập Admin.
+  R3: UC10 | Chỉnh sửa nội dung địa điểm | Sửa tên, nội dung thuyết minh và nguồn tư liệu của điểm hiện có theo ngôn ngữ được chọn.
+  R4: UC11 | Lưu bản nháp | Lưu thay đổi nội dung để tiếp tục biên tập hoặc chuẩn bị công bố.
+  R5: UC12 | Tải audio cho địa điểm | Tải hoặc thay MP3 cho địa điểm và ngôn ngữ tương ứng.
+  R6: UC13 | Nghe thử audio | Nghe audio trong khu vực quản trị trước khi công bố.
+  R7: UC14 | Công bố phiên bản | Tạo phiên bản công bố từ bản nháp đã lưu để khách sử dụng.
+  R8: UC15 | Gỡ công bố | Ngừng cung cấp phiên bản đang công bố cho khách.
+  R9: UC16 | Xem dashboard | Xem và lọc thống kê theo ngày, gồm khách, hành trình, lượt phát audio và lượt phát theo địa điểm.
+
+=== TABLE 3 (26 rows, 3 cols) ===
+  R0: Use case number | UC01
+  R1: Use case name | Chọn ngôn ngữ
+  R2: Actor (s) | Khách tham quan
+  R3: Maturity | Focused
+  R4: Summary | Khách tham quan chọn tiếng Việt, English hoặc 한국어. Hệ thống cập nhật giao diện và lưu lựa chọn trong trình duyệt nếu có thể, để sử dụng khi chuyển trang hoặc tải lại.
+  R5: Basic Course of Events: | Actor Action | System Response
+  R6: Basic Course of Events: | 1. Khách mở bộ chọn ngôn ngữ trên giao diện. | 
+  R7: Basic Course of Events: |  | 2. Hệ thống hiển thị Tiếng Việt, English và 한국어.
+  R8: Basic Course of Events: | 3. Khách chọn một ngôn ngữ. | 
+  R9: Basic Course of Events: |  | 4. Hệ thống cập nhật giao diện theo ngôn ngữ đã chọn.
+  R10: Basic Course of Events: |  | 5. Hệ thống cố gắng lưu lựa chọn vào trình duyệt và đóng danh sách ngôn ngữ (E1).
+  R11: Alternative Paths: | A1. Khách tải lại hoặc quay lại sau
+  R12: Alternative Paths: | A1.1 Khách mở lại website trên cùng trình duyệt. | 
+  R13: Alternative Paths: |  | A1.2 Nếu đọc được lựa chọn đã lưu và lựa chọn hợp lệ, hệ thống sử dụng ngôn ngữ đó.
+  R14: Alternative Paths: | A2. Không có lựa chọn hợp lệ
+  R15: Alternative Paths: |  | A2.1 Hệ thống không tìm thấy lựa chọn hợp lệ hoặc không thể đọc bộ nhớ trình duyệt.
+  R16: Alternative Paths: |  | A2.2 Hệ thống sử dụng tiếng Việt mặc định.
+  R17: Exception Paths: | E1. Không thể lưu lựa chọn trong trình duyệt: hệ thống vẫn giữ ngôn ngữ trong trạng thái ứng dụng hiện tại, nhưng không bảo đảm khôi phục sau khi tải lại. Hệ thống hiện không hiển thị thông báo lỗi lưu.
+  R18: Extension Points: | Không xác định điểm mở rộng trong mô hình hiện tại.
+  R19: Triggers: | Khách mở bộ chọn và chọn một ngôn ngữ.
+  R20: Assumptions: | Website hỗ trợ các ngôn ngữ vi, en và ko; giao diện có bộ chọn ngôn ngữ.
+  R21: Preconditions: | Khách đã mở website và chưa cần đăng nhập.
+  R22: Post Conditions: | Giao diện sử dụng ngôn ngữ được chọn trong trạng thái hiện tại. Nếu lưu thành công, lựa chọn có thể được khôi phục khi tải lại.
+  R23: Reference : Business Rules | BR01-1: Phiên bản hiện tại hỗ trợ Tiếng Việt, English và 한국어. BR01-2: Tiếng Việt là mặc định khi không đọc được lựa chọn hợp lệ. BR01-3: Chọn ngôn ngữ không cấp quyền quản trị. BR01-4: Khi thiếu nội dung hoặc audio theo ngôn ngữ, hệ thống có cơ chế dự phòng hiện hành.
+  R24: Author(s) | 
+  R25: Activity Diagram:
+
+=== TABLE 4 (26 rows, 3 cols) ===
+  R0: Use case number | UC02
+  R1: Use case name | Bắt đầu hành trình
+  R2: Actor (s) | Khách tham quan
+  R3: Maturity | Focused
+  R4: Summary | Khách mở trang chào và bắt đầu hành trình không cần đăng nhập. Hệ thống ghi nhận hành trình mới, chuyển sang trang khám phá và yêu cầu nội dung đang công bố.
+  R5: Basic Course of Events: | Actor Action | System Response
+  R6: Basic Course of Events: | 1. Khách truy cập trang chào. | 
+  R7: Basic Course of Events: |  | 2. Hệ thống hiển thị trang chào, nhận hoặc tạo ID khách và thử ghi sự kiện truy cập (A1).
+  R8: Basic Course of Events: | 3. Khách nhấn “Bắt đầu hành trình”. | 
+  R9: Basic Course of Events: |  | 4. Hệ thống tạo ID hành trình mới và gửi sự kiện bắt đầu (E1). Khi gửi thành công, hệ thống lưu ID và chuyển sang trang khám phá.
+  R10: Basic Course of Events: |  | 5. Trang khám phá yêu cầu nội dung công bố; nếu tải thành công, hệ thống hiển thị các địa điểm và bản đồ (A2, E2).
+  R11: Alternative Paths: | A1. Không ghi nhận được lượt truy cập
+  R12: Alternative Paths: |  | A1.1 Hệ thống hiển thị thông báo chưa ghi nhận lượt truy cập; khách vẫn có thể nhấn bắt đầu.
+  R13: Alternative Paths: | A1.2 Khách tiếp tục nhấn bắt đầu. | 
+  R14: Alternative Paths: | A2. Chưa có bản công bố
+  R15: Alternative Paths: |  | A2.1 API trả trạng thái chưa có bản công bố; hệ thống hiển thị thông báo và nút “Thử lại”.
+  R16: Alternative Paths: | A2.2 Khách có thể nhấn “Thử lại”. | 
+  R17: Exception Paths: | E1. Gửi sự kiện bắt đầu thất bại: hệ thống báo lỗi, không chuyển trang; khách có thể nhấn bắt đầu lại.  E2. Không tải được nội dung sau khi chuyển sang trang khám phá: hệ thống hiển thị lỗi và nút “Thử lại”.
+  R18: Extension Points: | Không xác định điểm mở rộng trong mô hình hiện tại.
+  R19: Triggers: | Khách nhấn “Bắt đầu hành trình” tại trang chào.
+  R20: Assumptions: | Trình duyệt hỗ trợ JavaScript; để ghi sự kiện và tải nội dung cần kết nối tới máy chủ.
+  R21: Preconditions: | Khách đang ở trang chào; không cần tài khoản hoặc quyền GPS.
+  R22: Post Conditions: | Nếu gửi sự kiện thành công, hành trình mới được giữ trong trạng thái hiện tại và hệ thống chuyển sang trang khám phá. Nội dung chỉ hiển thị khi tải thành công.
+  R23: Reference : Business Rules | BR02-1: Mỗi lần bắt đầu hợp lệ tạo ID hành trình mới. BR02-2: ID khách nhận diện trình duyệt và không cấp quyền quản trị. BR02-3: Khách không bắt buộc cấp quyền GPS để bắt đầu. BR02-4: Ghi nhận hành trình và tải nội dung là hai bước riêng; lỗi tải nội dung không đồng nghĩa hành trình chưa được tạo.
+  R24: Author(s) | 
+  R25: Activity Diagram:
+
+=== TABLE 5 (26 rows, 3 cols) ===
+  R0: Use case number | UC03
+  R1: Use case name | Xem bản đồ và địa điểm
+  R2: Actor (s) | Khách tham quan, Admin
+  R3: Maturity | Focused
+  R4: Summary | Người dùng mở trang khám phá để xem bản đồ cơ sở chính và danh sách các địa điểm đã công bố. Hệ thống hiển thị marker cho những địa điểm có tọa độ; người dùng có thể thao tác trên bản đồ và chọn điểm.
+  R5: Basic Course of Events: | Actor Action | System Response
+  R6: Basic Course of Events: | 1. Người dùng mở trang khám phá. | 
+  R7: Basic Course of Events: |  | 2. Hệ thống yêu cầu nội dung công bố và hiển thị trạng thái đang tải (A1, E1).
+  R8: Basic Course of Events: |  | 3. Hệ thống hiển thị danh sách địa điểm, tải bản đồ và đặt marker cho điểm có tọa độ (A2, E2).
+  R9: Basic Course of Events: | 4. Người dùng di chuyển, phóng to hoặc thu nhỏ bản đồ. | 
+  R10: Basic Course of Events: |  | 5. Hệ thống cập nhật vùng bản đồ theo thao tác; người dùng có thể chọn một địa điểm để xem nội dung.
+  R11: Alternative Paths: | A1. Chưa có nội dung công bố
+  R12: Alternative Paths: |  | A1.1 Hệ thống hiển thị thông báo chưa có nội dung và nút “Thử lại”.
+  R13: Alternative Paths: | A1.2 Người dùng có thể nhấn “Thử lại”. | 
+  R14: Alternative Paths: | A2. Địa điểm không có tọa độ
+  R15: Alternative Paths: |  | A2.1 Hệ thống không tạo marker cho địa điểm thiếu tọa độ.
+  R16: Alternative Paths: | A2.2 Người dùng chọn địa điểm từ danh sách. | 
+  R17: Exception Paths: | E1. Không tải được nội dung: hệ thống báo lỗi trên trang khám phá và cung cấp nút “Thử lại”.  E2. Không khởi tạo hoặc tải được bản đồ: hệ thống báo lỗi và cung cấp nút tải lại bản đồ; danh sách địa điểm vẫn có thể sử dụng nếu nội dung đã tải.
+  R18: Extension Points: | Không xác định điểm mở rộng trong mô hình hiện tại.
+  R19: Triggers: | Người dùng mở trang khám phá.
+  R20: Assumptions: | Thiết bị có trình duyệt hỗ trợ MapLibre/WebGL2 và kết nối mạng để tải dữ liệu, bản đồ.
+  R21: Preconditions: | Khách đã bắt đầu hành trình; Admin có thể mở trang khám phá khi đã đăng nhập.
+  R22: Post Conditions: | Nếu tải thành công, nội dung và bản đồ được hiển thị. Marker chỉ xuất hiện với địa điểm có tọa độ; việc hiển thị vị trí khách phụ thuộc GPS hoặc mô phỏng.
+  R23: Reference : Business Rules | BR03-1: Khách chỉ nhận nội dung của bản công bố hiện hành. BR03-2: Tọa độ GeoJSON dùng thứ tự kinh độ, vĩ độ. BR03-3: Vị trí khách chỉ hiển thị khi có mẫu vị trí GPS hoặc mô phỏng. BR03-4: Không yêu cầu GPS để xem danh sách hoặc chọn điểm thủ công.
+  R24: Author(s) | 
+  R25: Activity Diagram:
+
+=== TABLE 6 (26 rows, 3 cols) ===
+  R0: Use case number | UC04
+  R1: Use case name | Xem nội dung địa điểm
+  R2: Actor (s) | Khách tham quan, Admin
+  R3: Maturity | Focused
+  R4: Summary | Người dùng chọn địa điểm đã công bố để xem tên và nội dung thuyết minh theo ngôn ngữ hiện hành; thao tác chọn điểm có thể đồng thời yêu cầu phát audio.
+  R5: Basic Course of Events: | Actor Action | System Response
+  R6: Basic Course of Events: | 1. Người dùng mở trang khám phá. | 
+  R7: Basic Course of Events: |  | 2. Hệ thống hiển thị danh sách địa điểm và bản đồ từ dữ liệu đã công bố.
+  R8: Basic Course of Events: | 3. Người dùng chọn một địa điểm trên bản đồ hoặc từ danh sách. | 
+  R9: Basic Course of Events: |  | 4. Hệ thống mở phần chi tiết và hiển thị tên, nội dung của điểm theo dữ liệu hiện có (A1, A2).
+  R10: Basic Course of Events: | 5. Người dùng đọc nội dung; có thể đóng phần chi tiết hoặc chọn điểm khác. | 
+  R11: Alternative Paths: | A1. Thiếu bản dịch theo ngôn ngữ đang chọn
+  R12: Alternative Paths: |  | A1.1 Hệ thống dùng bản dịch dự phòng English cục bộ nếu phù hợp; nếu không, dùng nội dung gốc tiếng Việt.
+  R13: Alternative Paths: | A1.2 Người dùng tiếp tục xem nội dung. | 
+  R14: Alternative Paths: | A2. Chọn điểm có audio
+  R15: Alternative Paths: |  | A2.1 Hệ thống đồng thời yêu cầu phát audio của điểm theo cơ chế hiện hành (UC05).
+  R16: Alternative Paths: | A2.2 Người dùng tiếp tục đọc hoặc điều khiển trình phát. | 
+  R17: Exception Paths: | E1. Nội dung công bố chưa có hoặc tải thất bại: trang khám phá hiển thị thông báo và nút thử lại; chưa thể chọn nội dung từ dữ liệu chưa tải.
+  R18: Extension Points: | Không xác định điểm mở rộng trong mô hình hiện tại.
+  R19: Triggers: | Người dùng chọn một địa điểm.
+  R20: Assumptions: | Trang khám phá hoạt động trên trình duyệt và dữ liệu cần thiết có thể được tải.
+  R21: Preconditions: | Khách đã bắt đầu hành trình hoặc Admin đã mở trang khám phá; dữ liệu công bố được tải.
+  R22: Post Conditions: | Phần chi tiết của địa điểm được chọn hiển thị nếu dữ liệu có sẵn.
+  R23: Reference : Business Rules | BR04-1: Địa điểm và nội dung gốc lấy từ phiên bản công bố. BR04-2: Bản dịch English dự phòng cục bộ là hành vi hiện tại khi thiếu bản dịch công bố. BR04-3: Khi chọn điểm có audio, hệ thống có thể yêu cầu phát ngay.
+  R24: Author(s) | 
+  R25: Activity Diagram:
+
+=== TABLE 7 (26 rows, 3 cols) ===
+  R0: Use case number | UC05
+  R1: Use case name | Nghe thuyết minh
+  R2: Actor (s) | Khách tham quan, Admin
+  R3: Maturity | Focused
+  R4: Summary | Người dùng nghe audio của địa điểm công bố bằng trình phát; thao tác chọn điểm hoặc nhận diện GPS có thể yêu cầu phát.
+  R5: Basic Course of Events: | Actor Action | System Response
+  R6: Basic Course of Events: | 1. Người dùng chọn một địa điểm có audio. | 
+  R7: Basic Course of Events: |  | 2. Hệ thống xác định audio tương ứng và yêu cầu trình phát phát audio (A1, A2, E1).
+  R8: Basic Course of Events: | 3. Người dùng nghe và có thể dùng điều khiển trình phát để tạm dừng hoặc nghe lại. | 
+  R9: Basic Course of Events: |  | 4. Khi audio bắt đầu phát, hệ thống ghi nhận sự kiện nghe của khách nếu đủ điều kiện.
+  R10: Basic Course of Events: | 5. Người dùng có thể chọn điểm khác hoặc rời trang. | Hệ thống dùng lại trình phát; audio dừng khi rời trang.
+  R11: Alternative Paths: | A1. Nhận diện điểm bằng GPS hoặc mô phỏng
+  R12: Alternative Paths: |  | A1.1 Khi geofence xác nhận điểm, hệ thống mở điểm và thử phát; trình duyệt có thể chặn.
+  R13: Alternative Paths: | A1.2 Người dùng nhấn phát thủ công nếu cần. | 
+  R14: Alternative Paths: | A2. Thiếu audio theo ngôn ngữ đang chọn
+  R15: Alternative Paths: |  | A2.1 Nếu có audio tiếng Việt, hệ thống hiện dùng audio tiếng Việt dự phòng; nếu không có audio, hiển thị thông báo.
+  R16: Alternative Paths: | A2.2 Người dùng tiếp tục xem nội dung nếu chưa có audio. | 
+  R17: Exception Paths: | E1. Trình duyệt chặn phát: hệ thống hướng dẫn nhấn phát thủ công. Nếu audio tải hoặc phát lỗi, hệ thống báo lỗi và cho phép tải lại audio.
+  R18: Extension Points: | Không xác định điểm mở rộng trong mô hình hiện tại.
+  R19: Triggers: | Người dùng chọn địa điểm hoặc geofence xác nhận điểm mới.
+  R20: Assumptions: | Trang khám phá hoạt động trên trình duyệt và dữ liệu cần thiết có thể được tải.
+  R21: Preconditions: | Trang khám phá đã tải nội dung công bố và địa điểm được chọn.
+  R22: Post Conditions: | Audio được phát nếu có sẵn và trình duyệt cho phép; nếu không, trạng thái phù hợp được hiển thị.
+  R23: Reference : Business Rules | BR05-1: Audio công khai được lấy theo release hiện hành. BR05-2: Một trình phát được dùng lại khi chuyển điểm. BR05-3: Lượt nghe của khách chỉ ghi khi sự kiện phát xảy ra; lượt tự phát do mô phỏng không tính vào thống kê thật. BR05-4: Chính sách trình duyệt có thể chặn tự phát.
+  R24: Author(s) | 
+  R25: Activity Diagram:
+
+=== TABLE 8 (26 rows, 3 cols) ===
+  R0: Use case number | UC06
+  R1: Use case name | Bật hoặc dừng GPS
+  R2: Actor (s) | Khách tham quan, Admin
+  R3: Maturity | Focused
+  R4: Summary | Người dùng chủ động bật theo dõi vị trí thật, cho phép hệ thống nhận mẫu GPS và xác định địa điểm gần đó; có thể dừng theo dõi bất kỳ lúc nào.
+  R5: Basic Course of Events: | Actor Action | System Response
+  R6: Basic Course of Events: | 1. Người dùng mở trang khám phá và chọn “Bật GPS & tự phát”. | 
+  R7: Basic Course of Events: |  | 2. Hệ thống bắt đầu theo dõi vị trí và trình duyệt xử lý quyền truy cập vị trí (A1, E1).
+  R8: Basic Course of Events: | 3. Người dùng cho phép truy cập nếu trình duyệt yêu cầu. | 
+  R9: Basic Course of Events: |  | 4. Hệ thống nhận mẫu GPS, hiển thị trạng thái và xử lý geofence; khi xác nhận điểm, hệ thống mở nội dung và thử phát audio (A2).
+  R10: Basic Course of Events: | 5. Người dùng có thể chọn “Dừng định vị”. | Hệ thống ngừng theo dõi và xóa trạng thái vị trí hiện tại.
+  R11: Alternative Paths: | A1. Từ chối quyền vị trí
+  R12: Alternative Paths: |  | A1.1 Hệ thống thông báo quyền bị từ chối và dừng theo dõi.
+  R13: Alternative Paths: | A1.2 Người dùng có thể chọn điểm thủ công hoặc dùng mô phỏng. | 
+  R14: Alternative Paths: | A2. Mẫu vị trí chưa hợp lệ
+  R15: Alternative Paths: |  | A2.1 Hệ thống báo mẫu cũ, sai số lớn, dữ liệu không hợp lệ hoặc đang giới hạn nhịp xử lý.
+  R16: Alternative Paths: | A2.2 Người dùng có thể chờ mẫu khác hoặc dừng định vị. | 
+  R17: Exception Paths: | E1. Trình duyệt không hỗ trợ định vị, hết thời gian chờ hoặc không lấy được vị trí: hệ thống thông báo và cho phép chọn điểm thủ công. Nếu phát audio bị chặn, người dùng có thể nhấn phát.
+  R18: Extension Points: | Không xác định điểm mở rộng trong mô hình hiện tại.
+  R19: Triggers: | Người dùng bật hoặc dừng định vị từ trang khám phá.
+  R20: Assumptions: | Trang khám phá hoạt động trên trình duyệt và dữ liệu cần thiết có thể được tải.
+  R21: Preconditions: | Trang khám phá đã tải; GPS thật chỉ chạy khi người dùng chủ động bật và trình duyệt cho phép.
+  R22: Post Conditions: | Khi bật và có mẫu GPS, hệ thống theo dõi vị trí; khi dừng, theo dõi kết thúc và trạng thái vị trí được đặt lại.
+  R23: Reference : Business Rules | BR06-1: Không tự bật GPS khi người dùng chưa thao tác. BR06-2: Vị trí được xử lý trong trình duyệt. BR06-3: Geofence dùng bán kính vào 30 m, ra 45 m; cần hai mẫu hợp lệ, sai số tối đa 25 m. BR06-4: Tự phát phụ thuộc trình duyệt và có thể bị chặn.
+  R24: Author(s) | 
+  R25: Activity Diagram:
+
+=== TABLE 9 (26 rows, 3 cols) ===
+  R0: Use case number | UC07
+  R1: Use case name | Mô phỏng vị trí
+  R2: Actor (s) | Khách tham quan, Admin
+  R3: Maturity | Focused
+  R4: Summary | Người dùng chọn một địa điểm có tọa độ và bật mô phỏng; hệ thống tạo các mẫu vị trí giả đi qua cùng luồng geofence với GPS thật.
+  R5: Basic Course of Events: | Actor Action | System Response
+  R6: Basic Course of Events: | 1. Người dùng mở trang khám phá và chọn điểm mô phỏng. | 
+  R7: Basic Course of Events: |  | 2. Hệ thống cho chọn các địa điểm có tọa độ.
+  R8: Basic Course of Events: | 3. Người dùng nhấn “Mô phỏng & tự phát”. | 
+  R9: Basic Course of Events: |  | 4. Hệ thống tạo mẫu vị trí mô phỏng tại điểm đã chọn, xử lý qua geofence và phát mẫu tiếp theo sau mỗi 5 giây (A1).
+  R10: Basic Course of Events: | 5. Người dùng xem kết quả hoặc nhấn “Dừng định vị”. | Hệ thống dừng bộ hẹn giờ và đặt lại trạng thái theo dõi.
+  R11: Alternative Paths: | A1. Chưa đủ mẫu xác nhận
+  R12: Alternative Paths: |  | A1.1 Hệ thống tiếp tục chờ hai mẫu vị trí hợp lệ để xác nhận điểm.
+  R13: Alternative Paths: | A1.2 Người dùng có thể tiếp tục chờ hoặc dừng. | 
+  R14: Alternative Paths: | A2. Đã xác nhận điểm
+  R15: Alternative Paths: |  | A2.1 Hệ thống mở nội dung điểm và thử phát audio nếu có; trình duyệt có thể chặn phát.
+  R16: Alternative Paths: | A2.2 Người dùng có thể nhấn phát thủ công hoặc dừng mô phỏng. | 
+  R17: Exception Paths: | E1. Không có điểm hợp lệ hoặc điểm không có tọa độ: mô phỏng không được khởi chạy. Nếu audio bị chặn hoặc thiếu, hệ thống hiển thị trạng thái tương ứng.
+  R18: Extension Points: | Không xác định điểm mở rộng trong mô hình hiện tại.
+  R19: Triggers: | Người dùng chọn điểm và bật mô phỏng từ trang khám phá.
+  R20: Assumptions: | Trang khám phá hoạt động trên trình duyệt và dữ liệu cần thiết có thể được tải.
+  R21: Preconditions: | Trang khám phá đã tải và có ít nhất một điểm có tọa độ; mô phỏng không yêu cầu quyền GPS.
+  R22: Post Conditions: | Mẫu mô phỏng được xử lý trong trình duyệt; khi dừng, hệ thống ngừng gửi mẫu và đặt lại trạng thái.
+  R23: Reference : Business Rules | BR07-1: Mẫu mô phỏng được gắn nhãn và dùng cùng geofence với GPS thật. BR07-2: Mẫu mô phỏng được tạo tại tọa độ điểm, sai số giả 5 m, cách nhau 5 giây. BR07-3: Lượt tự phát từ mô phỏng không được gửi vào thống kê nghe thật; phát thủ công vẫn có thể được ghi. BR07-4: Mô phỏng không chứng minh độ chính xác GPS ngoài thực tế.
+  R24: Author(s) | 
+  R25: Activity Diagram:
+
