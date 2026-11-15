@@ -19,7 +19,7 @@ làm mẫu. Không chia sẻ nội dung .env hoặc ghi credentials vào mã ngu
 | Biến | Vai trò |
 | --- | --- |
 | APP_NAME / ENVIRONMENT | Tên dịch vụ và môi trường |
-| FRONTEND_DIST | Thư mục chứa index.html đã build; để trống khi phát triển frontend bằng Vite |
+| FRONTEND_DIST | Thư mục chứa index.html đã build; để trống khi phát triển frontend bằng Vite | 
 | MONGODB_URI | URI Atlas/local; chỉ điền trong .env riêng |
 | MONGODB_DATABASE | Database của ứng dụng, mặc định sgu_campus_guide |
 | MONGODB_TIMEOUT_MS | Giới hạn thời gian kết nối/probe, mặc định 3000 ms |

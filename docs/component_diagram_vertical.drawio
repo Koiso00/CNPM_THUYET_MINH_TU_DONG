@@ -1,0 +1,220 @@
+<mxfile host="app.diagrams.net" modified="2026-11-15T01:10:00.000Z" agent="Antigravity" version="24.7.5" type="device">
+  <diagram id="component-diagram-vertical" name="Component Diagram (DB Under Backend)">
+    <mxGraphModel dx="1600" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1380" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- TIÊU ĐỀ -->
+        <mxCell id="title_comp" value="BIỂU ĐỒ THÀNH PHẦN (UML COMPONENT DIAGRAM)&#xa;HỆ THỐNG THUYẾT MINH TỰ ĐỘNG ĐẠI HỌC SÀI GÒN" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=18;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="390" y="20" width="600" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================== -->
+        <!-- BÊN TRÁI - TRÊN: FRONTEND APPLICATION (REACT 18 + TYPESCRIPT)   -->
+        <!-- ============================================================== -->
+        <mxCell id="pkg_client" value="Frontend Application (React 18 + TypeScript SPA)" style="shape=folder;fontStyle=1;tabWidth=320;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;fillColor=#F8FAFC;strokeColor=#0284C7;strokeWidth=2;verticalAlign=top;align=left;spacingLeft=10;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="50" y="80" width="480" height="590" as="geometry" />
+        </mxCell>
+
+        <!-- UI Components (Views) -->
+        <mxCell id="pkg_ui" value="UI Components (Views)" style="shape=folder;fontStyle=1;tabWidth=170;tabHeight=25;fillColor=#EFF6FF;strokeColor=#3B82F6;verticalAlign=top;align=left;spacingLeft=10;fontSize=11;" vertex="1" parent="pkg_client">
+          <mxGeometry x="20" y="45" width="440" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="c_welcome" value="«component»&#xa;Welcome &amp; Lang View" style="html=1;dropTarget=0;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#0284C7;fontStyle=1;fontSize=11;" vertex="1" parent="pkg_ui">
+          <mxGeometry x="20" y="45" width="125" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="c_explore" value="«component»&#xa;Explore &amp; Campus View" style="html=1;dropTarget=0;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#0284C7;fontStyle=1;fontSize=11;" vertex="1" parent="pkg_ui">
+          <mxGeometry x="155" y="45" width="135" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="c_admin_ui" value="«component»&#xa;Admin Portal View" style="html=1;dropTarget=0;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#0284C7;fontStyle=1;fontSize=11;" vertex="1" parent="pkg_ui">
+          <mxGeometry x="300" y="45" width="125" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- Client Core Services -->
+        <mxCell id="pkg_client_core" value="Client Engine &amp; Core Services" style="shape=folder;fontStyle=1;tabWidth=200;tabHeight=25;fillColor=#EFF6FF;strokeColor=#3B82F6;verticalAlign=top;align=left;spacingLeft=10;fontSize=11;" vertex="1" parent="pkg_client">
+          <mxGeometry x="20" y="210" width="440" height="355" as="geometry" />
+        </mxCell>
+        <mxCell id="c_map" value="«component»&#xa;MapLibre GL&#xa;Controller" style="html=1;dropTarget=0;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#0284C7;fontStyle=1;fontSize=11;" vertex="1" parent="pkg_client_core">
+          <mxGeometry x="20" y="45" width="120" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="c_gps" value="«component»&#xa;Geofence &amp; GPS Engine&#xa;(Haversine Hysteresis)" style="html=1;dropTarget=0;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#0284C7;fontStyle=1;fontSize=11;" vertex="1" parent="pkg_client_core">
+          <mxGeometry x="155" y="45" width="135" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="c_audio_player" value="«component»&#xa;Web Audio Player&#xa;(Single Player)" style="html=1;dropTarget=0;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#0284C7;fontStyle=1;fontSize=11;" vertex="1" parent="pkg_client_core">
+          <mxGeometry x="300" y="45" width="125" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="c_auth_store" value="«component»&#xa;Auth &amp; Session Store&#xa;(CSRF &amp; Context)" style="html=1;dropTarget=0;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#0284C7;fontStyle=1;fontSize=11;" vertex="1" parent="pkg_client_core">
+          <mxGeometry x="50" y="145" width="140" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="c_api_client" value="«component»&#xa;API Client Service&#xa;(Axios / Interceptors)" style="html=1;dropTarget=0;whiteSpace=wrap;fillColor=#BAE6FD;strokeColor=#0284C7;strokeWidth=2;fontStyle=1;fontSize=11;" vertex="1" parent="pkg_client_core">
+          <mxGeometry x="140" y="250" width="160" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================== -->
+        <!-- BÊN TRÁI - DƯỚI: DỊCH VỤ NGOẠI VI & THIẾT BỊ                   -->
+        <!-- ============================================================== -->
+        <mxCell id="pkg_ext" value="Dịch vụ ngoài &amp; Thiết bị ngoại vi" style="shape=folder;fontStyle=1;tabWidth=220;tabHeight=25;fillColor=#F1F5F9;strokeColor=#64748B;verticalAlign=top;align=left;spacingLeft=10;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="50" y="720" width="480" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="c_ext_stadia" value="«external service»&#xa;Stadia Maps&#xa;Raster Tile Server" style="html=1;whiteSpace=wrap;fillColor=#E0F2FE;strokeColor=#0284C7;fontStyle=1;fontSize=11;" vertex="1" parent="pkg_ext">
+          <mxGeometry x="20" y="55" width="130" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="c_ext_gps" value="«hardware device»&#xa;Cảm biến GPS /&#xa;Geolocation API" style="html=1;whiteSpace=wrap;fillColor=#E0F2FE;strokeColor=#0284C7;fontStyle=1;fontSize=11;" vertex="1" parent="pkg_ext">
+          <mxGeometry x="175" y="55" width="130" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="c_ext_speaker" value="«hardware device»&#xa;Loa / Tai nghe&#xa;(Web Audio Output)" style="html=1;whiteSpace=wrap;fillColor=#E0F2FE;strokeColor=#0284C7;fontStyle=1;fontSize=11;" vertex="1" parent="pkg_ext">
+          <mxGeometry x="330" y="55" width="130" height="135" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================== -->
+        <!-- BÊN PHẢI - TRÊN: BACKEND APPLICATION (FASTAPI CLEAN ARCH)     -->
+        <!-- ============================================================== -->
+        <mxCell id="pkg_server" value="Backend Application (FastAPI - Clean Architecture)" style="shape=folder;fontStyle=1;tabWidth=340;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;fillColor=#FDF2F8;strokeColor=#DB2777;strokeWidth=2;verticalAlign=top;align=left;spacingLeft=10;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="580" y="80" width="740" height="590" as="geometry" />
+        </mxCell>
+
+        <!-- 1. Presentation Layer (Routers & Middleware) -->
+        <mxCell id="pkg_routers" value="Presentation Layer (Routers &amp; Security)" style="shape=folder;fontStyle=1;tabWidth=250;tabHeight=25;fillColor=#FCE7F3;strokeColor=#DB2777;verticalAlign=top;align=left;spacingLeft=10;fontSize=11;" vertex="1" parent="pkg_server">
+          <mxGeometry x="20" y="45" width="700" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="c_sec_mw" value="«middleware»&#xa;Security Middleware (CORS, CSRF HMAC, JWT HttpOnly Cookie)" style="html=1;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#DB2777;strokeWidth=2;fontStyle=1;fontSize=11;" vertex="1" parent="pkg_routers">
+          <mxGeometry x="20" y="35" width="660" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="c_r_content" value="«router»&#xa;Content Router&#xa;(/content/*)" style="html=1;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#DB2777;fontStyle=1;fontSize=10;" vertex="1" parent="pkg_routers">
+          <mxGeometry x="20" y="90" width="120" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="c_r_admin" value="«router»&#xa;Admin Router&#xa;(/admin/campus/*)" style="html=1;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#DB2777;fontStyle=1;fontSize=10;" vertex="1" parent="pkg_routers">
+          <mxGeometry x="155" y="90" width="120" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="c_r_auth" value="«router»&#xa;Auth Router&#xa;(/auth/*)" style="html=1;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#DB2777;fontStyle=1;fontSize=10;" vertex="1" parent="pkg_routers">
+          <mxGeometry x="290" y="90" width="120" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="c_r_dash" value="«router»&#xa;Dashboard Router&#xa;(/admin/dashboard)" style="html=1;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#DB2777;fontStyle=1;fontSize=10;" vertex="1" parent="pkg_routers">
+          <mxGeometry x="425" y="90" width="125" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="c_r_telem" value="«router»&#xa;Telemetry Router&#xa;(/telemetry/*)" style="html=1;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#DB2777;fontStyle=1;fontSize=10;" vertex="1" parent="pkg_routers">
+          <mxGeometry x="565" y="90" width="115" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- 2. Business Logic Layer (Services) -->
+        <mxCell id="pkg_services" value="Business Logic Layer (Services)" style="shape=folder;fontStyle=1;tabWidth=210;tabHeight=25;fillColor=#FCE7F3;strokeColor=#DB2777;verticalAlign=top;align=left;spacingLeft=10;fontSize=11;" vertex="1" parent="pkg_server">
+          <mxGeometry x="20" y="220" width="700" height="165" as="geometry" />
+        </mxCell>
+        <mxCell id="c_s_auth" value="«service»&#xa;Auth Service&#xa;(Argon2id &amp; Session)" style="html=1;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#DB2777;fontStyle=1;fontSize=10;" vertex="1" parent="pkg_services">
+          <mxGeometry x="20" y="45" width="120" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="c_s_content" value="«service»&#xa;Tour Content Service&#xa;(CAS Revision Engine)" style="html=1;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#DB2777;fontStyle=1;fontSize=10;" vertex="1" parent="pkg_services">
+          <mxGeometry x="155" y="45" width="120" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="c_s_publish" value="«service»&#xa;Publish Service&#xa;(Snapshot Engine)" style="html=1;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#DB2777;fontStyle=1;fontSize=10;" vertex="1" parent="pkg_services">
+          <mxGeometry x="290" y="45" width="120" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="c_s_audio" value="«service»&#xa;Audio Stream Service&#xa;(HTTP 206 Partial Content)" style="html=1;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#DB2777;fontStyle=1;fontSize=10;" vertex="1" parent="pkg_services">
+          <mxGeometry x="425" y="45" width="125" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="c_s_dash" value="«service»&#xa;Dashboard Service&#xa;(ICT UTC+7 Aggregator)" style="html=1;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#DB2777;fontStyle=1;fontSize=10;" vertex="1" parent="pkg_services">
+          <mxGeometry x="565" y="45" width="115" height="85" as="geometry" />
+        </mxCell>
+
+        <!-- 3. Data Access Layer (Repositories) -->
+        <mxCell id="pkg_repos" value="Data Access Layer (Repositories)" style="shape=folder;fontStyle=1;tabWidth=220;tabHeight=25;fillColor=#FCE7F3;strokeColor=#DB2777;verticalAlign=top;align=left;spacingLeft=10;fontSize=11;" vertex="1" parent="pkg_server">
+          <mxGeometry x="20" y="400" width="700" height="165" as="geometry" />
+        </mxCell>
+        <mxCell id="c_repo_user" value="«repository»&#xa;User &amp; Session&#xa;Repository" style="html=1;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#DB2777;fontStyle=1;fontSize=10;" vertex="1" parent="pkg_repos">
+          <mxGeometry x="20" y="45" width="120" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="c_repo_tour" value="«repository»&#xa;Tour, Draft &amp; Asset&#xa;Repository" style="html=1;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#DB2777;fontStyle=1;fontSize=10;" vertex="1" parent="pkg_repos">
+          <mxGeometry x="155" y="45" width="120" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="c_repo_release" value="«repository»&#xa;Release Snapshot&#xa;Repository" style="html=1;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#DB2777;fontStyle=1;fontSize=10;" vertex="1" parent="pkg_repos">
+          <mxGeometry x="290" y="45" width="120" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="c_repo_gridfs" value="«repository»&#xa;GridFS Bucket&#xa;Repository" style="html=1;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#DB2777;fontStyle=1;fontSize=10;" vertex="1" parent="pkg_repos">
+          <mxGeometry x="425" y="45" width="125" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="c_repo_analytics" value="«repository»&#xa;Events &amp; Presence&#xa;Repository" style="html=1;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#DB2777;fontStyle=1;fontSize=10;" vertex="1" parent="pkg_repos">
+          <mxGeometry x="565" y="45" width="115" height="85" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================== -->
+        <!-- BÊN PHẢI - DƯỚI: DATABASE TIER (MONGODB ATLAS CLOUD)            -->
+        <!-- NẰM TRỰC TIẾP DƯỚI BACKEND VỚI 5 CỘT TƯƠNG ỨNG 5 REPOSITORY     -->
+        <!-- ============================================================== -->
+        <mxCell id="pkg_db" value="Database Tier (MongoDB Atlas Cloud - 10 Collections)" style="shape=folder;fontStyle=1;tabWidth=360;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=2;verticalAlign=top;align=left;spacingLeft=10;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="580" y="720" width="740" height="230" as="geometry" />
+        </mxCell>
+
+        <!-- DB 1: Dưới Repo User -->
+        <mxCell id="db_users" value="D1: users&#xa;D2: sessions&#xa;(TTL 7 ngày)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#FEF3C7;strokeColor=#D97706;fontStyle=1;fontSize=11;align=center;" vertex="1" parent="pkg_db">
+          <mxGeometry x="20" y="55" width="120" height="135" as="geometry" />
+        </mxCell>
+
+        <!-- DB 2: Dưới Repo Tour -->
+        <mxCell id="db_tours" value="D3: tours&#xa;(CAS Revision)&#xa;D5: audio_selections&#xa;D6: assets" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#FEF3C7;strokeColor=#D97706;fontStyle=1;fontSize=11;align=center;" vertex="1" parent="pkg_db">
+          <mxGeometry x="155" y="55" width="120" height="135" as="geometry" />
+        </mxCell>
+
+        <!-- DB 3: Dưới Repo Release -->
+        <mxCell id="db_releases" value="D4: tour_releases&#xa;(Immutable&#xa;Snapshots 10 POI)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#FEF3C7;strokeColor=#D97706;fontStyle=1;fontSize=11;align=center;" vertex="1" parent="pkg_db">
+          <mxGeometry x="290" y="55" width="120" height="135" as="geometry" />
+        </mxCell>
+
+        <!-- DB 4: Dưới Repo GridFS -->
+        <mxCell id="db_gridfs" value="D7: fs.files&#xa;D8: fs.chunks&#xa;(Audio Stream&#xa;255 KiB/chunk)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#FEF3C7;strokeColor=#D97706;fontStyle=1;fontSize=11;align=center;" vertex="1" parent="pkg_db">
+          <mxGeometry x="425" y="55" width="125" height="135" as="geometry" />
+        </mxCell>
+
+        <!-- DB 5: Dưới Repo Analytics -->
+        <mxCell id="db_analytics" value="D9: usage_events&#xa;D10: visitor_presence&#xa;(TTL 180s)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#FEF3C7;strokeColor=#D97706;fontStyle=1;fontSize=11;align=center;" vertex="1" parent="pkg_db">
+          <mxGeometry x="565" y="55" width="115" height="135" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================== -->
+        <!-- ĐƯỜNG NỐI GIAO TIẾP VÀ TRUY VẤN (TUYỆT ĐỐI THÔNG THOÁNG)       -->
+        <!-- ============================================================== -->
+
+        <!-- Client API Service -> Backend Middleware (Qua cổng HTTPS REST) -->
+        <mxCell id="edge_rest" value="HTTPS REST API &amp; Audio Stream (HTTP 206)&#xa;Headers: Range, Cookie HttpOnly, X-CSRF-Token" style="endArrow=block;html=1;strokeColor=#0284C7;strokeWidth=2;fontSize=10;edgeStyle=orthogonalEdgeStyle;" edge="1" source="c_api_client" target="c_sec_mw" parent="1">
+          <mxGeometry x="-0.1" y="-12" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="400" y="580" />
+              <mxPoint x="555" y="580" />
+              <mxPoint x="555" y="140" />
+            </Array>
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Client -> Dịch vụ ngoại vi -->
+        <mxCell id="e_map_stadia" value="HTTP GET Tiles" style="endArrow=block;dashed=1;html=1;strokeColor=#475569;fontSize=10;" edge="1" source="c_map" target="c_ext_stadia" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_gps_device" value="Tọa độ thô GPS" style="endArrow=block;dashed=1;html=1;strokeColor=#475569;fontSize=10;" edge="1" source="c_ext_gps" target="c_gps" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_audio_speaker" value="Web Audio Buffer" style="endArrow=block;dashed=1;html=1;strokeColor=#475569;fontSize=10;" edge="1" source="c_audio_player" target="c_ext_speaker" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 5 ĐƯỜNG THẲNG ĐỨNG TỪ REPOSITORY XUỐNG CSDL (KHÔNG CẮT NHAU) -->
+        <mxCell id="e_down_user" value="PyMongo" style="endArrow=block;html=1;strokeColor=#D97706;strokeWidth=1.8;fontSize=10;" edge="1" source="c_repo_user" target="db_users" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_down_tour" value="find_one_and_update" style="endArrow=block;html=1;strokeColor=#D97706;strokeWidth=1.8;fontSize=10;" edge="1" source="c_repo_tour" target="db_tours" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_down_rel" value="Snapshot Insert" style="endArrow=block;html=1;strokeColor=#D97706;strokeWidth=1.8;fontSize=10;" edge="1" source="c_repo_release" target="db_releases" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_down_gfs" value="OpenDownloadStream" style="endArrow=block;html=1;strokeColor=#D97706;strokeWidth=1.8;fontSize=10;" edge="1" source="c_repo_gridfs" target="db_gridfs" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_down_anl" value="Aggregation &amp; TTL" style="endArrow=block;html=1;strokeColor=#D97706;strokeWidth=1.8;fontSize=10;" edge="1" source="c_repo_analytics" target="db_analytics" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

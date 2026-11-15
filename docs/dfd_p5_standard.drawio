@@ -1,0 +1,70 @@
+<mxfile host="app.diagrams.net" type="device">
+  <diagram id="dfd2-p5-standard" name="DFD Mức 2 - P5.0 Đăng nhập">
+    <mxGraphModel dx="1000" dy="600" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="900" pageHeight="520" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- TIÊU ĐỀ -->
+        <mxCell id="t" value="DFD MỨC 2: TIẾN TRÌNH 5.0 - ĐĂNG NHẬP HỆ THỐNG ADMIN" style="text;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontStyle=1;fontSize=14;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="200" y="20" width="500" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- TÁC NHÂN DUY NHẤT: QUẢN TRỊ VIÊN -->
+        <mxCell id="a" value="QUẢN TRỊ VIÊN&#xa;(Admin)" style="shape=rect;whiteSpace=wrap;fontStyle=1;fontSize=12;fillColor=#FCE7F3;strokeColor=#DB2777;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="40" y="165" width="140" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- 4 TIỂU TIẾN TRÌNH -->
+        <mxCell id="p51" value="5.1 Tiếp nhận &amp;&#xa;Chuẩn hóa username_key" style="ellipse;whiteSpace=wrap;fillColor=#FBCFE8;strokeColor=#DB2777;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="250" y="90" width="145" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="p52" value="5.2 Xác thực mật khẩu&#xa;Argon2id &amp; Role" style="ellipse;whiteSpace=wrap;fillColor=#FBCFE8;strokeColor=#DB2777;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="465" y="90" width="145" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="p53" value="5.3 Tạo phiên mới &amp;&#xa;Lưu SHA-256 Token" style="ellipse;whiteSpace=wrap;fillColor=#FBCFE8;strokeColor=#DB2777;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="465" y="245" width="145" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="p54" value="5.4 Cấp Set-Cookie&#xa;HttpOnly &amp; CSRF" style="ellipse;whiteSpace=wrap;fillColor=#FBCFE8;strokeColor=#DB2777;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="250" y="245" width="145" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- 2 KHO DỮ LIỆU LIÊN QUAN: D1 VÀ D2 -->
+        <mxCell id="d1" value="D1: users" style="shape=partialRectangle;top=0;bottom=0;fillColor=#FEF3C7;strokeColor=#D97706;strokeWidth=2;fontStyle=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="700" y="110" width="130" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="d2" value="D2: sessions" style="shape=partialRectangle;top=0;bottom=0;fillColor=#FEF3C7;strokeColor=#D97706;strokeWidth=2;fontStyle=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="700" y="265" width="130" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- CÁC LUỒNG DỮ LIỆU ĐÁNH SỐ (DÒNG 1 -> DÒNG 7) -->
+        <mxCell id="e1" value="1. POST /auth/login (User, Pass)" style="endArrow=block;html=1;strokeColor=#DB2777;strokeWidth=1.5;fontSize=10;" edge="1" source="a" target="p51" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="2. username_key, password" style="endArrow=block;html=1;strokeColor=#DB2777;strokeWidth=1.5;fontSize=10;" edge="1" source="p51" target="p52" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="3. Đọc password_hash, role" style="endArrow=block;html=1;strokeColor=#D97706;strokeWidth=1.5;fontSize=10;" edge="1" source="d1" target="p52" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="4. Xác thực thành công" style="endArrow=block;html=1;strokeColor=#DB2777;strokeWidth=1.5;fontSize=10;" edge="1" source="p52" target="p53" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" value="5. Ghi session (hạn 7 ngày)" style="endArrow=block;html=1;strokeColor=#D97706;strokeWidth=1.5;fontSize=10;" edge="1" source="p53" target="d2" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" value="6. session_id, user_id" style="endArrow=block;html=1;strokeColor=#DB2777;strokeWidth=1.5;fontSize=10;" edge="1" source="p53" target="p54" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" value="7. Cookie sgu_access &amp; CSRF JSON" style="endArrow=block;html=1;strokeColor=#DB2777;strokeWidth=1.5;fontSize=10;edgeStyle=orthogonalEdgeStyle;" edge="1" source="p54" target="a" parent="1">
+          <mxGeometry x="-0.2" y="10" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="322" y="360" /><mxPoint x="110" y="360" />
+            </Array>
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

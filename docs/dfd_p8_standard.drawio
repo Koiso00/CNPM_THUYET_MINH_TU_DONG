@@ -1,0 +1,70 @@
+<mxfile host="app.diagrams.net" type="device">
+  <diagram id="dfd2-p8-standard" name="DFD Mức 2 - P8.0 Dashboard">
+    <mxGraphModel dx="1000" dy="600" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="950" pageHeight="560" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- TIÊU ĐỀ -->
+        <mxCell id="t" value="DFD MỨC 2: TIẾN TRÌNH 8.0 - XEM THỐNG KÊ BÁO CÁO (DASHBOARD)" style="text;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontStyle=1;fontSize=14;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="200" y="20" width="550" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- TÁC NHÂN DUY NHẤT: QUẢN TRỊ VIÊN -->
+        <mxCell id="a" value="QUẢN TRỊ VIÊN&#xa;(Admin)" style="shape=rect;whiteSpace=wrap;fontStyle=1;fontSize=12;fillColor=#FCE7F3;strokeColor=#DB2777;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="40" y="165" width="140" height="85" as="geometry" />
+        </mxCell>
+
+        <!-- 4 TIỂU TIẾN TRÌNH -->
+        <mxCell id="p81" value="8.1 Tiếp nhận &amp;&#xa;Xác định ngày lọc ICT" style="ellipse;whiteSpace=wrap;fillColor=#FBCFE8;strokeColor=#DB2777;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="250" y="90" width="145" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="p82" value="8.2 Tổng hợp sự kiện&#xa;khách &amp; lượt nghe" style="ellipse;whiteSpace=wrap;fillColor=#FBCFE8;strokeColor=#DB2777;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="470" y="90" width="145" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="p83" value="8.3 Đo lường online&#xa;(last_seen &lt;= 90s)" style="ellipse;whiteSpace=wrap;fillColor=#FBCFE8;strokeColor=#DB2777;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="470" y="250" width="145" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="p84" value="8.4 Kết xuất bảng &amp;&#xa;Biểu đồ phân bổ" style="ellipse;whiteSpace=wrap;fillColor=#FBCFE8;strokeColor=#DB2777;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="250" y="250" width="145" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- KHO DỮ LIỆU: HAI ĐƯỜNG KẺ NGANG TRÊN DƯỚI (left=0;right=0;top=1;bottom=1) -->
+        <mxCell id="d9" value="D9: usage_events&#xa;(Nhật ký sự kiện truy cập &amp; nghe)" style="shape=partialRectangle;top=1;bottom=1;left=0;right=0;fillColor=#FEF3C7;strokeColor=#D97706;strokeWidth=2;fontStyle=1;align=center;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="700" y="105" width="180" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="d10" value="D10: visitor_presence&#xa;(Trực tuyến thời gian thực)" style="shape=partialRectangle;top=1;bottom=1;left=0;right=0;fillColor=#FEF3C7;strokeColor=#D97706;strokeWidth=2;fontStyle=1;align=center;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="700" y="265" width="180" height="38" as="geometry" />
+        </mxCell>
+
+        <!-- CÁC LUỒNG DỮ LIỆU ĐÁNH SỐ (DÒNG 1 -> DÒNG 7) -->
+        <mxCell id="e1" value="1. GET /admin/dashboard (Ngày)" style="endArrow=block;html=1;strokeColor=#DB2777;strokeWidth=1.5;fontSize=10;" edge="1" source="a" target="p81" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="2. Khoảng giờ ICT (00:00 - 23:59)" style="endArrow=block;html=1;strokeColor=#DB2777;strokeWidth=1.5;fontSize=10;" edge="1" source="p81" target="p82" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="3. Đọc events theo ngày" style="endArrow=block;html=1;strokeColor=#D97706;strokeWidth=1.5;fontSize=10;" edge="1" source="d9" target="p82" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="4. Chỉ số: khách, hành trình, audio" style="endArrow=block;html=1;strokeColor=#DB2777;strokeWidth=1.5;fontSize=10;" edge="1" source="p82" target="p84" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" value="5. Đọc thiết bị online 90s" style="endArrow=block;html=1;strokeColor=#D97706;strokeWidth=1.5;fontSize=10;" edge="1" source="d10" target="p83" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" value="6. Số active online thời gian thực" style="endArrow=block;html=1;strokeColor=#DB2777;strokeWidth=1.5;fontSize=10;" edge="1" source="p83" target="p84" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" value="7. Bảng số liệu &amp; Biểu đồ cột" style="endArrow=block;html=1;strokeColor=#DB2777;strokeWidth=1.5;fontSize=10;edgeStyle=orthogonalEdgeStyle;" edge="1" source="p84" target="a" parent="1">
+          <mxGeometry x="-0.2" y="10" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="322" y="340" /><mxPoint x="110" y="340" />
+            </Array>
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,148 @@
+<mxfile host="app.diagrams.net" modified="2026-11-13T02:20:00.000Z" agent="Antigravity Agent" version="24.7.5" type="device">
+  <diagram id="sgu-campus-erd-10-collections" name="ERD - CSDL sgu_campus_guide (10 Collections)">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1550" pageHeight="950" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- TIÊU ĐỀ BẢN VẼ -->
+        <mxCell id="title_box" value="SƠ ĐỒ QUAN HỆ THỰC THỂ (ERD) — CƠ SỞ DỮ LIỆU: sgu_campus_guide (MONGODB ATLAS)&#xa;Chuẩn hóa chính xác 100% theo 10 Collections thực tế trên MongoDB Compass" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=16;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="350" y="20" width="850" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- ========================================== -->
+        <!-- GROUP 1: XÁC THỰC (users, sessions)        -->
+        <!-- ========================================== -->
+        <mxCell id="grp_auth" value="1. Phân hệ Xác thực &amp; Quản trị (Authentication)" style="shape=rect;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontStyle=3;fontSize=12;fillColor=#FDF2F8;strokeColor=#F472B6;strokeWidth=1.2;rounded=1;spacingLeft=10;spacingTop=8;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="80" width="310" height="490" as="geometry" />
+        </mxCell>
+
+        <!-- 1. users -->
+        <mxCell id="tbl_users" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-family:sans-serif;font-size:11px;&quot;&gt;&#xa;&lt;tr style=&quot;background-color:#DB2777;color:#FFFFFF;&quot;&gt;&lt;th colspan=&quot;2&quot; style=&quot;padding:6px;border-bottom:1px solid #BE185D;&quot;&gt;&lt;b&gt;users&lt;/b&gt; (1 doc | 2 indexes)&lt;/th&gt;&lt;/tr&gt;&#xa;&lt;tr style=&quot;background-color:#FCE7F3;&quot;&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;PK&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;_id&lt;/b&gt; : string (UUID)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;username : string (1-128 chars)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr style=&quot;background-color:#FDF2F8;&quot;&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;UK&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;username_key : string (Idx)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;password_hash : string (Argon2id)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr style=&quot;background-color:#FDF2F8;&quot;&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;role : string (&quot;admin&quot;)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;is_active : boolean (true)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr style=&quot;background-color:#FDF2F8;&quot;&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;created_at : datetime (UTC)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;updated_at : datetime (UTC)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;/table&gt;" style="html=1;overflow=fill;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#DB2777;strokeWidth=1.5;rounded=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="115" width="270" height="195" as="geometry" />
+        </mxCell>
+
+        <!-- 2. sessions -->
+        <mxCell id="tbl_sessions" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-family:sans-serif;font-size:11px;&quot;&gt;&#xa;&lt;tr style=&quot;background-color:#DB2777;color:#FFFFFF;&quot;&gt;&lt;th colspan=&quot;2&quot; style=&quot;padding:6px;border-bottom:1px solid #BE185D;&quot;&gt;&lt;b&gt;sessions&lt;/b&gt; (4 docs | 4 indexes)&lt;/th&gt;&lt;/tr&gt;&#xa;&lt;tr style=&quot;background-color:#FCE7F3;&quot;&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;PK&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;_id&lt;/b&gt; : string (UUID)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;FK&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;user_id : string (users._id)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr style=&quot;background-color:#FDF2F8;&quot;&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;UK&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;refresh_token_hash : string (SHA-256)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;created_at : datetime&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr style=&quot;background-color:#FDF2F8;&quot;&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;updated_at : datetime&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;TTL&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;expires_at : datetime (7 days)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr style=&quot;background-color:#FDF2F8;&quot;&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;revoked_at : datetime | null&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;/table&gt;" style="html=1;overflow=fill;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#DB2777;strokeWidth=1.5;rounded=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="350" width="270" height="195" as="geometry" />
+        </mxCell>
+
+        <!-- ========================================== -->
+        <!-- GROUP 2: NỘI DUNG TOUR (tours, releases)   -->
+        <!-- ========================================== -->
+        <mxCell id="grp_content" value="2. Phân hệ Nội dung &amp; Phát hành (Content &amp; Releases)" style="shape=rect;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontStyle=3;fontSize=12;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.2;rounded=1;spacingLeft=10;spacingTop=8;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="380" y="80" width="670" height="490" as="geometry" />
+        </mxCell>
+
+        <!-- 3. tours -->
+        <mxCell id="tbl_tours" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-family:sans-serif;font-size:11px;&quot;&gt;&#xa;&lt;tr style=&quot;background-color:#2563EB;color:#FFFFFF;&quot;&gt;&lt;th colspan=&quot;2&quot; style=&quot;padding:6px;border-bottom:1px solid #1D4ED8;&quot;&gt;&lt;b&gt;tours&lt;/b&gt; (1 doc | 1 index)&lt;/th&gt;&lt;/tr&gt;&#xa;&lt;tr style=&quot;background-color:#DBEAFE;&quot;&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;PK&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;_id&lt;/b&gt; : string (&quot;campus-main&quot;)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;title : string (&quot;Khuôn viên ĐH Sài Gòn&quot;)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr style=&quot;background-color:#EFF6FF;&quot;&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;CAS&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;revision : int (CAS counter &amp;gt;= 1)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;FK&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;published_release_id : string | null&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr style=&quot;background-color:#EFF6FF;&quot;&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;Doc&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;draft.language : string (&quot;vi&quot;)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;Emb&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;draft.places&lt;/b&gt; : Array&amp;lt;Place&amp;gt; (10 POIs)&lt;br&gt;&amp;nbsp;&amp;bull; id : UUID, title, description, source&lt;br&gt;&amp;nbsp;&amp;bull; location : GeoJSON Point [lng, lat]&lt;br&gt;&amp;nbsp;&amp;bull; translations : { en, ko } (Tiếng Anh/Hàn)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr style=&quot;background-color:#EFF6FF;&quot;&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;updated_at : datetime (UTC)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;FK&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;updated_by : string (users._id)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;/table&gt;" style="html=1;overflow=fill;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;rounded=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="400" y="115" width="290" height="230" as="geometry" />
+        </mxCell>
+
+        <!-- 4. tour_releases -->
+        <mxCell id="tbl_releases" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-family:sans-serif;font-size:11px;&quot;&gt;&#xa;&lt;tr style=&quot;background-color:#1D4ED8;color:#FFFFFF;&quot;&gt;&lt;th colspan=&quot;2&quot; style=&quot;padding:6px;border-bottom:1px solid #1E40AF;&quot;&gt;&lt;b&gt;tour_releases&lt;/b&gt; (13 docs | 1 index)&lt;/th&gt;&lt;/tr&gt;&#xa;&lt;tr style=&quot;background-color:#DBEAFE;&quot;&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;PK&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;_id&lt;/b&gt; : string (UUID Snapshot)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;FK&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;tour_id : string (&quot;campus-main&quot;)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr style=&quot;background-color:#EFF6FF;&quot;&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;source_revision : int (Revision lúc publish)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;Frz&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;draft.places&lt;/b&gt; : Array&amp;lt;FrozenPlace&amp;gt;&lt;br&gt;&amp;nbsp;&amp;bull; 10 POIs đông cứng tọa độ &amp;amp; bản dịch&lt;br&gt;&amp;nbsp;&amp;bull; Ghim mã asset_id của audio đã duyệt&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr style=&quot;background-color:#EFF6FF;&quot;&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;FK&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;published_by : string (users._id)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;published_at : datetime (UTC)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;/table&gt;" style="html=1;overflow=fill;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#1D4ED8;strokeWidth=1.5;rounded=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="730" y="115" width="300" height="230" as="geometry" />
+        </mxCell>
+
+        <!-- ========================================== -->
+        <!-- GROUP 3: SỰ KIỆN & THỐNG KÊ (events)       -->
+        <!-- ========================================== -->
+        <mxCell id="grp_analytics" value="3. Phân hệ Sự kiện &amp; Thống kê (Analytics)" style="shape=rect;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontStyle=3;fontSize=12;fillColor=#ECFDF5;strokeColor=#6EE7B7;strokeWidth=1.2;rounded=1;spacingLeft=10;spacingTop=8;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="80" width="430" height="490" as="geometry" />
+        </mxCell>
+
+        <!-- 8. usage_events -->
+        <mxCell id="tbl_usage_events" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-family:sans-serif;font-size:11px;&quot;&gt;&#xa;&lt;tr style=&quot;background-color:#059669;color:#FFFFFF;&quot;&gt;&lt;th colspan=&quot;2&quot; style=&quot;padding:6px;border-bottom:1px solid #047857;&quot;&gt;&lt;b&gt;usage_events&lt;/b&gt; (277 docs | 1 index)&lt;/th&gt;&lt;/tr&gt;&#xa;&lt;tr style=&quot;background-color:#D1FAE5;&quot;&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;PK&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;_id&lt;/b&gt; : string (event_id UUIDv4)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;visitor_id : string (UUID khách ẩn danh)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr style=&quot;background-color:#ECFDF5;&quot;&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;journey_id : string (UUID lượt tham quan)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;place_id : string | null (POI UUID)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr style=&quot;background-color:#ECFDF5;&quot;&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;FK&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;release_id : string | null (tour_releases._id)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;event_type : &quot;visit&quot;|&quot;journey_started&quot;|&quot;audio_played&quot;&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr style=&quot;background-color:#ECFDF5;&quot;&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;Idx&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;day : string (&quot;YYYY-MM-DD&quot; múi giờ ICT)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;Idx&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;is_simulated : boolean (Lọc số liệu ảo)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;/table&gt;" style="html=1;overflow=fill;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#059669;strokeWidth=1.5;rounded=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1105" y="115" width="380" height="230" as="geometry" />
+        </mxCell>
+
+        <!-- 10. visitor_presence -->
+        <mxCell id="tbl_presence" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-family:sans-serif;font-size:11px;&quot;&gt;&#xa;&lt;tr style=&quot;background-color:#059669;color:#FFFFFF;&quot;&gt;&lt;th colspan=&quot;2&quot; style=&quot;padding:6px;border-bottom:1px solid #047857;&quot;&gt;&lt;b&gt;visitor_presence&lt;/b&gt; (16 docs | 1 index)&lt;/th&gt;&lt;/tr&gt;&#xa;&lt;tr style=&quot;background-color:#D1FAE5;&quot;&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;PK&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;_id&lt;/b&gt; : string (visitor_id UUID)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;TTL&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;last_seen : datetime (Cập nhật mỗi 30s | TTL 180s)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr style=&quot;background-color:#ECFDF5;&quot;&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;created_at : datetime (Thời điểm mở trang)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;/table&gt;" style="html=1;overflow=fill;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#059669;strokeWidth=1.5;rounded=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1105" y="380" width="380" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- ========================================== -->
+        <!-- GROUP 4: ÂM THANH & GRIDFS (4 collections) -->
+        <!-- ========================================== -->
+        <mxCell id="grp_audio" value="4. Phân hệ Âm thanh &amp; Lưu trữ tệp nhị phân GridFS (Media Storage)" style="shape=rect;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontStyle=3;fontSize=12;fillColor=#FFFBEB;strokeColor=#FCD34D;strokeWidth=1.2;rounded=1;spacingLeft=10;spacingTop=8;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="600" width="1470" height="320" as="geometry" />
+        </mxCell>
+
+        <!-- 2. audio_selections -->
+        <mxCell id="tbl_audio_selections" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-family:sans-serif;font-size:11px;&quot;&gt;&#xa;&lt;tr style=&quot;background-color:#D97706;color:#FFFFFF;&quot;&gt;&lt;th colspan=&quot;2&quot; style=&quot;padding:6px;border-bottom:1px solid #B45309;&quot;&gt;&lt;b&gt;audio_selections&lt;/b&gt; (30 docs | 1 index)&lt;/th&gt;&lt;/tr&gt;&#xa;&lt;tr style=&quot;background-color:#FEF3C7;&quot;&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;PK&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;_id&lt;/b&gt; : string ({lang}:{text_sha256})&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;FK&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;asset_id : string (assets._id)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;/table&gt;" style="html=1;overflow=fill;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="650" width="290" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- 1. assets -->
+        <mxCell id="tbl_assets" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-family:sans-serif;font-size:11px;&quot;&gt;&#xa;&lt;tr style=&quot;background-color:#D97706;color:#FFFFFF;&quot;&gt;&lt;th colspan=&quot;2&quot; style=&quot;padding:6px;border-bottom:1px solid #B45309;&quot;&gt;&lt;b&gt;assets&lt;/b&gt; (30 docs | 1 index)&lt;/th&gt;&lt;/tr&gt;&#xa;&lt;tr style=&quot;background-color:#FEF3C7;&quot;&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;PK&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;_id&lt;/b&gt; : string (UUIDv4)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;text_sha256 : string (64 hex SHA)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr style=&quot;background-color:#FFFBEB;&quot;&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;language : string (&quot;vi&quot;|&quot;en&quot;|&quot;ko&quot;)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;filename : string (&quot;poi_XX_lang.mp3&quot;)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr style=&quot;background-color:#FFFBEB;&quot;&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;FK&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;gridfs_id : ObjectId (fs.files._id)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;status : string (&quot;ready&quot;)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr style=&quot;background-color:#FFFBEB;&quot;&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;content_type : &quot;audio/mpeg&quot;&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;size_bytes : int (&amp;lt;= 10 MiB)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;/table&gt;" style="html=1;overflow=fill;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="410" y="650" width="300" height="230" as="geometry" />
+        </mxCell>
+
+        <!-- 4. fs.files -->
+        <mxCell id="tbl_fs_files" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-family:sans-serif;font-size:11px;&quot;&gt;&#xa;&lt;tr style=&quot;background-color:#B45309;color:#FFFFFF;&quot;&gt;&lt;th colspan=&quot;2&quot; style=&quot;padding:6px;border-bottom:1px solid #92400E;&quot;&gt;&lt;b&gt;fs.files&lt;/b&gt; (30 docs | 2 indexes)&lt;/th&gt;&lt;/tr&gt;&#xa;&lt;tr style=&quot;background-color:#FEF3C7;&quot;&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;PK&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;_id&lt;/b&gt; : ObjectId&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;filename : string (&quot;poi_XX_lang.mp3&quot;)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr style=&quot;background-color:#FFFBEB;&quot;&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;length : int (Tổng dung lượng bytes)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;chunkSize : int (261120 = 255 KiB)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr style=&quot;background-color:#FFFBEB;&quot;&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;uploadDate : datetime (UTC)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;metadata : document&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;/table&gt;" style="html=1;overflow=fill;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#B45309;strokeWidth=1.5;rounded=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="780" y="650" width="300" height="190" as="geometry" />
+        </mxCell>
+
+        <!-- 3. fs.chunks -->
+        <mxCell id="tbl_fs_chunks" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-family:sans-serif;font-size:11px;&quot;&gt;&#xa;&lt;tr style=&quot;background-color:#B45309;color:#FFFFFF;&quot;&gt;&lt;th colspan=&quot;2&quot; style=&quot;padding:6px;border-bottom:1px solid #92400E;&quot;&gt;&lt;b&gt;fs.chunks&lt;/b&gt; (30 docs | 2 indexes | 5.46 MB)&lt;/th&gt;&lt;/tr&gt;&#xa;&lt;tr style=&quot;background-color:#FEF3C7;&quot;&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;PK&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;_id&lt;/b&gt; : ObjectId&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;FK&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;files_id : ObjectId (fs.files._id)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr style=&quot;background-color:#FFFBEB;&quot;&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;n : int (Khối nhị phân: 0, 1, 2...)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;tr&gt;&lt;td style=&quot;padding:4px;&quot;&gt;&lt;b&gt;Bin&lt;/b&gt;&lt;/td&gt;&lt;td style=&quot;padding:4px;&quot;&gt;data : binary (Chunk thô 255 KiB)&lt;/td&gt;&lt;/tr&gt;&#xa;&lt;/table&gt;" style="html=1;overflow=fill;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#B45309;strokeWidth=1.5;rounded=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1145" y="650" width="340" height="150" as="geometry" />
+        </mxCell>
+
+        <!-- ========================================== -->
+        <!-- MỐI QUAN HỆ & LIÊN KẾT (RELATIONSHIPS)    -->
+        <!-- ========================================== -->
+
+        <!-- users (1) -> (N) sessions -->
+        <mxCell id="rel_users_sessions" value="1 : N" style="endArrow=ERmany;startArrow=ERone;html=1;strokeColor=#DB2777;strokeWidth=1.8;fontSize=11;fontStyle=1;" edge="1" source="tbl_users" target="tbl_sessions" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- users (1) -> (N) tours -->
+        <mxCell id="rel_users_tours" value="sửa nháp" style="endArrow=ERmany;startArrow=ERone;html=1;strokeColor=#2563EB;strokeWidth=1.5;fontSize=10;dashed=1;" edge="1" source="tbl_users" target="tbl_tours" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- tours (1) -> (N) tour_releases -->
+        <mxCell id="rel_tours_releases" value="1 : N (Tạo Snapshot)" style="endArrow=ERmany;startArrow=ERone;html=1;strokeColor=#2563EB;strokeWidth=2;fontSize=11;fontStyle=1;" edge="1" source="tbl_tours" target="tbl_releases" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- users (1) -> (N) tour_releases -->
+        <mxCell id="rel_users_releases" value="công bố" style="endArrow=ERmany;startArrow=ERone;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;fontSize=10;dashed=1;" edge="1" source="tbl_users" target="tbl_releases" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="195" y="70" />
+              <mxPoint x="880" y="70" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- tour_releases (1) -> (N) usage_events -->
+        <mxCell id="rel_releases_events" value="1 : N (Sự kiện khách)" style="endArrow=ERmany;startArrow=ERone;html=1;strokeColor=#059669;strokeWidth=2;fontSize=11;fontStyle=1;" edge="1" source="tbl_releases" target="tbl_usage_events" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- assets (1) -> (N) audio_selections -->
+        <mxCell id="rel_assets_selections" value="1 : N (Ghim)" style="endArrow=ERmany;startArrow=ERone;html=1;strokeColor=#D97706;strokeWidth=1.8;fontSize=11;fontStyle=1;" edge="1" source="tbl_assets" target="tbl_audio_selections" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- assets (1) -> (1) fs.files -->
+        <mxCell id="rel_assets_fs_files" value="1 : 1 (Tệp GridFS)" style="endArrow=ERone;startArrow=ERone;html=1;strokeColor=#B45309;strokeWidth=2;fontSize=11;fontStyle=1;" edge="1" source="tbl_assets" target="tbl_fs_files" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- fs.files (1) -> (N) fs.chunks -->
+        <mxCell id="rel_files_chunks" value="1 : N (Khối 255 KiB)" style="endArrow=ERmany;startArrow=ERone;html=1;strokeColor=#B45309;strokeWidth=2.2;fontSize=11;fontStyle=1;" edge="1" source="tbl_fs_files" target="tbl_fs_chunks" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Ghi chú đối chiếu MongoDB Compass -->
+        <mxCell id="note_compass" value="&lt;b&gt;ĐỐI CHIẾU CHUẨN XÁC 100% VỚI MONGODB COMPASS:&lt;/b&gt;&lt;br&gt;&amp;bull; &lt;b&gt;Đúng 10 Collections:&lt;/b&gt; assets, audio_selections, fs.chunks, fs.files, sessions, tour_releases, tours, usage_events, users, visitor_presence.&lt;br&gt;&amp;bull; &lt;b&gt;10 POIs &amp;amp; Bản dịch đa ngữ:&lt;/b&gt; Được nhúng trực tiếp (Embedded) vào &lt;i&gt;tours.draft.places&lt;/i&gt; và &lt;i&gt;tour_releases.draft.places&lt;/i&gt;, tối ưu 1 query lấy trọn vẹn dữ liệu tour.&lt;br&gt;&amp;bull; &lt;b&gt;GridFS Streaming:&lt;/b&gt; 30 file MP3 lưu metadata ở &lt;i&gt;fs.files&lt;/i&gt; và chia khối nhị phân 5.46 MB trong &lt;i&gt;fs.chunks&lt;/i&gt; phục vụ HTTP 206 Partial Content.&lt;br&gt;&amp;bull; &lt;b&gt;TTL Index tự động:&lt;/b&gt; &lt;i&gt;visitor_presence&lt;/i&gt; xóa sau 180s, &lt;i&gt;sessions&lt;/i&gt; xóa sau 7 ngày." style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fontColor=#1E293B;fillColor=#FFF8E1;strokeColor=#F59E0B;fontSize=11;align=left;spacingLeft=8;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="60" y="20" width="280" height="85" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
